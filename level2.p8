@@ -22,32 +22,23 @@ function _draw()
 end
 -->8
 function btn_init()
-		butt={{x=216,y=104,sp=19},
-								{x=72,y=104,sp=19},
-								{x=136,y=104,sp=19}}
+	butt={
+	{x=216,y=104,sp=19,act="tp"},
+	{x=72,y=104,sp=19,act="nil"},
+	{x=136,y=104,sp=19,act="door"}}
 end
 
 function btn_update()
 		--bugs
-		--sometimes the button
-		--wont press down when coming
-		--from a specific angle or
-		--falling from a block that
-		--lets you land on top of it
-		--when you move inside of it
-		--it updates correctly im
-		--fixed
+		
+		
+		--updates the button sprites
+		--if the player stands on them
 		for b in all(butt) do
 				if player.x-8<=b.x
-				and b.x<=player.x+8
+				and b.x<=player.x+4
 				and player.y-8<=b.y
 				and b.y<=player.y+2 then
-						b.sp=20
-				elseif player.dy>=0
-				and player.x<=b.x
-				and b.x<=player.x+8
-				and player.y-8<=b.y
-				and b.y<=player.y then
 						b.sp=20
 				end
 		end
