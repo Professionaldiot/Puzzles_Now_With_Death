@@ -19,7 +19,7 @@ __lua__
 --  flag 7 is for trapdoors and
 --  doors
 
---  current hours: about 4.5-5.5
+--  current hours: about 12-13
 
 --todo:
 --  create a way to save a file
@@ -37,13 +37,14 @@ __lua__
 -->8
 --all code
 function _init()
-		debug = true
+		debug = false
 		#include .enemy.p8
 		#include random.p8
 		cartdata("dc_capstone")
 		menuitem(3,"main menu",function() load("main-menu.p8") end)
 		menuitem(1,"save",function() save() end)
 		menuitem(2,"load",function() lload() end)
+		menuitem(4,"debug file on/off",function() debu() end)
   player={
     sp=1,
     x=59,
@@ -85,6 +86,15 @@ function _init()
 --  			cam_x=dget(2)
 --  			cam_y=dget(3)
 --  end
+		botinit()
+end
+
+function debu()
+		if debug then
+				debug=false
+		else
+				debug=true
+		end
 end
 
 function save()
@@ -92,6 +102,16 @@ function save()
 		dset(1,player.y)
 		dset(2,cam_x)
 		dset(3,cam_y)
+		--save the player pos
+		--now do the bot
+		dset(4,bot.x)
+		dset(5,bot.goalx)
+		dset(6,bot.q1)
+		dset(7,bot.mid)
+		dset(8,bot.q3)
+		dset(9,bot.aim)
+		dset(10,bot.action)
+		dset(11,bot.flp)
 end
 
 function lload()
@@ -99,6 +119,15 @@ function lload()
 	player.y=dget(1)
 	cam_x=dget(2)
 	cam_y=dget(3)
+	--do the bot now
+	bot.x=dget(4)
+	bot.goalx=dget(5)
+	bot.q1=dget(6)
+	bot.mid=dget(7)
+	bot.q3=dget(8)
+	bot.aim=dget(9)
+	bot.action=dget(10)
+	bot.flp=dget(11)
 end
 
 function trapdoor()
@@ -210,21 +239,24 @@ function _update()
 		ladder()
   stairs()
   trapdoor()
+  update_bot(player.x,time())
+  draw_bot(time())
   player_animate()
   if player.y<=0 then
   	player.y=0
   	player.dy=0
   end
---  if debug then	
---  			printh("action: "..bot.action..
---  			" bot.x: "..bot.x..
---  			" bot.goalx: "..bot.goalx..
---  			" bot.aim: "..bot.aim..
---  			" test: "..testflr..
---  			" & "..testceil..
---  			" player.x: "..player.x,
---  			'log.txt',false,true)
---  end
+  if debug then	
+  			printh("action: "..bot.action..
+  			" bot.x: "..bot.x..
+  			" bot.q1: "..bot.q1..
+  			" bot.mid: "..bot.mid..
+  			" bot.q3: "..bot.q3..
+  			" bot.goalx: "..bot.goalx..
+  			" bot.aim: "..bot.aim..
+  			" player.x: "..player.x,
+  			'log.txt',false,true)
+  end
 
   
   
@@ -251,6 +283,7 @@ end
 function _draw()
   cls()
   map(0,0)
+  spr(bot.spr,bot.x,bot.y,1,1,bot.flp)
   spr(player.sp,player.x,player.y,1,1,player.flp)
 end
 

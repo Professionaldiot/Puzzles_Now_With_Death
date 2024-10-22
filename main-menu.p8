@@ -11,7 +11,7 @@ function _init()
 		canmove_d=true
 		canmove_u=true
 		action="play"
-		version="0.6.2"
+		version="0.7.1"
 end
 
 function _update()
