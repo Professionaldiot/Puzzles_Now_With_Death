@@ -37,7 +37,6 @@ __lua__
 -->8
 --all code
 function _init()
-		debug = false
 		#include .enemy.p8
 		#include random.p8
 		cartdata("dc_capstone")
@@ -45,47 +44,6 @@ function _init()
 		menuitem(1,"save",function() save() end)
 		menuitem(2,"load",function() lload() end)
 		menuitem(4,"debug file on/off",function() debu() end)
-  player={
-    sp=1,
-    x=59,
-    y=59,
-    w=8,
-    h=8,
-    flp=false,
-    dx=0,
-    dy=0,
-    max_dx=1.75,
-    max_dy=2.75,
-    acc=0.5,
-    boost=4,
-    anim=0,
-    running=false,
-    jumping=false,
-    falling=false,
-    climbing=false,
-    climbing_down=false,
-    sliding=false,
-    landed=false
-  }
-
-  gravity=0.3
-  friction=0.85
-
-  --simple camera
-  cam_x=0
-  cam_y=0
-
-  --map limits
-  map_start=0
-  map_end=1024
-  map_heightlimit=512
-  map_heightmin=0
---  if cartdata("dc_capstone") then
---  			player.x=dget(0)
---  			player.y=dget(1)
---  			cam_x=dget(2)
---  			cam_y=dget(3)
---  end
 		botinit()
 end
 
@@ -97,38 +55,6 @@ function debu()
 		end
 end
 
-function save()
-		dset(0,player.x)
-		dset(1,player.y)
-		dset(2,cam_x)
-		dset(3,cam_y)
-		--save the player pos
-		--now do the bot
-		dset(4,bot.x)
-		dset(5,bot.goalx)
-		dset(6,bot.q1)
-		dset(7,bot.mid)
-		dset(8,bot.q3)
-		dset(9,bot.aim)
-		dset(10,bot.action)
-		dset(11,bot.flp)
-end
-
-function lload()
-	player.x=dget(0)
-	player.y=dget(1)
-	cam_x=dget(2)
-	cam_y=dget(3)
-	--do the bot now
-	bot.x=dget(4)
-	bot.goalx=dget(5)
-	bot.q1=dget(6)
-	bot.mid=dget(7)
-	bot.q3=dget(8)
-	bot.aim=dget(9)
-	bot.action=dget(10)
-	bot.flp=dget(11)
-end
 
 function trapdoor()
 			if player.dy>0 then
@@ -257,27 +183,7 @@ function _update()
   			" player.x: "..player.x,
   			'log.txt',false,true)
   end
-
-  
-  
-  
-  --simple camera
-  cam_x=player.x-64+(player.w/2)
-  if cam_x<map_start then
-     cam_x=map_start
-  end
-  if cam_x>map_end-128 then
-     cam_x=map_end-128
-  end
-  cam_y=player.y-96+(player.h/2)
-  if cam_y<map_heightmin then
-  			cam_y=map_heightmin
-  end
-  if cam_y>map_heightlimit then
-  			cam_y=map_heightlimit-128
-  end
-  camera(cam_x,cam_y)
- 
+ 	cam_update()
 end
 
 function _draw()
@@ -289,6 +195,8 @@ end
 
 --player
 
+
+-->8
 function player_update()
   --physics
   player.dy+=gravity
@@ -470,8 +378,96 @@ function collide_map(obj,aim,flag)
  end
 
 end
--->8
 
+function cam_update()
+		cam_x=player.x-64+(player.w/2)
+  if cam_x<map_start then
+     cam_x=map_start
+  end
+  if cam_x>map_end-128 then
+     cam_x=map_end-128
+  end
+  cam_y=player.y-96+(player.h/2)
+  if cam_y<map_heightmin then
+  			cam_y=map_heightmin
+  end
+  if cam_y>map_heightlimit then
+  			cam_y=map_heightlimit-128
+  end
+  camera(cam_x,cam_y)
+end
+
+function save()
+		dset(0,player.x)
+		dset(1,player.y)
+		dset(2,cam_x)
+		dset(3,cam_y)
+		--save the player pos
+		--now do the bot
+		dset(4,bot.x)
+		dset(5,bot.goalx)
+		dset(6,bot.q1)
+		dset(7,bot.mid)
+		dset(8,bot.q3)
+		dset(9,bot.aim)
+		dset(10,bot.action)
+		dset(11,bot.flp)
+end
+
+function lload()
+	player.x=dget(0)
+	player.y=dget(1)
+	cam_x=dget(2)
+	cam_y=dget(3)
+	--do the bot now
+	bot.x=dget(4)
+	bot.goalx=dget(5)
+	bot.q1=dget(6)
+	bot.mid=dget(7)
+	bot.q3=dget(8)
+	bot.aim=dget(9)
+	bot.action=dget(10)
+	bot.flp=dget(11)
+end
+
+function player_init()
+		debug=false
+		player={
+    sp=1,
+    x=59,
+    y=59,
+    w=8,
+    h=8,
+    flp=false,
+    dx=0,
+    dy=0,
+    max_dx=1.75,
+    max_dy=2.75,
+    acc=0.5,
+    boost=4,
+    anim=0,
+    running=false,
+    jumping=false,
+    falling=false,
+    climbing=false,
+    climbing_down=false,
+    sliding=false,
+    landed=false
+  }
+
+  gravity=0.3
+  friction=0.85
+
+  --simple camera
+  cam_x=0
+  cam_y=0
+
+  --map limits
+  map_start=0
+  map_end=1024
+  map_heightlimit=512
+  map_heightmin=0
+end
 -->8
 
 
