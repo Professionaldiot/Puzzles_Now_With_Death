@@ -44,7 +44,11 @@ function _init()
 		menuitem(1,"save",function() save() end)
 		menuitem(2,"load",function() lload() end)
 		menuitem(4,"debug file on/off",function() debu() end)
+		player_init()
 		botinit()
+		if dget(12)<1 then
+				dset(12,1)
+		end
 end
 
 function debu()

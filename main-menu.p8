@@ -11,7 +11,7 @@ function _init()
 		canmove_d=true
 		canmove_u=true
 		action="play"
-		version="0.7.4"
+		version="0.7.4.1"
 		--export -i 64 game-test.bin 
 		--.capstone.p8 level2.p8
 end
@@ -93,6 +93,20 @@ function _draw()
 		spr(player.spr,player.x,player.y)
 		camera(cx,0)
 end
+-->8
+function level_select_init()
+		lvl={
+		{name=1,x=4,y=176,cx=0,cy=280},
+		{name=2,x=180,y=176,cx=136,cy=280},
+		{name=3,x=356,y=176,cx=272,cy=280},
+		{name=4,x=532,y=176,cx=408,cy=280},
+		{name=5,x=580,y=176,cx=544,cy=280},
+		{name=6,x=756,y=176,cx=680,cy=280},
+		{name=7,x=932,y=176,cx=816,cy=280},
+		{name=8,x=964,y=56,cx=816,cy=152}}
+end
+
+
 __gfx__
 00000000333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333
 00000000333333333333333333333333333333333333333333333333333333333338833333888333338888333383383333888833333883333388883333388333

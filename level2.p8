@@ -3,8 +3,12 @@ version 42
 __lua__
 function _init()
 		#include .capstone.p8:2
+		cartdata("dc_capstone")
 		player_init()
 		btn_init()
+		if dget(12)>0 and dget(12)<2 then
+			dset(12,2)
+		end
 end
 
 function _update()
