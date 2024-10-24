@@ -2,6 +2,9 @@ pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
 function _init()
+		#include .capstone.p8:2
+		#include .enemy.p8
+		botinit()
 		cartdata("dc_capstone")
 		lvl_hl=1
 		player={}
@@ -65,7 +68,12 @@ function _update()
 		end
 		
 		if action=="play" and btn(🅾️) then
-				load(".capstone.p8")
+				if lload() then
+						lload()
+						load(lvl[dget(12)]["ld"])
+				else
+						load(".capstone.p8")
+				end
 		end
 		if action=="sel-screen" then
 				sel_move()

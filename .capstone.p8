@@ -419,19 +419,24 @@ function save()
 end
 
 function lload()
-	player.x=dget(0)
-	player.y=dget(1)
-	cam_x=dget(2)
-	cam_y=dget(3)
-	--do the bot now
-	bot.x=dget(4)
-	bot.goalx=dget(5)
-	bot.q1=dget(6)
-	bot.mid=dget(7)
-	bot.q3=dget(8)
-	bot.aim=dget(9)
-	bot.action=dget(10)
-	bot.flp=dget(11)
+	if dget(0)==0 then
+			return false
+	else
+			player.x=dget(0)
+			player.y=dget(1)
+			cam_x=dget(2)
+			cam_y=dget(3)
+			--do the bot now
+			bot.x=dget(4)
+			bot.goalx=dget(5)
+			bot.q1=dget(6)
+			bot.mid=dget(7)
+			bot.q3=dget(8)
+			bot.aim=dget(9)
+			bot.action=dget(10)
+			bot.flp=dget(11)
+			return true
+	end
 end
 
 function player_init()
