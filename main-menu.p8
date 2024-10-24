@@ -14,13 +14,13 @@ function _init()
 		canmove_d=true
 		canmove_u=true
 		action="play"
-		version="0.8.0"
+		version="0.8.1"
 		level_select_init()
 		--export -i 64 game-test.bin 
 		--.capstone.p8 level2.p8
 end
 
-function _update()
+function _update60()
 		
 		local menu={}
 				menu.play_top=24
@@ -122,10 +122,14 @@ function level_select_init()
 		{name=8,x=964,y=56,cx=864,cy=8,g=false}}
 end
 
+
+--add gray sprites where to
+--where you could move?
+--would solve flickering issue
 function draw_gray_sprites()
 		for l in all(lvl) do
 				if l.name>dget(12) then
-						l.g=true
+						l.g=false
 				end
 		end
 		for v in all(lvl) do
