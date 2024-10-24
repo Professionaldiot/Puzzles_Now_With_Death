@@ -49,6 +49,10 @@ function _init()
 		if dget(12)<1 then
 				dset(12,1)
 		end
+		if dget(13,true) then
+				dset(13,false)
+				lload()
+		end
 end
 
 function debu()

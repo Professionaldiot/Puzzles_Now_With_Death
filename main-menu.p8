@@ -17,7 +17,7 @@ function _init()
 		canmove_d=true
 		canmove_u=true
 		action="play"
-		version="0.8.2"
+		version="0.8.4"
 		level_select_init()
 		--export -i 64 game-test.bin 
 		--.capstone.p8 level2.p8
@@ -69,7 +69,7 @@ function _update()
 		
 		if action=="play" and btn(🅾️) then
 				if lload() then
-						lload()
+						dset(13,true)
 						load(lvl[dget(12)]["ld"])
 				else
 						load(".capstone.p8")

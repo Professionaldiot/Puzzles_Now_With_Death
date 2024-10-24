@@ -9,6 +9,10 @@ function _init()
 		if dget(12)>0 and dget(12)<2 then
 			dset(12,2)
 		end
+		if dget(13,true) then
+				lload()
+				dset(13,false)
+		end
 end
 
 function _update()
