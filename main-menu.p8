@@ -14,7 +14,7 @@ function _init()
 		canmove_d=true
 		canmove_u=true
 		action="play"
-		version="0.7.5"
+		version="0.7.6"
 		level_select_init()
 		--export -i 64 game-test.bin 
 		--.capstone.p8 level2.p8
@@ -46,7 +46,8 @@ function _update()
 					canmove_d=true
 					action="play"
 		elseif player.y>=menu.sel_top and
-				player.y<=menu.sel_btm then
+				player.y<=menu.sel_btm
+				and player.x<=300 then
 					player.y=60
 					player.x=300
 					cx=256
@@ -68,6 +69,8 @@ function _update()
 		end
 		if action=="sel-screen" then
 				sel_move()
+				canmove_u=false
+				canmove_d=false
 		elseif action=="select" and btn(🅾️) then
 				action="sel-screen"
 				player.x=4
@@ -91,8 +94,6 @@ function _update()
 		end--if
 end--function
 
---current bugs:
---can't move to level8
 
 function _draw()
 		cls()
@@ -104,11 +105,13 @@ function _draw()
 		print("press : z",80,38,8)
 		print("press : z",336,62,8)
 		print("press : z",208,87,8)
+		draw_gray_sprites()
 		spr(player.spr,player.x,player.y)
 		camera(cx,cy)
 end
 -->8
 function level_select_init()
+		dset(12,2)
 		lvl={
 		{name=1,x=4,y=176,cx=0,cy=152,g=false},
 		{name=2,x=180,y=176,cx=144,cy=152,g=false},
@@ -117,18 +120,20 @@ function level_select_init()
 		{name=5,x=580,y=200,cx=576,cy=152,g=false},
 		{name=6,x=756,y=200,cx=720,cy=152,g=false},
 		{name=7,x=932,y=200,cx=864,cy=152,g=false},
-		{name=8,x=964,y=56,cx=864,cy=0,g=false}}
+		{name=8,x=964,y=56,cx=864,cy=8,g=false}}
 end
 
 function draw_gray_sprites()
 		for l in all(lvl) do
-				if not (l.name<dget(12)) then
-						l.g=false
+				if l.name>dget(12) then
+						l.g=true
 				end
 		end
 		for v in all(lvl) do
-				if v.g then
-						spr(v.name+39,v.x+12,v.y)
+				if action=="sel-screen" then
+						if v.g then
+								spr(v.name+39,(v.x-v.cx)+cx+12,(v.y-v.cy)+cy)
+						end
 				end
 		end
 end
