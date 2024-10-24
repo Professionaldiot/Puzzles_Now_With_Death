@@ -14,13 +14,13 @@ function _init()
 		canmove_d=true
 		canmove_u=true
 		action="play"
-		version="0.8.1"
+		version="0.8.2"
 		level_select_init()
 		--export -i 64 game-test.bin 
 		--.capstone.p8 level2.p8
 end
 
-function _update60()
+function _update()
 		
 		local menu={}
 				menu.play_top=24
@@ -123,13 +123,10 @@ function level_select_init()
 end
 
 
---add gray sprites where to
---where you could move?
---would solve flickering issue
 function draw_gray_sprites()
 		for l in all(lvl) do
 				if l.name>dget(12) then
-						l.g=false
+						l.g=true
 				end
 		end
 		for v in all(lvl) do
@@ -140,8 +137,26 @@ function draw_gray_sprites()
 				print(str1,cx+24,cy+102)
 				print(str2,cx+37,cy+110)
 				print(str3,cx+9,cy+120)
+				
+				print(str1,cx+168,cy+102)
+				print(str2,cx+181,cy+110)
+				print(str3,cx+153,cy+120)
+				
+				print(str1,cx-120,cy+102)
+				print(str2,cx-107,cy+110)
+				print(str3,cx-135,cy+120)
+			
+				print(str1,cx+24,cy-42)
+				print(str2,cx+37,cy-34)
+				print(str3,cx+9,cy-24)
+				
+				print(str1,cx+24,cy+246)
+				print(str2,cx+37,cy+254)
+				print(str3,cx+9,cy+264)
 						if v.g then
 								spr(v.name+39,(v.x-v.cx)+cx+12,(v.y-v.cy)+cy)
+								spr(v.name+39,(v.x-v.cx)+cx-132,(v.y-v.cy)+cy)
+								spr(v.name+39,(v.x-v.cx)+cx+156,(v.y-v.cy)+cy)
 						end
 				end
 		end
