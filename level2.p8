@@ -8,6 +8,11 @@ function _init()
 		player_init()
 		btn_init()
 		botinit()
+		menuitem(1,"save",function() save() end)
+		menuitem(2,"load",function() lload() end)
+		menuitem(3,"main menu",function() load("main-menu.p8") end)
+		menuitem(4,"debug file on/off",function() debu() end)
+		menuitem(5,"reset save data",function() r_save() end)
 		if dget(12)>0 and dget(12)<2 then
 			dset(12,2)
 		end
@@ -19,7 +24,7 @@ end
 
 function _update()
 		player_update()
-		btn_update()
+		btn_update(butts)
 		cam_update()
 		player_animate()
 end
@@ -27,35 +32,33 @@ end
 function _draw()
 		cls()
 		map(0,0)
-		btn_draw()
+		btn_draw(butts)
 		spr(player.sp,player.x,player.y,1,1,player.flp)
 end
 -->8
 function btn_init()
-	butt={
-	{x=216,y=104,sp=19,act="tp"},
-	{x=72,y=104,sp=19,act="nil"},
-	{x=136,y=104,sp=19,act="door"}}
+	butts={
+	{x=216,y=104,sp=19,act="tp",p=false},
+	{x=72,y=104,sp=19,act="nil",p=false},
+	{x=136,y=104,sp=19,act="door",p=false}}
 end
 
-function btn_update()
-		--bugs
-		
-		
+function btn_update(btns)
 		--updates the button sprites
 		--if the player stands on them
-		for b in all(butt) do
+		for b in all(btns) do
 				if player.x-8<=b.x
 				and b.x<=player.x+4
 				and player.y-8<=b.y
 				and b.y<=player.y+2 then
-						b.sp=20
+						b.sp+=1
+						b.p=true
 				end
 		end
 end
 
-function btn_draw()
-		for b in all(butt) do
+function btn_draw(btns)
+		for b in all(btns) do
 				spr(b.sp,b.x,b.y)
 		end
 end
