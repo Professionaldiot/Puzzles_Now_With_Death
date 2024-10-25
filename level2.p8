@@ -50,7 +50,8 @@ function btn_update(btns)
 				if player.x-8<=b.x
 				and b.x<=player.x+4
 				and player.y-8<=b.y
-				and b.y<=player.y+2 then
+				and b.y<=player.y+2
+				and not b.p then
 						b.sp+=1
 						b.p=true
 				end
