@@ -19,15 +19,15 @@ __lua__
 --  flag 7 is for trapdoors and
 --  doors
 
---  current hours: about 12-13
+--  current hours: about 15-20
 
 --todo:
 --  create a way to save a file
---  and reopen it
+--  and reopen it --done
 
---		create stairs? -- done
+--	create stairs? -- done
 
---		add doors? -- no
+--	add doors? -- kinda, i wanna add trapdoors
 
 --  add weapon pickups and then
 --  have the player animations
@@ -46,9 +46,7 @@ function _init()
 		menuitem(4,"debug file on/off",function() debu() end)
 		player_init()
 		botinit()
-		if dget(12)<1 then
-				dset(12,1)
-		end
+		dset(12,1)
 		if dget(13,true) then
 				dset(13,false)
 				lload()
@@ -104,7 +102,7 @@ function stairs()
 				end--if btn()
 	end--if collide_map()
 	
-	
+  
 	if player.dy>0 then
     player.falling=true
     player.landed=false

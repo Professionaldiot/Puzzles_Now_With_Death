@@ -17,7 +17,7 @@ function _init()
 		canmove_d=true
 		canmove_u=true
 		action="play"
-		version="0.8.4"
+		version="0.8.5"
 		level_select_init()
 		--export -i 64 game-test.bin 
 		--.capstone.p8 level2.p8
@@ -104,102 +104,112 @@ end--function
 
 
 function _draw()
-		cls()
-		map(0,0)
-		local str="version: a-"
-		print(str..version,39,112,7)
-		print(str..version,167,112,7)
-		print(str..version,295,112,7)
-		print("press: z/🅾️",80,38,8)
-		print("press: z/🅾️",336,62,8)
-		print("press: z/🅾️",208,87,8)
-		draw_gray_sprites()
-		spr(player.spr,player.x,player.y)
-		camera(cx,cy)
+	cls()
+	map(0,0)
+	local str="version: a-"
+	print(str..version,39,112,7)
+	print(str..version,167,112,7)
+	print(str..version,295,112,7)
+	print("press: z/🅾️",80,38,8)
+	print("press: z/🅾️",336,62,8)
+	print("press: z/🅾️",208,87,8)
+	draw_gray_sprites()
+	spr(player.spr,player.x,player.y)
+	camera(cx,cy)
 end
 -->8
 function level_select_init()
-		lvl={
-		{name=1,x=4,y=176,cx=0,cy=152,g=false,ld=".capstone.p8"},
-		{name=2,x=180,y=176,cx=144,cy=152,g=false,ld="level2.p8"},
-		{name=3,x=356,y=176,cx=288,cy=152,g=false},
-		{name=4,x=532,y=176,cx=432,cy=152,g=false},
-		{name=5,x=580,y=200,cx=576,cy=152,g=false},
-		{name=6,x=756,y=200,cx=720,cy=152,g=false},
-		{name=7,x=932,y=200,cx=864,cy=152,g=false},
-		{name=8,x=964,y=56,cx=864,cy=8,g=false}}
+	lvl={
+	{name=1,x=4,y=176,cx=0,cy=152,g=false,ld=".capstone.p8"},
+	{name=2,x=180,y=176,cx=144,cy=152,g=false,ld="level2.p8"},
+	{name=3,x=356,y=176,cx=288,cy=152,g=false,ld=""},
+	{name=4,x=532,y=176,cx=432,cy=152,g=false,ld=""},
+	{name=5,x=580,y=200,cx=576,cy=152,g=false,ld=""},
+	{name=6,x=756,y=200,cx=720,cy=152,g=false,ld=""},
+	{name=7,x=932,y=200,cx=864,cy=152,g=false,ld=""},
+	{name=8,x=964,y=56,cx=864,cy=8,g=false,ld=""}}
 end
 
 
 function draw_gray_sprites()
-		for l in all(lvl) do
-				if l.name>dget(12) then
-						l.g=true
-				end
+	for l in all(lvl) do
+		if l.name>dget(12) then
+			l.g=true
 		end
-		for v in all(lvl) do
-				if action=="sel-screen" then
-				str1="press: up arrow/⬆️ to"
-				str2="return to menu"
-				str3="press: x/❎ to enter a level"
-				print(str1,cx+24,cy+102)
-				print(str2,cx+37,cy+110)
-				print(str3,cx+9,cy+120)
-				
-				print(str1,cx+168,cy+102)
-				print(str2,cx+181,cy+110)
-				print(str3,cx+153,cy+120)
-				
-				print(str1,cx-120,cy+102)
-				print(str2,cx-107,cy+110)
-				print(str3,cx-135,cy+120)
-			
-				print(str1,cx+24,cy-42)
-				print(str2,cx+37,cy-34)
-				print(str3,cx+9,cy-24)
-				
-				print(str1,cx+24,cy+246)
-				print(str2,cx+37,cy+254)
-				print(str3,cx+9,cy+264)
-						if v.g then
-								spr(v.name+39,(v.x-v.cx)+cx+12,(v.y-v.cy)+cy)
-								spr(v.name+39,(v.x-v.cx)+cx-132,(v.y-v.cy)+cy)
-								spr(v.name+39,(v.x-v.cx)+cx+156,(v.y-v.cy)+cy)
-						end
-				end
+	end
+	for v in all(lvl) do
+		if action=="sel-screen" then
+		str1="press: up arrow/⬆️ to"
+		str2="return to menu"
+		str3="press: x/❎ to enter a level"
+		print(str1,cx+24,cy+102)
+		print(str2,cx+37,cy+110)
+		print(str3,cx+9,cy+120)
+		
+		print(str1,cx+168,cy+102)
+		print(str2,cx+181,cy+110)
+		print(str3,cx+153,cy+120)
+		
+		print(str1,cx-120,cy+102)
+		print(str2,cx-107,cy+110)
+		print(str3,cx-135,cy+120)
+	
+		print(str1,cx+24,cy-42)
+		print(str2,cx+37,cy-34)
+		print(str3,cx+9,cy-24)
+		
+		print(str1,cx+24,cy+246)
+		print(str2,cx+37,cy+254)
+		print(str3,cx+9,cy+264)
+			if v.g then
+				spr(v.name+39,(v.x-v.cx)+cx+12,(v.y-v.cy)+cy)
+				spr(v.name+39,(v.x-v.cx)+cx-132,(v.y-v.cy)+cy)
+				spr(v.name+39,(v.x-v.cx)+cx+156,(v.y-v.cy)+cy)
+			end
 		end
+	end
 end
 
 function sel_move()
-		if btnp(➡️) and lvl_hl!=8 then
-				if lvl[lvl_hl+1]["g"]==false then
-						lvl_hl+=1
-						player.y=lvl[lvl_hl]["y"]
-						player.x=lvl[lvl_hl]["x"]
-						cx=lvl[lvl_hl]["cx"]
-						cy=lvl[lvl_hl]["cy"]
-				end
-		elseif btnp(⬅️) and lvl_hl!=1 then
-				if lvl[lvl_hl-1]["g"]==false then
-						lvl_hl-=1
-						player.y=lvl[lvl_hl]["y"]
-						player.x=lvl[lvl_hl]["x"]
-						cx=lvl[lvl_hl]["cx"]
-						cy=lvl[lvl_hl]["cy"]
-				end
-		elseif btnp(❎) then
-				load(lvl[lvl_hl]["ld"])
-		elseif btnp(⬆️) then
-				player.y=60
-				player.x=300
-				cx=256
-				cy=0
-				canmove_u=true
-				canmove_d=true
-				action="select"
+	if btnp(➡️) and lvl_hl!=8 then
+		if lvl[lvl_hl+1]["g"]==false then
+			lvl_hl+=1
+			player.y=lvl[lvl_hl]["y"]
+			player.x=lvl[lvl_hl]["x"]
+			cx=lvl[lvl_hl]["cx"]
+			cy=lvl[lvl_hl]["cy"]
 		end
+	elseif btnp(⬅️) and lvl_hl!=1 then
+		if lvl[lvl_hl-1]["g"]==false then
+			lvl_hl-=1
+			player.y=lvl[lvl_hl]["y"]
+			player.x=lvl[lvl_hl]["x"]
+			cx=lvl[lvl_hl]["cx"]
+			cy=lvl[lvl_hl]["cy"]
+		end
+	elseif btnp(❎) then
+		load(lvl[lvl_hl]["ld"])
+	elseif btnp(⬆️) then
+		player.y=60
+		player.x=300
+		cx=256
+		cy=0
+		canmove_u=true
+		canmove_d=true
+		action="select"
+	end
 end
 
+-->8
+function next_level(lvl_on)
+		--function needs to be able to change our level from lvl_on to lvl_on+1
+		if lvl[lvl_on+1]["ld"]!="" then
+			load(lvl[lvl_on+1]["ld"])
+			dset(12,lvl_on+1)
+		else
+			dset(12,lvl_on)
+		end
+end
 __gfx__
 00000000333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333
 00000000333333333333333333333333333333333333333333333333333333333338833333888333338888333383383333888833333883333388883333388333
