@@ -3,10 +3,20 @@ version 42
 __lua__
 --[[
 todo:
-
-*create a way to save the button
-
-
+*create a way to save the button layouts in any level
+*finish setting up the spring code in level
+*create a pushable box that can be moved
+*create more levels
+*update the bot to be able to jump and climb stairs and such
+  > get bot gravity working
+  > get bot collision down working
+  > get bot climbing working
+  > bot right and left collsion is working
+*update the bot to let it attack the player
+  > maybe update bot to let multiple enemys be on screen at once
+*actually create the story for this game
+*design the character for the game
+*actually create interesting bot desgins
 
 
 ]]
