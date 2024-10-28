@@ -2,104 +2,99 @@ pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
 function _init()
-		#include .capstone.p8:2
-		#include .enemy.p8
-		botinit()
-		cartdata("dc_capstone")
-		lvl_hl=1
-		player={}
-				player.x=44
-				player.y=36
-				player.spr=32
-				player.anim=0
-		cx=0
-		cy=0
-		canmove_d=true
-		canmove_u=true
-		action="play"
-		version="0.8.8"
-		level_select_init()
-		--export -i 64 game-test.bin 
-		--.capstone.p8 level2.p8
+	#include .capstone.p8:2
+	#include .enemy.p8
+	botinit()
+	cartdata("dc_capstone")
+	lvl_hl=1
+	player={}
+		player.x=44
+		player.y=36
+		player.spr=32
+		player.anim=0
+	cx=0
+	cy=0
+	canmove_d=true
+	canmove_u=true
+	action="play"
+	version="0.8.8"
+	level_select_init()
+	--export -i 64 game-test.bin 
+	--.capstone.p8 level2.p8
 end
 
 function _update()
 		
-		local menu={}
-				menu.play_top=24
-				menu.play_btm=48
-				menu.quit_top=73
-				menu.quit_btm=96
-				menu.sel_top=48
-				menu.sel_btm=72
-				
-		if btnp(⬇️) and canmove_d then
-					player.y+=13
+	local menu={}
+		menu.play_top=24
+		menu.play_btm=48
+		menu.quit_top=73
+		menu.quit_btm=96
+		menu.sel_top=48
+		menu.sel_btm=72
+			
+	if btnp(⬇️) and canmove_d then
+				player.y+=13
+	end
+	if btnp(⬆️) and canmove_u then
+				player.y-=13
+	end
+	
+	if player.y>=menu.play_top and player.y<=menu.play_btm then
+		player.y=36
+		player.x=44
+		cx=0
+		canmove_u=false
+		canmove_d=true
+		action="play"
+	elseif player.y>=menu.sel_top and player.y<=menu.sel_btm and player.x<=300 then
+		player.y=60
+		player.x=300
+		cx=256
+		canmove_u=true
+		canmove_d=true
+		action="select"
+	elseif player.y>=menu.quit_top and player.y<=menu.quit_btm then
+		player.y=85
+		player.x=172
+		cx=128
+		canmove_u=true
+		canmove_d=false
+		action="quit"
+	end
+	
+	if action=="play" and btn(🅾️) then
+		if lload() then
+			dset(13,true)
+			load(lvl[dget(12)]["ld"])
+		else
+			load(".capstone.p8")
 		end
-		if btnp(⬆️) and canmove_u then
-					player.y-=13
-		end
-		
-		if player.y>=menu.play_top and
-				player.y<=menu.play_btm then
-					player.y=36
-					player.x=44
-					cx=0
-					canmove_u=false
-					canmove_d=true
-					action="play"
-		elseif player.y>=menu.sel_top and
-				player.y<=menu.sel_btm
-				and player.x<=300 then
-					player.y=60
-					player.x=300
-					cx=256
-					canmove_u=true
-					canmove_d=true
-					action="select"
-		elseif player.y>=menu.quit_top
-				and player.y<=menu.quit_btm then
-					player.y=85
-					player.x=172
-					cx=128
-					canmove_u=true
-					canmove_d=false
-					action="quit"
-		end
-		
-		if action=="play" and btn(🅾️) then
-				if lload() then
-						dset(13,true)
-						load(lvl[dget(12)]["ld"])
-				else
-						load(".capstone.p8")
-				end
-		end
-		if action=="sel-screen" then
-				sel_move()
-				canmove_u=false
-				canmove_d=false
-		elseif action=="select" and btn(🅾️) then
-				action="sel-screen"
-				player.x=4
-				player.y=176
-				cx=0
-				cy=152
-				lvl_hl=1
-				sel_move()
-		end
-		if action=="quit" and btn(🅾️) then
-				stop()
-		end
-		
-		if player.spr==48 and 
-				time()-player.anim>=.5 then
-					player.spr=32
-					player.anim=time()
-		elseif time()-player.anim>=.5 then
-					player.spr=48
-					player.anim=time()
-		end--if
+	end
+	if action=="sel-screen" then
+		sel_move()
+		canmove_u=false
+		canmove_d=false
+	elseif action=="select" and btn(🅾️) then
+		action="sel-screen"
+		player.x=4
+		player.y=176
+		cx=0
+		cy=152
+		lvl_hl=1
+		sel_move()
+	end
+	if action=="quit" and btn(🅾️) then
+		stop()
+	end
+	
+	if player.spr==48 and time()-player.anim>=.5 then
+		player.spr=32
+		player.anim=time()
+	elseif time()-player.anim>=.5 then
+		player.spr=48
+		player.anim=time()
+	end--if
 end--function
 
 

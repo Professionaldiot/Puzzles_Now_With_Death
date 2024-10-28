@@ -23,56 +23,55 @@ todo:
 -->8
 --all code
 function _init()
-		#include .enemy.p8
-		#include random.p8
-		#include level2.p8:1
-		cartdata("dc_capstone")
-		menuitem(1,"save",function() save() end)
-		menuitem(2,"load",function() lload() end)
-		menuitem(3,"main menu",function() load("main-menu.p8") end)
-		menuitem(4,"debug file on/off",function() debu() end)
-		menuitem(5,"reset save data",function() r_save() end)
-		player_init()
-		botinit()
-		td_init()
-		lvl1_buttons={
-		{x=352,y=112,sp=6,act="level2.p8",p=false},
-		{x=136,y=48,sp=6,p=false},
-		{x=24,y=24,sp=6,p=false}}
-		dset(12,1)
-		if dget(13,true) then
-				dset(13,false)
-				lload()
-		end
+  #include .enemy.p8
+  #include random.p8
+  #include level2.p8:1
+  cartdata("dc_capstone")
+  menuitem(1,"save",function() save() end)
+  menuitem(2,"load",function() lload() end)
+  menuitem(3,"main menu",function() load("main-menu.p8") end)
+  menuitem(4,"debug file on/off",function() debu() end)
+  menuitem(5,"reset save data",function() r_save() end)
+  player_init()
+  botinit()
+  td_init()
+  lvl1_buttons={
+  {x=352,y=112,sp=6,act="level2.p8",p=false},
+  {x=136,y=48,sp=6,p=false},
+  {x=24,y=24,sp=6,p=false}}
+  dset(12,1)
+  if dget(13,true) then
+    dset(13,false)
+    lload()
+  end
 end
 
 function debu()
-		if debug then
-				debug=false
-		else
-				debug=true
-		end
+  if debug then
+    debug=false
+  else
+    debug=true
+  end
 end
 
 
 function stairs()
 	--nullify gravity
 	--set player.dy to 0
-	
 	--check for stairs on right
 	if collide_map(player,"right",5) then
-			 if btn(➡️) then
-			 			player.x+=1
-			 			player.y-=1.5
-			 			player.dy=-.3
-			 end--if btn()
+    if btn(➡️) then
+      player.x+=1
+      player.y-=1.5
+      player.dy=-.3
+    end--if btn()
 	end--if collide_map()
 	if collide_map(player,"left",6) then
-				if btn(⬅️) then
-							player.x-=1
-							player.y-=1.5
-							player.dy=-.3
-				end--if btn()
+    if btn(⬅️) then
+      player.x-=1
+      player.y-=1.5
+      player.dy=-.3
+    end--if btn()
 	end--if collide_map()
 	
   
@@ -117,37 +116,36 @@ function ladder()
 --code allowing you to ascend
 --and descend a ladder at will
 	if collide_map(player,"up",1) then
-				if btn(⬆️) then
-						if collide_map(player,"up",0) then
-									player.y+=1
-						end--if collide_map
-						player.y-=1
-						player.climbing=true
-						player.climbing_down=false
-				end--if btn()
-				if btn(⬇️) then
-					 player.y+=1
-					 player.climbing=false
-					 player.climbing_down=true
-				end--if btn()
-				player.dy=-.3
+    if btn(⬆️) then
+      if collide_map(player,"up",0) then
+        player.y+=1
+      end--if collide_map
+      player.y-=1
+      player.climbing=true
+      player.climbing_down=false
+    end--if btn()
+    if btn(⬇️) then
+      player.y+=1
+      player.climbing=false
+      player.climbing_down=true
+    end--if btn()
+    player.dy=-.3
 	end--if collide_map(up)
 end--function ladder()
 
 --update and draw
 
 function _update()
-		
-		if lvl1_buttons[1]["p"]==true then
-				r_save()
-				load(lvl1_buttons[1]["act"])
-		elseif lvl1_buttons[2]["p"]==true then
-				td_open()
-		elseif lvl1_buttons[3]["p"]==true then
-				td_open()
-		end
-		player_update()
-		ladder()
+  if lvl1_buttons[1]["p"]==true then
+    r_save()
+    load(lvl1_buttons[1]["act"])
+  elseif lvl1_buttons[2]["p"]==true then
+    td_open()
+  elseif lvl1_buttons[3]["p"]==true then
+    td_open()
+  end
+  player_update()
+  ladder()
   stairs()
   td_update()
   btn_update(lvl1_buttons)
@@ -155,7 +153,7 @@ function _update()
   if collide_map(bot,"right",0) then
 		  bot.x-=1
 		elseif collide_map(bot,"left",0) then
-				bot.x+=1
+      bot.x+=1
   end
   draw_bot(time())
   player_animate()
@@ -164,15 +162,15 @@ function _update()
   	player.dy=0
   end
   if debug then	
-  			printh("action: "..bot.action..
-  			" bot.x: "..bot.x..
-  			" bot.q1: "..bot.q1..
-  			" bot.mid: "..bot.mid..
-  			" bot.q3: "..bot.q3..
-  			" bot.goalx: "..bot.goalx..
-  			" bot.aim: "..bot.aim..
-  			" player.x: "..player.x,
-  			'log.txt',false,true)
+    printh("action: "..bot.action..
+    " bot.x: "..bot.x..
+    " bot.q1: "..bot.q1..
+    " bot.mid: "..bot.mid..
+    " bot.q3: "..bot.q3..
+    " bot.goalx: "..bot.goalx..
+    " bot.aim: "..bot.aim..
+    " player.x: "..player.x,
+    'log.txt',false,true)
   end
  	cam_update()
 end
@@ -264,8 +262,7 @@ function player_update()
 
   --stop sliding
   if player.sliding then
-    if abs(player.dx)<.2
-    or player.running then
+    if abs(player.dx)<.2 or player.running then
       player.dx=0
       player.sliding=false
     end
@@ -274,8 +271,7 @@ function player_update()
   --stop climbing
   if player.climbing or 
   			player.climbing_down then
-  		if not collide_map(player,"up",2)
-  					or not collide_map(player,"down",2) then
+  		if not collide_map(player,"up",2) or not collide_map(player,"down",2) then
   			player.climbing=false
   			player.climbing_down=false	
   		end
@@ -295,10 +291,10 @@ function player_update()
 end
 
 function player_animate()
-		if player.climbing then
-				player.sp=49
-		elseif player.climbing_down then
-				player.sp=50
+  if player.climbing then
+    player.sp=49
+  elseif player.climbing_down then
+    player.sp=50
   elseif player.jumping then
     player.sp=32
   elseif player.falling then
@@ -311,7 +307,7 @@ function player_animate()
       if player.sp==17 then
         player.sp=1
       else
-      		player.sp=17
+        player.sp=17
       end
     end
   else --player idle
@@ -373,80 +369,80 @@ function collide_map(obj,aim,flag)
 end
 
 function cam_update()
-		cam_x=player.x-64+(player.w/2)
+  cam_x=player.x-64+(player.w/2)
   if cam_x<map_start then
-     cam_x=map_start
+    cam_x=map_start
   end
   if cam_x>map_end-128 then
-     cam_x=map_end-128
+    cam_x=map_end-128
   end
   cam_y=player.y-96+(player.h/2)
   if cam_y<map_heightmin then
-  			cam_y=map_heightmin
+    cam_y=map_heightmin
   end
   if cam_y>map_heightlimit then
-  			cam_y=map_heightlimit-128
+    cam_y=map_heightlimit-128
   end
   camera(cam_x,cam_y)
 end
 
 function save()
-		dset(0,player.x)
-		dset(1,player.y)
-		dset(2,cam_x)
-		dset(3,cam_y)
-		--save the player pos
-		--now do the bot
-		dset(4,bot.x)
-		dset(5,bot.goalx)
-		dset(6,bot.q1)
-		dset(7,bot.mid)
-		dset(8,bot.q3)
-		dset(9,bot.aim)
-		dset(10,bot.action)
-		dset(11,bot.flp)
+  dset(0,player.x)
+  dset(1,player.y)
+  dset(2,cam_x)
+  dset(3,cam_y)
+  --save the player pos
+  --now do the bot
+  dset(4,bot.x)
+  dset(5,bot.goalx)
+  dset(6,bot.q1)
+  dset(7,bot.mid)
+  dset(8,bot.q3)
+  dset(9,bot.aim)
+  dset(10,bot.action)
+  dset(11,bot.flp)
 end
 
 function r_save()
-		dset(0,59)--player.x
-		dset(1,100)--player.y
-		dset(2,0)--cam_x
-		dset(3,0)--cam_y
-		dset(4,0)--bot.x
-		dset(5,nil)--bot.goalx
-		dset(6,0)--bot.q1
-		dset(7,0)--bot.mid
-		dset(8,0)--bot.q3
-		dset(9,"right")--bot.aim
-		dset(10,"stand")--bot.action
-		dset(11,false)--bot.flp
-		dset(12,1)--level on
-		dset(13,false)--level load
+  dset(0,59)--player.x
+  dset(1,100)--player.y
+  dset(2,0)--cam_x
+  dset(3,0)--cam_y
+  dset(4,0)--bot.x
+  dset(5,nil)--bot.goalx
+  dset(6,0)--bot.q1
+  dset(7,0)--bot.mid
+  dset(8,0)--bot.q3
+  dset(9,"right")--bot.aim
+  dset(10,"stand")--bot.action
+  dset(11,false)--bot.flp
+  dset(12,1)--level on
+  dset(13,false)--level load
 end
 
 function lload()
 	if dget(0)==0 then
-			return false
+    return false
 	else
-			player.x=dget(0)
-			player.y=dget(1)
-			cam_x=dget(2)
-			cam_y=dget(3)
-			--do the bot now
-			bot.x=dget(4)
-			bot.goalx=dget(5)
-			bot.q1=dget(6)
-			bot.mid=dget(7)
-			bot.q3=dget(8)
-			bot.aim=dget(9)
-			bot.action=dget(10)
-			bot.flp=dget(11)
-			return true
+    player.x=dget(0)
+    player.y=dget(1)
+    cam_x=dget(2)
+    cam_y=dget(3)
+    --do the bot now
+    bot.x=dget(4)
+    bot.goalx=dget(5)
+    bot.q1=dget(6)
+    bot.mid=dget(7)
+    bot.q3=dget(8)
+    bot.aim=dget(9)
+    bot.action=dget(10)
+    bot.flp=dget(11)
+    return true
 	end
 end
 
 function player_init()
-		debug=false
+  debug=false
 		player={
     sp=1,
     x=59,
@@ -485,45 +481,42 @@ function player_init()
 end
 -->8
 function td_init()
-		td_locs={
-		{x=160,y=56,sp=21,flp=true,open=false},
-		{x=168,y=56,sp=21,flp=false,open=false},
-		{x=96,y=32,sp=21,flp=true,open=false},
-		{x=104,y=32,sp=21,flp=false,open=false}}
+  td_locs={
+  {x=160,y=56,sp=21,flp=true,open=false},
+  {x=168,y=56,sp=21,flp=false,open=false},
+  {x=96,y=32,sp=21,flp=true,open=false},
+  {x=104,y=32,sp=21,flp=false,open=false}}
 end
 
 function td_update()
-		for t in all(td_locs) do
-				if flr(player.y)<=t.y-8
-				and flr(player.y)>t.y-11				and player.x>=t.x-5
-				and player.x<t.x+5
-				and not t.open then
-						player.dy=0
-						player.y=t.y-8
-						player.falling=false
-						player.landed=true
-				end
-		end
+  for t in all(td_locs) do
+    if flr(player.y)<=t.y-8 and flr(player.y)>t.y-11 and player.x>=t.x-5 and player.x<t.x+5 and not t.open then
+      player.dy=0
+      player.y=t.y-8
+      player.falling=false
+      player.landed=true
+    end
+  end
 end
 
 function td_open()
-		if td_locs[1]["open"]==false and lvl1_buttons[2]["p"]==true then
-				for t=1,2 do
-						td_locs[t]["open"]=true
-						td_locs[t]["sp"]-=1
-				end
-		elseif td_locs[3]["open"]==false and lvl1_buttons[3]["p"]==true then
-				for t=3,4 do
-						td_locs[t]["open"]=true
-						td_locs[t]["sp"]-=1
-				end
-		end
+  if td_locs[1]["open"]==false and lvl1_buttons[2]["p"]==true then
+    for t=1,2 do
+      td_locs[t]["open"]=true
+      td_locs[t]["sp"]-=1
+    end
+  elseif td_locs[3]["open"]==false and lvl1_buttons[3]["p"]==true then
+    for t=3,4 do
+      td_locs[t]["open"]=true
+      td_locs[t]["sp"]-=1
+    end
+  end
 end
 
 function td_draw()
-		for t in all(td_locs) do
-				spr(t.sp,t.x,t.y,1,1,t.flp)
-		end
+  for t in all(td_locs) do
+    spr(t.sp,t.x,t.y,1,1,t.flp)
+  end
 end
 __gfx__
 0000000000000000bbbbbbbbbbbbbbbb000022222222000000000000000000000000000000000000000000000000000000000000000000000000000000000000

@@ -2,38 +2,38 @@ pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
 function _init()
-		#include .capstone.p8:2
-		#include .enemy.p8
-		cartdata("dc_capstone")
-		player_init()
-		btn_init()
-		botinit()
-		menuitem(1,"save",function() save() end)
-		menuitem(2,"load",function() lload() end)
-		menuitem(3,"main menu",function() load("main-menu.p8") end)
-		menuitem(4,"debug file on/off",function() debu() end)
-		menuitem(5,"reset save data",function() r_save() end)
-		if dget(12)>0 and dget(12)<2 then
-			dset(12,2)
-		end
-		if dget(13,true) then
-				lload()
-				dset(13,false)
-		end
+	#include .capstone.p8:2
+	#include .enemy.p8
+	cartdata("dc_capstone")
+	player_init()
+	btn_init()
+	botinit()
+	menuitem(1,"save",function() save() end)
+	menuitem(2,"load",function() lload() end)
+	menuitem(3,"main menu",function() load("main-menu.p8") end)
+	menuitem(4,"debug file on/off",function() debu() end)
+	menuitem(5,"reset save data",function() r_save() end)
+	if dget(12)>0 and dget(12)<2 then
+		dset(12,2)
+	end
+	if dget(13,true) then
+		lload()
+		dset(13,false)
+	end
 end
 
 function _update()
-		player_update()
-		btn_update(butts)
-		cam_update()
-		player_animate()
+	player_update()
+	btn_update(butts)
+	cam_update()
+	player_animate()
 end
 
 function _draw()
-		cls()
-		map(0,0)
-		btn_draw(butts)
-		spr(player.sp,player.x,player.y,1,1,player.flp)
+	cls()
+	map(0,0)
+	btn_draw(butts)
+	spr(player.sp,player.x,player.y,1,1,player.flp)
 end
 -->8
 function btn_init()
@@ -44,24 +44,20 @@ function btn_init()
 end
 
 function btn_update(btns)
-		--updates the button sprites
-		--if the player stands on them
-		for b in all(btns) do
-				if player.x-8<=b.x
-				and b.x<=player.x+4
-				and player.y-8<=b.y
-				and b.y<=player.y+2
-				and not b.p then
-						b.sp+=1
-						b.p=true
-				end
+	--updates the button sprites
+	--if the player stands on them
+	for b in all(btns) do
+		if player.x-8<=b.x and b.x<=player.x+4 and player.y-8<=b.y and b.y<=player.y+2 and not b.p then
+			b.sp+=1
+			b.p=true
 		end
+	end
 end
 
 function btn_draw(btns)
-		for b in all(btns) do
-				spr(b.sp,b.x,b.y)
-		end
+	for b in all(btns) do
+		spr(b.sp,b.x,b.y)
+	end
 end
 __gfx__
 0000000000000000bbbbbbbbbbbbbbbb000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
