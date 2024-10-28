@@ -1,39 +1,15 @@
 pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
+--[[
+todo:
+
+*create a way to save the button
 
 
---notes:
---  flag 1 is for the ground
---  collision
 
---  flag 2 is for the ladder
---  climbing
 
---  flag 5 is for right facing
---  stairs
-
---  flag 6 is for left facing
---  stairs
-
---  flag 7 is for trapdoors and
---  doors
-
---  current hours: about 15-20
-
---todo:
---  create a way to save a file
---  and reopen it --done
-
---	create stairs? -- done
-
---	add doors? -- kinda, i wanna add trapdoors
-
---  add weapon pickups and then
---  have the player animations
---  change when holding a weapon
---  im thinking about 3-5 total
---  weapons right now
+]]
 -->8
 --all code
 function _init()
@@ -422,20 +398,20 @@ function save()
 end
 
 function r_save()
-		dset(0,59)
-		dset(1,100)
-		dset(2,0)
-		dset(3,0)
-		dset(4,0)
-		dset(5,nil)
-		dset(6,0)
-		dset(7,0)
-		dset(8,0)
-		dset(9,"right")
-		dset(10,"stand")
-		dset(11,false)
-		dset(12,1)
-		dset(13,false)
+		dset(0,59)--player.x
+		dset(1,100)--player.y
+		dset(2,0)--cam_x
+		dset(3,0)--cam_y
+		dset(4,0)--bot.x
+		dset(5,nil)--bot.goalx
+		dset(6,0)--bot.q1
+		dset(7,0)--bot.mid
+		dset(8,0)--bot.q3
+		dset(9,"right")--bot.aim
+		dset(10,"stand")--bot.action
+		dset(11,false)--bot.flp
+		dset(12,1)--level on
+		dset(13,false)--level load
 end
 
 function lload()
