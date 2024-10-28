@@ -6,6 +6,7 @@ function _init()
 	#include .enemy.p8
 	cartdata("dc_capstone")
 	player_init()
+	spring_init()
 	btn_init()
 	botinit()
 	menuitem(1,"save",function() save() end)
@@ -25,6 +26,7 @@ end
 function _update()
 	player_update()
 	btn_update(butts)
+	spring_update()
 	cam_update()
 	player_animate()
 end
@@ -33,6 +35,7 @@ function _draw()
 	cls()
 	map(0,0)
 	btn_draw(butts)
+	spring_draw()
 	spr(player.sp,player.x,player.y,1,1,player.flp)
 end
 -->8
@@ -57,6 +60,34 @@ end
 function btn_draw(btns)
 	for b in all(btns) do
 		spr(b.sp,b.x,b.y)
+	end
+end
+-->8
+function spring_init()
+	spring_locs={{x=104,y=104,sp=51,start=0}}
+end
+
+function spring_update()
+	for s in all(spring_locs) do
+		if player.x>=s.x-4 and player.x<s.x+4 and s.start==0 and flr(player.y)<=s.y and flr(player.y)>s.y-2  then
+			s.sp+=1
+			s.start=time()
+		end
+		if not (flr(player.y)<=s.y and flr(player.y)>s.y-2 and flr(player.x)>=s.x-4 and flr(player.x)<s.x+4) and s.sp==52 then
+			s.start=0
+			s.sp-=1
+		end
+		if time()-s.start==0.5 and s.start != 0 then
+			player.dy-=(player.boost*2)
+			s.start=0
+			s.sp-=1
+		end
+	end
+end
+
+function spring_draw()
+	for s in all(spring_locs) do
+		spr(s.sp,s.x,s.y)
 	end
 end
 __gfx__

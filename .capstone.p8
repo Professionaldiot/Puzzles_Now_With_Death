@@ -4,8 +4,9 @@ __lua__
 --[[
 todo:
 *create a way to save the button layouts in any level
-*finish setting up the spring code in level
+*finish setting up the spring code in level 2 -- done
 *create a pushable box that can be moved
+  > allow the boxes to interact with buttons? could be a fun way of creating interesting puzzles
 *create more levels
 *update the bot to be able to jump and climb stairs and such
   > get bot gravity working
@@ -13,7 +14,7 @@ todo:
   > get bot climbing working
   > bot right and left collsion is working
 *update the bot to let it attack the player
-  > maybe update bot to let multiple enemys be on screen at once
+  > maybe update bot code to let multiple enemys be on screen at once
 *actually create the story for this game
 *design the character for the game
 *actually create interesting bot desgins
@@ -490,7 +491,7 @@ end
 
 function td_update()
   for t in all(td_locs) do
-    if flr(player.y)<=t.y-8 and flr(player.y)>t.y-11 and player.x>=t.x-5 and player.x<t.x+5 and not t.open then
+    if flr(player.y)>=t.y-8 and flr(player.y)>t.y-11 and player.x>=t.x-5 and player.x<t.x+5 and not t.open then
       player.dy=0
       player.y=t.y-8
       player.falling=false
