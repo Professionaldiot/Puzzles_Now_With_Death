@@ -26,9 +26,9 @@ end
 
 function _update()
 	player_update()
+	box_update()	
 	btn_update(butts)
 	spring_update()
-	box_update()
 	cam_update()
 	player_animate()
 end
@@ -49,11 +49,12 @@ function btn_init()
 	{x=136,y=104,sp=19,act="door",p=false}}
 end
 
-function btn_update(btns)
+function btn_update(btns,obj)
 	--updates the button sprites
 	--if the player stands on them
+	obj=player or obj
 	for b in all(btns) do
-		if player.x-8<=b.x and b.x<=player.x+4 and player.y-8<=b.y and b.y<=player.y+2 and not b.p then
+		if obj.x-8<=b.x and b.x<=obj.x+4 and obj.y-8<=b.y and b.y<=obj.y+2 and not b.p then
 			b.sp+=1
 			b.p=true
 		end
@@ -95,7 +96,7 @@ function spring_draw()
 end
 
 function box_init()
-	box={{x=200,y=72,dx=0,dy=0,w=8,h=8,sp=4,g=0.3,f=0.85,mx_dy=2,mx_dx=1.5}}
+	box={{x=200,y=72,dx=0,dy=0,w=8,h=8,sp=4,g=0.3,f=0.85,acc=0.5,mx_dy=3,mx_dx=2}}
 end
 
 function box_update()
@@ -110,13 +111,37 @@ function box_update()
 				b.y-=((b.y+b.h+1)%8)-1
 			end--if
 		elseif b.dy<0 then
-			if collidge_map(b,"up",0) then
+			if collide_map(b,"up",0) then
 				b.dy=0
 			end
 		end--if
+		if player.dy>0 and b.dy==0 then
+			if player.y<b.y-4 and player.y>=b.y-8 and player.x>=b.x-6 and player.x<=b.x+6 then
+				player.falling=false
+				player.landed=true
+				player.y=b.y-8
+				player.dy=0
+			end
+		elseif ((player.x>=b.x and player.x<b.x+8) or (player.x>=b.x-8 and player.x<b.x)) and ((player.y<=b.y and player.y>b.y-8)) then
+			if player.dx<0 then
+				b.dx-=b.acc
+			elseif player.dx>0 then
+				b.dx+=b.acc
+			end
+		end
+		if collide_map(b,"right",0) and b.dx>=0 then
+			b.dx=0
+		elseif collide_map(b,"left",0) and b.dx<=0 then
+			b.dx=0
+		end
+		
+		b.dx=mid(-b.mx_dx,b.dx,b.mx_dx)
+		b.dy=mid(-b.mx_dy,b.dy,b.mx_dy)
+
 		b.x+=b.dx
 		b.y+=b.dy
 	end--for
+	btn_update(butts,box[1])
 end--function
 
 function box_draw()
