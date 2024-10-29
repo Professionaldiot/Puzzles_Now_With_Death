@@ -131,6 +131,10 @@ function box_update()
 		end
 		if collide_map(b,"right",0) and b.dx>=0 then
 			b.dx=0
+			if player.dx>0 and player.x+8>b.x and player.y<=b.x and player.y>=b.x-8 then
+				player.dx=0
+				player.x=b.x-8
+			end
 		elseif collide_map(b,"left",0) and b.dx<=0 then
 			b.dx=0
 		end
