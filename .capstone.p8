@@ -149,7 +149,7 @@ function _update()
   ladder()
   stairs()
   td_update()
-  btn_update(lvl1_buttons)
+  btn_update(lvl1_buttons,player)
   update_bot(player.x,time())
   if collide_map(bot,"right",0) then
 		  bot.x-=1

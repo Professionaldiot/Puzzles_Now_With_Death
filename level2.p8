@@ -27,8 +27,8 @@ end
 function _update()
 	player_update()
 	box_update()	
-	btn_update(butts)
-	spring_update()
+	btn_update(butts,player)
+	spring_update(player)
 	cam_update()
 	player_animate()
 end
@@ -52,7 +52,7 @@ end
 function btn_update(btns,obj)
 	--updates the button sprites
 	--if the player stands on them
-	obj=player or obj
+	
 	for b in all(btns) do
 		if obj.x-8<=b.x and b.x<=obj.x+4 and obj.y-8<=b.y and b.y<=obj.y+2 and not b.p then
 			b.sp+=1
@@ -71,18 +71,18 @@ function spring_init()
 	spring_locs={{x=104,y=104,sp=51,start=0}}
 end
 
-function spring_update()
+function spring_update(obj)
 	for s in all(spring_locs) do
-		if player.x>=s.x-6 and player.x<s.x+6 and s.start==0 and flr(player.y)<=s.y and flr(player.y)>s.y-2  then
+		if obj.x>=s.x-6 and obj.x<s.x+6 and s.start==0 and flr(obj.y)<=s.y and flr(obj.y)>s.y-2  then
 			s.sp+=1
 			s.start=time()
 		end
-		if not (flr(player.y)<=s.y and flr(player.y)>s.y-2 and flr(player.x)>=s.x-6 and flr(player.x)<s.x+6) and s.sp==52 then
+		if not (flr(obj.y)<=s.y and flr(obj.y)>s.y-2 and flr(obj.x)>=s.x-6 and flr(obj.x)<s.x+6) and s.sp==52 then
 			s.start=0
 			s.sp-=1
 		end
-		if time()-s.start==0.5 and s.start != 0 then
-			player.dy-=(player.boost*2)
+		if time()-s.start>=0.5 and s.start != 0 then
+			obj.dy-=(obj.boost*1.75)
 			s.start=0
 			s.sp-=1
 		end
@@ -96,7 +96,7 @@ function spring_draw()
 end
 
 function box_init()
-	box={{x=200,y=72,dx=0,dy=0,w=8,h=8,sp=4,g=0.3,f=0.85,acc=0.5,mx_dy=3,mx_dx=2}}
+	box={{x=220,y=72,dx=0,dy=0,w=8,h=8,sp=4,g=0.3,f=0.85,acc=0.5,mx_dy=3,mx_dx=2.05,boost=4}}
 end
 
 function box_update()
@@ -115,6 +115,7 @@ function box_update()
 				b.dy=0
 			end
 		end--if
+		--this checks if the player is standing on top ofthe box or not
 		if player.dy>0 and b.dy==0 then
 			if player.y<b.y-4 and player.y>=b.y-8 and player.x>=b.x-6 and player.x<=b.x+6 then
 				player.falling=false
@@ -122,21 +123,30 @@ function box_update()
 				player.y=b.y-8
 				player.dy=0
 			end
+		--[[
+		first we check if the player is attempting to enter the box, if the player is inside of the box we "push" the box by 
+		making it accelerate in the direction the player is going then we check collision and in those checks we stop the 
+		player moving into the box if necessary
+		]]
 		elseif ((player.x>=b.x and player.x<b.x+8) or (player.x>=b.x-8 and player.x<b.x)) and ((player.y<=b.y and player.y>b.y-8)) then
-			if player.dx<0 then
+			if player.dx<0 or player.x>=b.x+8 then
 				b.dx-=b.acc
-			elseif player.dx>0 then
+			elseif player.dx>0 or player.x+8<=b.x then
 				b.dx+=b.acc
 			end
 		end
 		if collide_map(b,"right",0) and b.dx>=0 then
 			b.dx=0
-			if player.dx>0 and player.x+8>b.x and player.y<=b.x and player.y>=b.x-8 then
+			if player.dx>0 and player.x+8>b.x and player.y<=b.y and player.y>=b.y-8 then
 				player.dx=0
 				player.x=b.x-8
 			end
 		elseif collide_map(b,"left",0) and b.dx<=0 then
 			b.dx=0
+			if player.dx<0 and player.x<b.x+8 and player.y<=b.y and player.y>=b.y-8 then
+				player.dx=0
+				player.x=b.x+8
+			end
 		end
 		
 		b.dx=mid(-b.mx_dx,b.dx,b.mx_dx)
