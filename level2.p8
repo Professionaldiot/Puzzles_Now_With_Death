@@ -82,7 +82,7 @@ function spring_update(obj)
 			s.sp-=1
 		end
 		if time()-s.start>=0.5 and s.start != 0 then
-			obj.dy-=(obj.boost*1.75)
+			obj.dy-=(obj.boost*1.6)
 			s.start=0
 			s.sp-=1
 		end
@@ -96,7 +96,7 @@ function spring_draw()
 end
 
 function box_init()
-	box={{x=220,y=72,dx=0,dy=0,w=8,h=8,sp=4,g=0.3,f=0.85,acc=0.5,mx_dy=3,mx_dx=2.05,boost=4}}
+	box={{x=220,y=72,dx=0,dy=0,w=8,h=8,sp=4,g=0.3,f=0.8,acc=0.5,mx_dy=3,mx_dx=3.00,boost=4}}
 end
 
 function box_update()
@@ -115,7 +115,7 @@ function box_update()
 				b.dy=0
 			end
 		end--if
-		--this checks if the player is standing on top ofthe box or not
+		--this checks if the player is standing on top of the box or not
 		if player.dy>0 and b.dy==0 then
 			if player.y<b.y-4 and player.y>=b.y-8 and player.x>=b.x-6 and player.x<=b.x+6 then
 				player.falling=false
@@ -137,13 +137,13 @@ function box_update()
 		end
 		if collide_map(b,"right",0) and b.dx>=0 then
 			b.dx=0
-			if player.dx>0 and player.x+8>b.x and player.y<=b.y and player.y>=b.y-8 then
+			if player.dx>0 and player.x+8>b.x and player.x<b.x and player.y<=b.y and player.y>=b.y-7 then
 				player.dx=0
 				player.x=b.x-8
 			end
 		elseif collide_map(b,"left",0) and b.dx<=0 then
 			b.dx=0
-			if player.dx<0 and player.x<b.x+8 and player.y<=b.y and player.y>=b.y-8 then
+			if player.dx<0 and player.x<b.x+8 and player.x>b.x and player.y<=b.y and player.y>=b.y-7 then
 				player.dx=0
 				player.x=b.x+8
 			end

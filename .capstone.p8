@@ -19,7 +19,7 @@ todo:
 *design the character for the game
 *actually create interesting bot desgins
 
-
+*redo camera to be more smooth--done
 ]]
 -->8
 --all code
@@ -158,10 +158,7 @@ function _update()
   end
   draw_bot(time())
   player_animate()
-  if player.y<=0 then
-  	player.y=0
-  	player.dy=0
-  end
+  
   if debug then	
     printh("action: "..bot.action..
     " bot.x: "..bot.x..
@@ -370,19 +367,39 @@ function collide_map(obj,aim,flag)
 end
 
 function cam_update()
-  cam_x=player.x-64+(player.w/2)
-  if cam_x<map_start then
-    cam_x=map_start
+
+  if player.dx>=1.9 then
+    cam_x+=player.dx
+  elseif player.dx<=-1.9 then
+    cam_x+=player.dx
+  elseif player.dx>-1.9 and player.dx<1.9 and player.dx != 0 then
+    --calculate where the player is according to the camera, and move it towards the player
+    if player.x-cam_x>60 then
+      cam_x+=1
+    end
+    if player.x-cam_x<60 then
+      cam_x-=1
+    end
+  elseif player.dx==0 then
+    if 60-flr(player.x-cam_x) != 0 then
+      cam_x-=60-flr(player.x-cam_x)
+    end
   end
-  if cam_x>map_end-128 then
-    cam_x=map_end-128
-  end
-  cam_y=player.y-96+(player.h/2)
-  if cam_y<map_heightmin then
-    cam_y=map_heightmin
-  end
-  if cam_y>map_heightlimit then
-    cam_y=map_heightlimit-128
+  if player.dy>=1.5 then
+    cam_y+=player.dy
+  elseif player.dy<=-4 then
+    cam_y+=player.dy
+  elseif player.dy>-4 and player.dy<1.5 and player.dy != 0 then
+    if player.y-cam_y>80 then
+      cam_y+=1
+    end
+    if player.y-cam_y<80 then
+      cam_y-=1
+    end
+  elseif player.dy==0 then
+    if 80-flr(player.y-cam_y) != 0 then
+      cam_y-=80-flr(player.y-cam_y)
+    end
   end
   camera(cam_x,cam_y)
 end
@@ -453,8 +470,8 @@ function player_init()
     flp=false,
     dx=0,
     dy=0,
-    max_dx=1.75,
-    max_dy=2.75,
+    max_dx=2,
+    max_dy=3,
     acc=0.5,
     boost=4,
     anim=0,
@@ -491,7 +508,7 @@ end
 
 function td_update()
   for t in all(td_locs) do
-    if flr(player.y)>=t.y-8 and flr(player.y)>t.y-11 and player.x>=t.x-5 and player.x<t.x+5 and not t.open then
+    if flr(player.y)<=t.y-8 and flr(player.y)>t.y-11 and player.x>=t.x-5 and player.x<t.x+5 and not t.open then
       player.dy=0
       player.y=t.y-8
       player.falling=false
