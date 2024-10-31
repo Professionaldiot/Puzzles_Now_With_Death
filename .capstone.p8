@@ -4,9 +4,7 @@ __lua__
 --[[
 todo:
 *create a way to save the button layouts in any level
-*finish setting up the spring code in level 2 -- done
-*create a pushable box that can be moved
-  > allow the boxes to interact with buttons? could be a fun way of creating interesting puzzles
+
 *create more levels
 *update the bot to be able to jump and climb stairs and such
   > get bot gravity working
@@ -19,7 +17,6 @@ todo:
 *design the character for the game
 *actually create interesting bot desgins
 
-*redo camera to be more smooth--done
 ]]
 -->8
 --all code
@@ -462,6 +459,7 @@ end
 function player_init()
   debug=false
 		player={
+    start=0,
     sp=1,
     x=59,
     y=100,

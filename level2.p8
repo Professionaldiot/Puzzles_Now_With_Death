@@ -73,17 +73,23 @@ end
 
 function spring_update(obj)
 	for s in all(spring_locs) do
-		if obj.x>=s.x-6 and obj.x<s.x+6 and s.start==0 and flr(obj.y)<=s.y and flr(obj.y)>s.y-2  then
+		if obj.x>=s.x-6 and obj.x<s.x+6 and obj.start==0 and flr(obj.y)<=s.y and flr(obj.y)>s.y-2  then
 			s.sp+=1
-			s.start=time()
+			obj.start=time()
+		end
+		if s.sp==50 then
+			s.sp=52
 		end
 		if not (flr(obj.y)<=s.y and flr(obj.y)>s.y-2 and flr(obj.x)>=s.x-6 and flr(obj.x)<s.x+6) and s.sp==52 then
-			s.start=0
+			obj.start=0
 			s.sp-=1
 		end
-		if time()-s.start>=0.5 and s.start != 0 then
+		if time()-obj.start>=0.5 and obj.start != 0 then
 			obj.dy-=(obj.boost*1.6)
-			s.start=0
+			if obj==player then
+				player.landed=false
+			end
+			obj.start=0
 			s.sp-=1
 		end
 	end
@@ -96,11 +102,20 @@ function spring_draw()
 end
 
 function box_init()
-	box={{x=220,y=72,dx=0,dy=0,w=8,h=8,sp=4,g=0.3,f=0.8,acc=0.5,mx_dy=3,mx_dx=3.00,boost=4}}
+	box={{x=220,y=72,dx=0,dy=0,w=8,h=8,sp=4,g=0.3,f=0.8,acc=0.5,mx_dy=6,mx_dx=3,boost=4,start=0},
+		 {x=240,y=104,dx=0,dy=0,w=8,h=8,sp=4,g=0.3,f=0.8,acc=0.5,mx_dy=6,mx_dx=3,boost=4,start=0},
+		 {x=128,y=88,dx=0,dy=0,w=8,h=8,sp=4,g=0.3,f=0.8,acc=0.5,mx_dy=6,mx_dx=3,boost=4,start=0}}
 end
 
 function box_update()
+	--todo for 1.0
+	--get boxes landing on top of each other
+	--get boxes pushing each other
+	--get boxes working with trapdoors, maybe stairs? i don't think it's needed though
+	--def get boxes working with springs
 	for b in all(box) do
+		btn_update(butts,b)
+		spring_update(b)
 		b.dy+=b.g
 		b.dx*=b.f
 
@@ -155,7 +170,6 @@ function box_update()
 		b.x+=b.dx
 		b.y+=b.dy
 	end--for
-	btn_update(butts,box[1])
 end--function
 
 function box_draw()

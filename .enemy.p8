@@ -13,6 +13,8 @@ function botinit()
 	bot = {}
 		bot.x=0
 		bot.y=112
+		bot.dy=0
+		bot.g=0.3
 		bot.goalx=nil
 		bot.w=8
 		bot.h=8
@@ -60,6 +62,12 @@ function draw_bot(t)
 end
 
 function update_bot(px,t)
+	--todo for 1.0
+	--get bot gravity working
+  	--get bot collision down working
+  	--get bot climbing working
+	--update the bot to let it attack the player
+  	--maybe update bot code to let multiple enemys be on screen at once
 	if bot.goalx==nil then
 		if bot.x>=px then
 			move_goalx(flr(px)+8)
