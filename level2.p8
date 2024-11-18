@@ -1,8 +1,9 @@
 pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
+
 function _init()
-	#include .capstone.p8:2
+	#include .movement.p8
 	#include .enemy.p8
 	cartdata("dc_capstone")
 	player_init()
@@ -40,142 +41,6 @@ function _draw()
 	spring_draw()
 	box_draw()
 	spr(player.sp,player.x,player.y,1,1,player.flp)
-end
--->8
-function btn_init()
-	butts={
-	{x=216,y=104,sp=19,act="tp",p=false},
-	{x=72,y=104,sp=19,act="nil",p=false},
-	{x=136,y=104,sp=19,act="door",p=false}}
-end
-
-function btn_update(btns,obj)
-	--updates the button sprites
-	--if the player stands on them
-	
-	for b in all(btns) do
-		if obj.x-8<=b.x and b.x<=obj.x+4 and obj.y-8<=b.y and b.y<=obj.y+2 and not b.p then
-			b.sp+=1
-			b.p=true
-		end
-	end
-end
-
-function btn_draw(btns)
-	for b in all(btns) do
-		spr(b.sp,b.x,b.y)
-	end
-end
-
-function spring_init()
-	spring_locs={{x=104,y=104,sp=51,start=0}}
-end
-
-function spring_update(obj)
-	for s in all(spring_locs) do
-		if obj.x>=s.x-6 and obj.x<s.x+6 and obj.start==0 and flr(obj.y)<=s.y and flr(obj.y)>s.y-2  then
-			s.sp+=1
-			obj.start=time()
-		end
-		if s.sp==50 then
-			s.sp=52
-		end
-		if not (flr(obj.y)<=s.y and flr(obj.y)>s.y-2 and flr(obj.x)>=s.x-6 and flr(obj.x)<s.x+6) and s.sp==52 then
-			obj.start=0
-			s.sp-=1
-		end
-		if time()-obj.start>=0.5 and obj.start != 0 then
-			obj.dy-=(obj.boost*1.6)
-			if obj==player then
-				player.landed=false
-			end
-			obj.start=0
-			s.sp-=1
-		end
-	end
-end
-
-function spring_draw()
-	for s in all(spring_locs) do
-		spr(s.sp,s.x,s.y)
-	end
-end
-
-function box_init()
-	box={{x=220,y=72,dx=0,dy=0,w=8,h=8,sp=4,g=0.3,f=0.8,acc=0.5,mx_dy=6,mx_dx=3,boost=4,start=0},
-		 {x=240,y=104,dx=0,dy=0,w=8,h=8,sp=4,g=0.3,f=0.8,acc=0.5,mx_dy=6,mx_dx=3,boost=4,start=0},
-		 {x=128,y=88,dx=0,dy=0,w=8,h=8,sp=4,g=0.3,f=0.8,acc=0.5,mx_dy=6,mx_dx=3,boost=4,start=0}}
-end
-
-function box_update()
-	--todo for 1.0
-	--get boxes landing on top of each other
-	--get boxes pushing each other
-	--get boxes working with trapdoors, maybe stairs? i don't think it's needed though
-	--def get boxes working with springs
-	for b in all(box) do
-		btn_update(butts,b)
-		spring_update(b)
-		b.dy+=b.g
-		b.dx*=b.f
-
-		if b.dy>0 then
-			b.dy=mid(-b.mx_dy,b.dy,b.mx_dy)
-			if collide_map(b,"down",0) then
-				b.dy=0
-				b.y-=((b.y+b.h+1)%8)-1
-			end--if
-		elseif b.dy<0 then
-			if collide_map(b,"up",0) then
-				b.dy=0
-			end
-		end--if
-		--this checks if the player is standing on top of the box or not
-		if player.dy>0 and b.dy==0 then
-			if player.y<b.y-4 and player.y>=b.y-8 and player.x>=b.x-6 and player.x<=b.x+6 then
-				player.falling=false
-				player.landed=true
-				player.y=b.y-8
-				player.dy=0
-			end
-		--[[
-		first we check if the player is attempting to enter the box, if the player is inside of the box we "push" the box by 
-		making it accelerate in the direction the player is going then we check collision and in those checks we stop the 
-		player moving into the box if necessary
-		]]
-		elseif ((player.x>=b.x and player.x<b.x+8) or (player.x>=b.x-8 and player.x<b.x)) and ((player.y<=b.y and player.y>b.y-8)) then
-			if player.dx<0 or player.x>=b.x+8 then
-				b.dx-=b.acc
-			elseif player.dx>0 or player.x+8<=b.x then
-				b.dx+=b.acc
-			end
-		end
-		if collide_map(b,"right",0) and b.dx>=0 then
-			b.dx=0
-			if player.dx>0 and player.x+8>b.x and player.x<b.x and player.y<=b.y and player.y>=b.y-7 then
-				player.dx=0
-				player.x=b.x-8
-			end
-		elseif collide_map(b,"left",0) and b.dx<=0 then
-			b.dx=0
-			if player.dx<0 and player.x<b.x+8 and player.x>b.x and player.y<=b.y and player.y>=b.y-7 then
-				player.dx=0
-				player.x=b.x+8
-			end
-		end
-		
-		b.dx=mid(-b.mx_dx,b.dx,b.mx_dx)
-		b.dy=mid(-b.mx_dy,b.dy,b.mx_dy)
-
-		b.x+=b.dx
-		b.y+=b.dy
-	end--for
-end--function
-
-function box_draw()
-	for b in all(box) do
-		spr(b.sp,b.x,b.y)
-	end
 end
 
 __gfx__
