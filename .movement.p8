@@ -486,35 +486,21 @@ end
 
 function spring_update(obj)
     for s in all(spring_locs) do
-        if obj.x >= s.x - 6 and obj.x < s.x + 6 and obj.start == 0 and flr(obj.y) <= s.y and flr(obj.y) > s.y - 2 then
+        if player.x >= s.x - 6 and player.x < s.x + 6 and player.start == 0 and flr(player.y) <= s.y and flr(player.y) > s.y - 2 and obj.start=0 then
             s.sp =52
             obj.start = time()
         end
-        if not (flr(obj.y) <= s.y and flr(obj.y) > s.y - 2 and obj.x >= s.x - 6 and obj.x < s.x + 6) and s.sp == 52 then
+        if not (flr(player.y) <= s.y and flr(player.y) > s.y - 2 and player.x >= s.x - 6 and player.x < s.x + 6) and s.sp == 52 then
             obj.start = 0
             s.sp = 51
         end
-        if time() - obj.start >= 0.5 and obj.start != 0 then
+        if time() - player.start >= 0.5 and obj.start != 0 then
             obj.dy -= (obj.boost * 1.6)
             if obj == player then
                 player.landed = false
             end
             obj.start = 0
             s.sp = 51
-        end
-
-        if debug then
-            test1 = not (flr(obj.y) <= s.y and flr(obj.y) > s.y - 2 and obj.x >= s.x - 6 and obj.x < s.x + 6) and s.sp == 52
-            test2 = time() - obj.start >= 0.5 and obj.start != 0
-            printh("obj"..obj,
-                "obj.x: "..player.x,
-                " obj.y: "..player.y,
-                " obj not on spring: "..test1,
-                " time check: "..test2,
-                " time: "..time(),
-                " obj.start: ".. obj.start,
-                " time-start :"..time()-obj.start,
-                'log.txt', false, true)
         end
     end
 
