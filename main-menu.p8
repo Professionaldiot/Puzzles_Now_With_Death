@@ -68,7 +68,7 @@ function _update()
 			dset(13,true)
 			load(lvl[dget(12)]["ld"])
 		else
-			load(".capstone.p8")
+			load(".level1.p8")
 		end
 	end
 	if action=="sel-screen" then
@@ -115,7 +115,7 @@ end
 -->8
 function level_select_init()
 	lvl={
-	{name=1,x=4,y=176,cx=0,cy=152,g=false,ld=".capstone.p8"},
+	{name=1,x=4,y=176,cx=0,cy=152,g=false,ld=".level1.p8"},
 	{name=2,x=180,y=176,cx=144,cy=152,g=false,ld="level2.p8"},
 	{name=3,x=356,y=176,cx=288,cy=152,g=false,ld=""},
 	{name=4,x=532,y=176,cx=432,cy=152,g=false,ld=""},

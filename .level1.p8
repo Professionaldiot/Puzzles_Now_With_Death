@@ -31,6 +31,7 @@ todo:
 --all code
 function _init()
   #include .enemy.p8
+  #include random.p8
   #include .movement.p8
   cartdata("dc_capstone")
   menuitem(1,"save",function() save() end)
@@ -68,7 +69,7 @@ function _update()
   stairs()
   td_update()
   btn_update(lvl1_buttons,player)
-  update_bot(player.x,time())
+  update_bot(player.x, player.y, time())
   if collide_map(bot,"right",0) then
 		  bot.x-=1
 		elseif collide_map(bot,"left",0) then

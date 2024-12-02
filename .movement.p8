@@ -486,7 +486,7 @@ end
 
 function spring_update(obj)
     for s in all(spring_locs) do
-        if player.x >= s.x - 6 and player.x < s.x + 6 and player.start == 0 and flr(player.y) <= s.y and flr(player.y) > s.y - 2 and obj.start=0 then
+        if player.x >= s.x - 6 and player.x < s.x + 6 and player.start == 0 and flr(player.y) <= s.y and flr(player.y) > s.y - 2 and obj.start==0 then
             s.sp =52
             obj.start = time()
         end
