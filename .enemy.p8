@@ -191,7 +191,7 @@ function update_bot(px, py, t)
 	end
 end
 
-function move_to_goal()
+function move_to_goal() .
 	if (bot.goalx+1)<bot.x then
 		bot.x-=1
 		bot.action="walk"
@@ -231,6 +231,9 @@ end
 function move_goalx(new_goal)
 	--will handle changing q1
 	--and such
+	if new_goal == nil then
+		new_goal = 0
+	end
 	bot.mid=flr(abs(new_goal-(abs(new_goal-bot.x)/2)))
 	bot.q1=flr(abs((bot.mid-(abs(bot.mid-bot.x)/2))))
 	bot.q3=flr(abs((bot.mid+(abs(bot.mid-bot.x)/2))))
