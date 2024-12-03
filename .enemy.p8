@@ -8,6 +8,9 @@ __lua__
 function botinit()
 	atk_frames={96,96,96,96,96,96,97,97,97,97,"end"}
 	atk_cnt=0
+
+	min_jump = {}
+	max_jump = {}
 	
 	bot = {}
 		bot.x=0
@@ -15,6 +18,7 @@ function botinit()
 		bot.dy=0
 		bot.g=0.3
 		bot.goalx=nil
+		bot.landed=false
 		bot.w=8
 		bot.h=8
 		bot.spr=65
@@ -63,9 +67,9 @@ end
 function player_above_bot(px, py)
 	--function for determining bot movement when the player is above the bot on the stage
 	--assume bot is above player
-	temp = {}
-	temp.x = bot.y - bot.x%8
-	temp.y = bot.y - bot.y%8 + 8
+	local temp = {}
+	temp.x = bot.x - bot.x%8
+	temp.y = (bot.y - bot.y%8)
 	temp.w = 8
 	temp.h = 8
 	local stored_y = temp.y
@@ -75,69 +79,67 @@ function player_above_bot(px, py)
 	for i=0,3 do
 		--check the y values above bot for 3 "spaces"
 		--removed nested for loop for optimization, not readibilty
-			temp.x = stored_x + 8*3-i
-			right_side = collide_map(temp, "right", 0) or collide_map(temp,"left",0)
-			--this moves the temp.x to the outmost right hand side, which is at most 3 away
-			if collide_map(temp, "right", 0) or collide_map(temp,"left",0) then
-				--we now know, if we enter this expression, that the bot WILL collide with something
-				--somewhere along it's path
-				--found something on the right side
-				min_to_jump = min(min_to_jump, temp.x)
-			else
-				temp.x = stored_x - 8*3-i
-				left_side = collide_map(temp, "right", 0) or collide_map(temp,"left",0)
-				--this moves the temp.x to the outermost left hand side, which is at most 3 away
-				if collide_map(temp, "right", 0) or collide_map(temp,"left",0) then
-					--we now know, if we enter this expression, that the bot WILL collide with something
-					--somewhere along it's path
-					--found something on the left side
-					max_to_jump = max(max_to_jump, temp.x)
-				end
-			end
-			temp.y-=8
+		temp.y-=8
+		temp.x = stored_x + 8*3-i
+		--this moves the temp.x to the outmost right hand side, which is at most 3 away
+		if collide_map(temp, "right", 0) or collide_map(temp,"left",0) then
+			--we now know, if we enter this expression, that the bot WILL collide with something
+			--somewhere along it's path
+			--found something on the right side
+			min_to_jump = min(min_to_jump, temp.x)
+			add(min_jump, min_to_jump)
+		end
+		temp.x = stored_x - 8*3-i
+		--this moves the temp.x to the outermost left hand side, which is at most 3 away
+		if collide_map(temp, "right", 0) or collide_map(temp,"left",0) then
+			--we now know, if we enter this expression, that the bot WILL collide with something
+			--somewhere along it's path
+			--found something on the left side
+			max_to_jump = max(max_to_jump, temp.x)
+			add(max_jump, max_to_jump)
+		end
+		temp.y-=8
 
-			--#2
-			temp.x = stored_x + 8*3-i
-			right_side = collide_map(temp, "right", 0) or collide_map(temp,"left",0)
-			--this moves the temp.x to the outmost right hand side, which is at most 3 away
-			if collide_map(temp, "right", 0) or collide_map(temp,"left",0) then
-				--we now know, if we enter this expression, that the bot WILL collide with something
-				--somewhere along it's path
-				--found something on the right side
-				min_to_jump = min(min_to_jump, temp.x)
-			else
-				temp.x = stored_x - 8*3-i
-				left_side = collide_map(temp, "right", 0) or collide_map(temp,"left",0)
-				--this moves the temp.x to the outermost left hand side, which is at most 3 away
-				if collide_map(temp, "right", 0) or collide_map(temp,"left",0) then
-					--we now know, if we enter this expression, that the bot WILL collide with something
-					--somewhere along it's path
-					--found something on the left side
-					max_to_jump = max(max_to_jump, temp.x)
-				end
-			end
-			temp.y-=8
+		--#2
+		temp.x = stored_x + 8*3-i
+		--this moves the temp.x to the outmost right hand side, which is at most 3 away
+		if collide_map(temp, "right", 0) or collide_map(temp,"left",0) then
+			--we now know, if we enter this expression, that the bot WILL collide with something
+			--somewhere along it's path
+			--found something on the right side
+			min_to_jump = min(min_to_jump, temp.x)
+			add(min_jump, min_to_jump)
+		end
+		temp.x = stored_x - 8*3-i
+		--this moves the temp.x to the outermost left hand side, which is at most 3 away
+		if collide_map(temp, "right", 0) or collide_map(temp,"left",0) then
+			--we now know, if we enter this expression, that the bot WILL collide with something
+			--somewhere along it's path
+			--found something on the left side
+			max_to_jump = max(max_to_jump, temp.x)
+			add(max_jump, max_to_jump)
+		end
+		temp.y-=8
 
-			--#3
-			temp.x = stored_x + 8*3-i
-			right_side = collide_map(temp, "right", 0) or collide_map(temp,"left",0)
-			--this moves the temp.x to the outmost right hand side, which is at most 3 away
-			if collide_map(temp, "right", 0) or collide_map(temp,"left",0) then
-				--we now know, if we enter this expression, that the bot WILL collide with something
-				--somewhere along it's path
-				--found something on the right side
-				min_to_jump = min(min_to_jump, temp.x)
-			else
-				temp.x = stored_x - 8*3-i
-				left_side = collide_map(temp, "right", 0) or collide_map(temp,"left",0)
-				--this moves the temp.x to the outermost left hand side, which is at most 3 away
-				if collide_map(temp, "right", 0) or collide_map(temp,"left",0) then
-					--we now know, if we enter this expression, that the bot WILL collide with something
-					--somewhere along it's path
-					--found something on the left side
-					max_to_jump = max(max_to_jump, temp.x)
-				end
-			end
+		--#3
+		temp.x = stored_x + 8*3-i
+		--this moves the temp.x to the outmost right hand side, which is at most 3 away
+		if collide_map(temp, "right", 0) or collide_map(temp,"left",0) then
+			--we now know, if we enter this expression, that the bot WILL collide with something
+			--somewhere along it's path
+			--found something on the right side
+			min_to_jump = min(min_to_jump, temp.x)
+			add(min_jump, min_to_jump)
+		end
+		temp.x = stored_x - 8*3-i
+		--this moves the temp.x to the outermost left hand side, which is at most 3 away
+		if collide_map(temp, "right", 0) or collide_map(temp,"left",0) then
+			--we now know, if we enter this expression, that the bot WILL collide with something
+			--somewhere along it's path
+			--found something on the left side
+			max_to_jump = max(max_to_jump, temp.x)
+			add(max_jump, max_to_jump)
+		end
 		temp.x = stored_x
 		temp.y = stored_y
 	end--for
@@ -149,57 +151,36 @@ function player_above_bot(px, py)
 	elseif max_to_jump == -1 then
 		--if the max is still the same as what we set it as, then we know that the
 		--min has something useful for us from the if statement before
+		for o in all(min_jump) do
+			min_to_jump = min(min_to_jump,o)
+		end
 		return min_to_jump
 	elseif min_to_jump == 1025 then
 		--same for min
+		for o in all(max_jump) do
+			max_to_jump = max(max_to_jump, o)
+		end
 		return max_to_jump
 	end--if
 end
 
 function update_bot(px, py, t)
 	--todo for 1.0
-	--get bot gravity working
-  	--get bot collision down working
-  	--get bot climbing working
 	--update the bot to let it attack the player
-  	--maybe update bot code to let multiple enemys be on screen at once
-	if bot.goalx==nil then
-		if bot.x>=px then
-			move_goalx(flr(px)+8)
-		else
-			move_goalx(flr(px)-8)
-		end
-	end
+	bot.dy += bot.g
 	if py < bot.y then
-		if player_above_bot(px, py) == 0 then
-			if bot.x==bot.mid-1 then
-				--left side of goalx
-				check_px(px)
-			elseif bot.x==bot.mid+1 then
-				--right side of goalx
-				check_px(px)
-			elseif bot.x==bot.q1 then
-				check_px(px)
-			elseif bot.x==bot.q3 then
-				check_px(px)
-			elseif bot.x>=bot.goalx and bot.x>bot.q3 then
-				check_px(px)
-			elseif bot.x<=bot.goalx and bot.x<bot.q1 then
-				--j.i.c we go past the goal
-				--we want to set a new goal
-				--somewhere
-				check_px(px)
-			else
-				--a j.i.c statement that
-				--makes it so we never have to
-				--worry about the bot not
-				--setting a goal somewhere
-				move_goalx(random(bot.x,px,t))
-			end
+		local goal = player_above_bot(px, py)
+		if goal == 0 then
 			move_to_goal()
 		else
-			move_goalx(player_above_bot(px, py))
-			move_to_goal()
+			move_goalx(goal)
+			if bot.x != bot.goalx then
+				move_to_goal()
+			end
+			if bot.x == bot.goalx-1 or bot.x == bot.goalx+1 and bot.landed then
+				bot.dy -= 1
+				bot.landed=false
+			end
 		end
 	else
 		if bot.goalx==nil then
@@ -209,6 +190,8 @@ function update_bot(px, py, t)
 				move_goalx(flr(px)-8)
 			end
 		end
+		min_jump = {}
+		max_jump = {}
 		if bot.x==bot.mid-1 then
 			--left side of goalx
 			check_px(px)
@@ -235,6 +218,7 @@ function update_bot(px, py, t)
 		end
 		move_to_goal()
 	end
+	bot.y += bot.dy
 end
 
 function move_to_goal() 
