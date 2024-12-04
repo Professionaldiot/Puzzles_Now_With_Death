@@ -15,7 +15,7 @@ function botinit()
 	prev_jump = 0
 	
 	bot = {}
-		bot.x=0
+		bot.x=16
 		bot.y=112
 		bot.dy=0
 		bot.g=0.3
