@@ -30,14 +30,6 @@ function _update()
 	box_update()	
 	btn_update(butts,player)
 	spring_update(player)
-	if debug then
-        printh("player.x: "..player.x..
-            " player.y: "..player.y..
-            " player.start: "..player.start..
-            " time: "..time()..
-            " time-start :"..time()-player.start,
-          	 'log.txt', false, true)
- 	end
 	cam_update()
 	player_animate()
 end

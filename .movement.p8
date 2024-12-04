@@ -15,7 +15,7 @@ function debug_any()
 end
 
 function player_init()
-    debug = false
+    debug = true
     player = {
         start = 0,
         sp = 1,
@@ -55,6 +55,15 @@ function player_init()
 end
 
 function player_update()
+    --debug
+    if debug then
+        printh("player.x: "..player.x..
+               " player.y: "..player.y..
+               " player.dx: "..player.dx..
+               " player.dy: "..player.dy..
+               " player.sp: "..player.sp, "player_movement_log.txt", false, true)
+    end
+
     --physics
     player.dy += gravity
     player.dx *= friction
