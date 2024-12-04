@@ -159,13 +159,15 @@ function player_above_bot(px, py)
 			temp.y = stored_y
 		end
 	end--for
-	if (bot.x >= bot.goalx-10 and bot.x <= bot.goalx+10) and debug then
-		printh("min: "..min_to_jump..
-			   " max: "..max_to_jump..
-			   " bot.goalx: "..bot.goalx..
-			   " bot.x: "..bot.x..
-			   " stored_jumps: "..stored_jump..
-			   " prev_jump: "..prev_jump, "bot_jumping_log.txt", false, true)
+	if bot.goalx != nil then
+		if (bot.x >= bot.goalx-10 and bot.x <= bot.goalx+10) and debug then
+			printh("min: "..min_to_jump..
+				" max: "..max_to_jump..
+				" bot.goalx: "..bot.goalx..
+				" bot.x: "..bot.x..
+				" stored_jumps: "..stored_jump..
+				" prev_jump: "..prev_jump, "bot_jumping_log.txt", false, true)
+		end
 	end
 	if stored_jump == 0 and prev_jump == 0 then
 		if max_to_jump == -1 then
