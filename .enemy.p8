@@ -15,7 +15,7 @@ function botinit()
 	prev_jump = 0
 	
 	bot = {}
-		bot.x=16
+		bot.x=32
 		bot.y=112
 		bot.dy=0
 		bot.g=0.3
@@ -81,11 +81,17 @@ function player_above_bot(px, py)
 	for i=0,3 do
 		--check the y values above bot for 3 "spaces"
 		--removed nested for loop for optimization, not readibilty
-		temp.y-=16
+		temp.y-=8
 		temp.x = stored_x
 		if collide_map(temp, "right", 0) or collide_map(temp,"left",0) then
 			if prev_jump > min_to_jump then
 				move_goalx(min_to_jump)
+			elseif prev_jump < min_to_jump and prev_jump != 0 then
+				move_goalx(prev_jump)
+			elseif stored_jump > min_to_jump then
+				move_goalx(min_to_jump)
+			elseif stored_jump < min_to_jump and stored_jump != 0 then
+				move_goalx(stored_jump)
 			elseif prev_jump < stored_jump then
 				move_goalx(prev_jump)
 			elseif prev_jump > stored_jump then
@@ -177,6 +183,9 @@ function player_above_bot(px, py)
 				min_to_jump = min(min_to_jump,o)
 			end
 			prev_jump = stored_jump
+			if min_to_jump == bot.x and  max_to_jump != -1 and max_to_jump < min_to_jump then
+				return max_to_jump
+			end
 			return min_to_jump
 		elseif min_to_jump == 1025 then
 			--same for min
@@ -186,7 +195,7 @@ function player_above_bot(px, py)
 			prev_jump = stored_jump
 			return max_to_jump
 		end--if
-	elseif stored_jump == max_to_jump or min_to_jump then
+	elseif stored_jump == max_to_jump or stored_jump == min_to_jump then
 		return stored_jump
 	elseif max_to_jump == -1 and min_to_jump == 1025 then
 		--if both are still what we set it as, then we know that the bot hasn't found any ground above him yet, and need 
@@ -223,6 +232,7 @@ function update_bot(px, py, t)
 		bot.x+=1
 	end
 	if bot.dy != 0 then
+		prev_jump = 0
 		bot.landed = false
 	end
 	if collide_map(bot, "down", 0) then
@@ -231,8 +241,8 @@ function update_bot(px, py, t)
 		bot.landed=true
 	elseif collide_map(bot, "up", 0) then
 		bot.dy = 0
+		prev_jump = stored_jump
 		stored_jump = 0
-		prev_jump = 0
 	end
 
 	bot.dy += bot.g
@@ -245,7 +255,7 @@ function update_bot(px, py, t)
 			if bot.x != bot.goalx then
 				move_to_goal()
 			end
-			if (bot.x == bot.goalx-1 or bot.x == bot.goalx+2) and bot.landed then
+			if (bot.x == bot.goalx-2  or bot.x == bot.goalx-1 or bot.x == bot.goalx+1 or bot.x == bot.goalx+2) and bot.landed then
 				bot.dy -= 5
 				bot.landed=false
 				prev_jump = stored_jump
