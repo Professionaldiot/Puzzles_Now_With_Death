@@ -255,7 +255,7 @@ function update_bot(px, py, t)
 			if bot.x != bot.goalx then
 				move_to_goal()
 			end
-			if (bot.x == bot.goalx-2  or bot.x == bot.goalx-1 or bot.x == bot.goalx+1 or bot.x == bot.goalx+2) and bot.landed then
+			if (bot.x >= bot.goalx-8 and bot.x <= bot.goalx+8) and bot.landed then
 				bot.dy -= 5
 				bot.landed=false
 				prev_jump = stored_jump
