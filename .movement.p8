@@ -493,26 +493,45 @@ function spring_init()
     spring_locs = { { x = 104, y = 104, sp = 51 } }
 end
 
-function spring_update(obj)
+function spring_update()
     for s in all(spring_locs) do
-        if player.x >= s.x - 6 and player.x < s.x + 6 and player.start == 0 and flr(player.y) <= s.y and flr(player.y) > s.y - 2 and obj.start==0 then
+        if player.x >= s.x - 6 and player.x < s.x + 6 and player.start == 0 
+                and flr(player.y) <= s.y and flr(player.y) > s.y - 2 
+                and player.start==0 then
             s.sp =52
-            obj.start = time()
-        end
-        if not (flr(player.y) <= s.y and flr(player.y) > s.y - 2 and player.x >= s.x - 6 and player.x < s.x + 6) and s.sp == 52 then
-            obj.start = 0
+            player.start = time()
+        elseif not (flr(player.y) <= s.y and flr(player.y) > s.y - 2 
+                and player.x >= s.x - 6 and player.x < s.x + 6) 
+                and s.sp == 52 then
+            player.start = 0
             s.sp = 51
-        end
-        if time() - player.start >= 0.5 and obj.start != 0 then
-            obj.dy -= (obj.boost * 1.6)
-            if obj == player then
-                player.landed = false
-            end
-            obj.start = 0
+        elseif time() - player.start >= 0.5 and player.start != 0 then
+            player.dy -= (player.boost * 1.6)
+            player.landed = false
+            player.start = 0
             s.sp = 51
-        end
+        else
+            for b = 1,3 do
+                if box[b].x >= s.x - 6 and box[b].x < s.x + 6 and box[b].start == 0 
+                        and flr(box[b].y) <= s.y and flr(box[b].y) > s.y - 2 
+                        and box[b].start==0 and player.start == 0 then
+                    s.sp =52
+                    box[b].start = time()
+                end
+                if not (flr(box[b].y) <= s.y and flr(box[b].y) > s.y - 2 
+                        and box[b].x >= s.x - 6 and box[b].x < s.x + 6) 
+                        and s.sp == 52 and player.start == 0 then
+                    box[b].start = 0
+                    s.sp = 51
+                end
+                if time() - box[b].start >= 0.5 and box[b].start != 0 and player.start == 0 then
+                    box[b].dy -= (box[b].boost * 1.6)
+                    box[b].start = 0
+                    s.sp = 51
+                end--if
+            end--for
+        end--else
     end
-
 end
 
 function spring_draw()
@@ -537,7 +556,6 @@ function box_update()
     --def get boxes working with springs
     for b in all(box) do
         btn_update(butts, b)
-        spring_update(b)
         b.dy += b.g
         b.dx *= b.f
 

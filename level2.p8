@@ -29,7 +29,7 @@ function _update()
 	player_update()
 	box_update()	
 	btn_update(butts,player)
-	spring_update(player)
+	spring_update()
 	cam_update()
 	player_animate()
 end
