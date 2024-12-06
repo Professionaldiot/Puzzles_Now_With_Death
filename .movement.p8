@@ -493,44 +493,41 @@ function spring_init()
     spring_locs = { { x = 104, y = 104, sp = 51 } }
 end
 
-function spring_update()
+function spring_update(boxToCheck)
+    b = boxToCheck
     for s in all(spring_locs) do
+        if box[b].x >= s.x - 6 and box[b].x < s.x + 6 and box[b].start == 0 
+                and flr(box[b].y) <= s.y and flr(box[b].y) > s.y - 2 
+                and box[b].start==0 and player.start==0 then
+            s.sp =52
+            box[b].start = time()
+        elseif not (flr(box[b].y) <= s.y and flr(box[b].y) > s.y - 2 
+                and box[b].x >= s.x - 6 and box[b].x < s.x + 6) 
+                and s.sp == 52 and player.start==0 then
+            box[b].start = 0
+            s.sp = 51
+        elseif time() - box[b].start >= 0.5 and box[b].start != 0 and player.start==0 then
+            box[b].dy -= (box[b].boost * 1.6)
+            box[b].start = 0
+            s.sp = 51
+        end--if
+        
         if player.x >= s.x - 6 and player.x < s.x + 6 and player.start == 0 
                 and flr(player.y) <= s.y and flr(player.y) > s.y - 2 
-                and player.start==0 then
+                and player.start==0 and box[b].start==0 then
             s.sp =52
             player.start = time()
         elseif not (flr(player.y) <= s.y and flr(player.y) > s.y - 2 
                 and player.x >= s.x - 6 and player.x < s.x + 6) 
-                and s.sp == 52 then
+                and s.sp == 52 and box[b].start==0 then
             player.start = 0
             s.sp = 51
-        elseif time() - player.start >= 0.5 and player.start != 0 then
+        elseif time() - player.start >= 0.5 and player.start != 0 and box[b].start==0 then
             player.dy -= (player.boost * 1.6)
             player.landed = false
             player.start = 0
             s.sp = 51
-        else
-            for b = 1,3 do
-                if box[b].x >= s.x - 6 and box[b].x < s.x + 6 and box[b].start == 0 
-                        and flr(box[b].y) <= s.y and flr(box[b].y) > s.y - 2 
-                        and box[b].start==0 and player.start == 0 then
-                    s.sp =52
-                    box[b].start = time()
-                end
-                if not (flr(box[b].y) <= s.y and flr(box[b].y) > s.y - 2 
-                        and box[b].x >= s.x - 6 and box[b].x < s.x + 6) 
-                        and s.sp == 52 and player.start == 0 then
-                    box[b].start = 0
-                    s.sp = 51
-                end
-                if time() - box[b].start >= 0.5 and box[b].start != 0 and player.start == 0 then
-                    box[b].dy -= (box[b].boost * 1.6)
-                    box[b].start = 0
-                    s.sp = 51
-                end--if
-            end--for
-        end--else
+        end
     end
 end
 
