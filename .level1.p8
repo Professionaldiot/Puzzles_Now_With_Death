@@ -78,7 +78,7 @@ function _update()
   end
   draw_bot(time())
   player_animate()
- 	cam_update()
+ 	cam_update(0,244,0)
 end
 
 function _draw()

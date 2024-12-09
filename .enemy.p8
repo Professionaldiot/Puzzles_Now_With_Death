@@ -222,10 +222,10 @@ end
 function update_bot(px, py, t)
 	--todo for 1.0
 	--update the bot to let it attack the player
-	--fix the bug when the player stands on the stairs and the bot goes through the floor
 	--fix ladder bug
 	--fix standing still bug
-	--fix windmill bug
+	--fix windmill bug -- getting close, still have a few edge cases to cover
+	--fix bug that isn't updating goalx to player.x properly
 	if collide_map(bot,"right",0) then
 		bot.x-=1
 	elseif collide_map(bot,"left",0) then

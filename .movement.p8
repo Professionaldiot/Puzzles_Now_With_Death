@@ -243,12 +243,13 @@ function collide_map(obj, aim, flag)
     end
 end
 
-function cam_update()
-    if player.dx >= 1.9 then
+function cam_update(min_map_x, max_map_x, max_map_y)
+    min_map_y = 0
+    if player.dx >= 1.5 then
         cam_x += player.dx
-    elseif player.dx <= -1.9 then
+    elseif player.dx <= -1.5 then
         cam_x += player.dx
-    elseif player.dx > -1.9 and player.dx < 1.9 and player.dx != 0 then
+    elseif player.dx > -1.5 and player.dx < 1.5 and player.dx != 0 then
         --calculate where the player is according to the camera, and move it towards the player
         if player.x - cam_x > 60 then
             cam_x += 1
@@ -258,8 +259,14 @@ function cam_update()
         end
     elseif player.dx == 0 then
         if 60 - flr(player.x - cam_x) != 0 then
-            cam_x -= 60 - flr(player.x - cam_x)
+            cam_x -= mid(-4, 60 - flr(player.x - cam_x), 4)
         end
+    end
+    if cam_x <= min_map_x then 
+        cam_x = 0
+    end
+    if cam_x >= max_map_x then
+        cam_x = max_map_x
     end
     if player.dy >= 1.5 then
         cam_y += player.dy
@@ -267,16 +274,28 @@ function cam_update()
         cam_y += player.dy
     elseif player.dy > -4 and player.dy < 1.5 and player.dy != 0 then
         if player.y - cam_y > 80 then
+            --this moves the camera down if the difference between player.y and the cameras y is greater than 80
+            --(the player is below where the camera is sitting)
             cam_y += 1
         end
         if player.y - cam_y < 80 then
+            --this moves the camera up if the player.y and the camera y have a difference of less than 80
+            --(the player is above where the camera is sitting)
             cam_y -= 1
         end
     elseif player.dy == 0 then
+        --this moves the camera back towards 80, and has a tendency to smooth out the speed when it gets faster
         if 80 - flr(player.y - cam_y) != 0 then
-            cam_y -= 80 - flr(player.y - cam_y)
+            cam_y -= mid(-8, 80 - flr(player.y - cam_y), 8)
         end
     end
+    if cam_y <= min_map_y then
+        cam_y = min_map_y
+    end
+    if cam_y >= max_map_y then
+        cam_y = max_map_y
+    end
+
     camera(cam_x, cam_y)
 end
 
@@ -467,7 +486,8 @@ function btn_init()
     butts = {
         { x = 216, y = 104, sp = 19, act = "tp", p = false },
         { x = 72, y = 104, sp = 19, act = "nil", p = false },
-        { x = 136, y = 104, sp = 19, act = "door", p = false }
+        { x = 136, y = 104, sp = 19, act = "door", p = false },
+        { x = 56, y = 48, sp = 19, act = "nil", p = false}
     }
 end
 
@@ -490,7 +510,11 @@ function btn_draw(btns)
 end
 
 function spring_init()
-    spring_locs = { { x = 104, y = 104, sp = 51 } }
+    spring_locs = { 
+        { x = 104, y = 104, sp = 51 },
+        { x = 368, y = 160, sp = 51 },
+        { x = 288, y = 160, sp = 51 }
+    }
 end
 
 function spring_update(boxToCheck)
@@ -540,8 +564,9 @@ end
 function box_init()
     box = {
         { x = 220, y = 72, dx = 0, dy = 0, w = 8, h = 8, sp = 4, g = 0.3, f = 0.8, acc = 0.5, mx_dy = 6, mx_dx = 3, boost = 4, start = 0 },
-        { x = 240, y = 104, dx = 0, dy = 0, w = 8, h = 8, sp = 4, g = 0.3, f = 0.8, acc = 0.5, mx_dy = 6, mx_dx = 3, boost = 4, start = 0 },
-        { x = 128, y = 88, dx = 0, dy = 0, w = 8, h = 8, sp = 4, g = 0.3, f = 0.8, acc = 0.5, mx_dy = 6, mx_dx = 3, boost = 4, start = 0 }
+        { x = 240, y = 104, dx = 0, dy = 0, w = 8, h = 8, sp = 4, g = 0.3, f = 0.8, acc = 0.5, mx_dy = 6, mx_dx = 3, boost = 4, start = 0},
+        { x = 128, y = 88, dx = 0, dy = 0, w = 8, h = 8, sp = 4, g = 0.3, f = 0.8, acc = 0.5, mx_dy = 6, mx_dx = 3, boost = 4, start = 0 },
+        { x = 168, y = 88, dx = 0, dy = 0, w = 8, h = 8, sp = 4, g = 0.3, f = 0.8, acc = 0.5, mx_dy = 6, mx_dx = 3, boost = 4, start = 0 }
     }
 end
 
@@ -564,7 +589,9 @@ function box_update()
                 --if
             end
         elseif b.dy < 0 then
-            if collide_map(b, "up", 0) then
+            if collide_map(b, "up", 0) and collide_map(b,"up", 2) then
+                b.dy = b.dy
+            elseif collide_map(b, "up", 0) then
                 b.dy = 0
             end
             --if
@@ -589,12 +616,16 @@ function box_update()
                 b.dx += b.acc
             end
         end
-        if collide_map(b, "right", 0) and b.dx >= 0 then
+        if collide_map(b, "right", 0) and collide_map(b, "right", 2) and b.dx >= 0 then
+            b.dx = b.dx
+        elseif collide_map(b, "right", 0) and b.dx >= 0 then
             b.dx = 0
             if player.dx > 0 and player.x + 8 > b.x and player.x < b.x and player.y <= b.y and player.y >= b.y - 7 then
                 player.dx = 0
                 player.x = b.x - 8
             end
+        elseif collide_map(b, "left", 0) and collide_map(b, "left", 2) and b.dx <= 0 then
+            b.dx = b.dx
         elseif collide_map(b, "left", 0) and b.dx <= 0 then
             b.dx = 0
             if player.dx < 0 and player.x < b.x + 8 and player.x > b.x and player.y <= b.y and player.y >= b.y - 7 then
