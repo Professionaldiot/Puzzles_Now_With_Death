@@ -1,11 +1,12 @@
 pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
---[[
-BUGS:
 
-*player can move over spring and it will still launch them upwards
-]]
+function reset_level()
+    r_save()
+    load("level2.p8")
+end
+
 function debug_any()
     if debug then
         debug = false
@@ -513,7 +514,8 @@ function spring_init()
     spring_locs = { 
         { x = 104, y = 104, sp = 51 },
         { x = 368, y = 160, sp = 51 },
-        { x = 288, y = 160, sp = 51 }
+        { x = 288, y = 160, sp = 51 },
+        { x = 22*8, y = 48, sp = 51 }
     }
 end
 
@@ -639,10 +641,66 @@ function box_update()
 
         b.x += b.dx
         b.y += b.dy
-        --for
-    end
-    --function
-end
+        for h in all(box) do
+            --this checks for collision on all other boxes
+            if h != b then
+                --check collision
+                if (b.x >= h.x and b.x <= h.x + 8 and b.y == h.y)
+                        or (b.x + 8 >= h.x and 
+                        b.x + 8 <= h.x + 8 and b.y == h.y) then
+                    if b.x+7 >= h.x and b.x + 8 <= h.x + 8 and b.y == h.y then
+                        --push it to the left, actually
+                        if collide_map(b,"right",0) and collide_map(b,"right",2)
+                                or collide_map(h,"right",0) and collide_map(h,"right",2) then
+                            b.dx = b.dx
+                        end
+                        if collide_map(h,"right",0) then
+                            b.x -= b.dx
+                            if (b.x >= h.x and b.x <= h.x + 8
+                                     and b.y == h.y and b.dx == 0)
+                                    or (b.x + 8 >= h.x and b.x + 8 <= h.x + 8 
+                                    and b.y == h.y and b.dx == 0) then
+                                b.x = h.x - 8
+                            end 
+                            b.dx = 0
+                            if player.dx > 0 and player.x + 8 > b.x and player.x < b.x 
+                                    and player.y <= b.y and player.y >= b.y - 7 then
+                                player.dx = 0
+                                player.x = b.x - 8
+                            end
+                        else
+                            h.dx = b.dx
+                            b.dx *= b.f/4
+                        end
+                    elseif b.y == h.y then
+                        --push it to the right, actually
+                        if collide_map(b,"left",0) and collide_map(b,"left",2)
+                                or collide_map(h,"left", 0) and collide_map(h,"left",2) then
+                            b.dx = b.dx
+                        elseif collide_map(h,"left",0) then
+                            b.x += b.dx
+                            if (b.x >= h.x and b.x <= h.x + 8
+                                     and b.y == h.y and b.dx == 0)
+                                    or (b.x + 8 >= h.x and b.x + 8 <= h.x + 8 
+                                    and b.y == h.y and b.dx == 0) then
+                                b.x = h.x + 8
+                            end
+                            b.dx = 0
+                            if player.dx > 0 and player.x + 8 > b.x and player.x < b.x 
+                                    and player.y <= b.y and player.y >= b.y - 7 then
+                                player.dx = 0
+                                player.x = b.x - 8
+                            end
+                        else
+                            h.dx = b.dx
+                            b.dx *= b.f/4
+                        end--if/else collide_map(h,"left",0)
+                    end--elseif the boxes are the same height
+                end--if box in other box
+            end--if the box isn't the same as the box were on (to stop some bugs from happening that would occur from checking the box over again)
+        end--for
+    end--for
+end--function
 
 function box_draw()
     for b in all(box) do

@@ -172,11 +172,11 @@ function player_above_bot(px, py)
 			--if the max is still the same as what we set it as, then we know that the
 			--min has something useful for us from the if statement before
 			for o in all(min_jump) do
-				min_to_jump = min(min_to_jump,o)
+				min_to_jump = min(min_to_jump, o)
 			end
 			prev_jump = stored_jump
 			prev_jump_y = stored_jump_y
-			
+			min_jump = {}
 			return min_to_jump
 		elseif min_to_jump == 1025 then
 			--same for min
@@ -233,6 +233,7 @@ function update_bot(px, py, t)
 	--fix standing still bug
 	--fix windmill bug -- getting close, still have a few edge cases to cover
 	--fix bug that isn't updating goalx to player.x properly
+	--player can cause bot to jump multiple times
 	if bot.x < 0 then
 		--this somehow fixes the bug causing the bot to favor the max over the min
 		--don't know how, don't care tbh
@@ -252,12 +253,10 @@ function update_bot(px, py, t)
 		bot.dy=0
 		bot.y -= ((bot.y + bot.h + 1) % 8) - 1
 		bot.landed=true
-		prev_jump = stored_jump
 		stored_jump = 0
 	elseif collide_map(bot, "up", 0) then
 		bot.dy = 0
-		prev_jump = stored_jump
-		prev_jump_y = stored_jump_y
+		
 		stored_jump = 0
 		stored_jump_y = 0
 	end
@@ -266,15 +265,15 @@ function update_bot(px, py, t)
 	if py < bot.y then
 		local goal = player_above_bot(px, py)
 		if goal == px then
-			--if the player 
+			move_goalx(goal)
 			move_to_goal()
 		else
 			move_goalx(goal)
 			if bot.x != bot.goalx then
 				move_to_goal()
 			end
-			if (bot.x >= bot.goalx-8 and bot.x <= bot.goalx+8) and bot.landed then
-				bot.dy -= 5.1
+			if (bot.x >= bot.goalx-8 and bot.x <= bot.goalx+8) and bot.landed or (bot.x >= bot.goalx-16 and bot.x <= bot.goalx+16) and bot.landed then
+				bot.dy -= 5.5
 				bot.landed=false
 				prev_jump = stored_jump
 				prev_jump_y = stored_jump_y
