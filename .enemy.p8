@@ -12,7 +12,9 @@ function botinit()
 	min_jump = {}
 	max_jump = {}
 	stored_jump = 0
+	stored_jump_y = 0
 	prev_jump = 0
+	prev_jump_y = 0
 	
 	bot = {}
 		bot.x=32
@@ -68,7 +70,7 @@ end
 
 function player_above_bot(px, py)
 	--function for determining bot movement when the player is above the bot on the stage
-	--assume bot is above player
+	--assume bot is below player
 	local temp = {}
 	temp.x = bot.x - bot.x%8
 	temp.y = (bot.y - bot.y%8)
@@ -78,28 +80,16 @@ function player_above_bot(px, py)
 	local stored_x = temp.x
 	local min_to_jump = 1025
 	local max_to_jump = -1
+	
 	for i=0,3 do
 		--check the y values above bot for 3 "spaces"
 		--removed nested for loop for optimization, not readibilty
+		--min is not getting returned correctly,
 		temp.y-=8
 		temp.x = stored_x
 		if collide_map(temp, "right", 0) or collide_map(temp,"left",0) then
-			if prev_jump > min_to_jump then
-				move_goalx(min_to_jump)
-			elseif prev_jump < min_to_jump and prev_jump != 0 then
-				move_goalx(prev_jump)
-			elseif stored_jump > min_to_jump then
-				move_goalx(min_to_jump)
-			elseif stored_jump < min_to_jump and stored_jump != 0 then
-				move_goalx(stored_jump)
-			elseif prev_jump < stored_jump then
-				move_goalx(prev_jump)
-			elseif prev_jump > stored_jump then
-				move_goalx(stored_jump)
-			else
-				move_goalx(px)
-			end
-			move_to_goal()
+			--the bug is in here somehow
+			return px
 		else
 			temp.x = stored_x + 8*3-i
 			--this moves the temp.x to the outmost right hand side, which is at most 3 away
@@ -166,7 +156,9 @@ function player_above_bot(px, py)
 		end
 	end--for
 	if bot.goalx != nil then
-		if (bot.x >= bot.goalx-10 and bot.x <= bot.goalx+10) and debug then
+		--check = (bot.x >= bot.goalx-10 and bot.x <= bot.goalx+10)
+		check = true
+		if check and debug then
 			printh("min: "..min_to_jump..
 				" max: "..max_to_jump..
 				" bot.goalx: "..bot.goalx..
@@ -183,9 +175,8 @@ function player_above_bot(px, py)
 				min_to_jump = min(min_to_jump,o)
 			end
 			prev_jump = stored_jump
-			if min_to_jump == bot.x and  max_to_jump != -1 and max_to_jump < min_to_jump then
-				return max_to_jump
-			end
+			prev_jump_y = stored_jump_y
+			
 			return min_to_jump
 		elseif min_to_jump == 1025 then
 			--same for min
@@ -193,7 +184,13 @@ function player_above_bot(px, py)
 				max_to_jump = max(max_to_jump, o)
 			end
 			prev_jump = stored_jump
+			prev_jump_y = stored_jump_y
 			return max_to_jump
+		else
+			for o in all(min_jump) do
+				min_to_jump = min(min_to_jump,o)
+			end
+			return min_to_jump
 		end--if
 	elseif stored_jump == max_to_jump or stored_jump == min_to_jump then
 		return stored_jump
@@ -208,6 +205,10 @@ function player_above_bot(px, py)
 			min_to_jump = min(min_to_jump,o)
 		end
 		prev_jump = stored_jump
+		prev_jump_y = stored_jump_y
+		if min_to_jump == bot.x and  max_to_jump != -1 and max_to_jump < min_to_jump then
+			return max_to_jump
+		end
 		return min_to_jump
 	elseif min_to_jump == 1025 then
 		--same for min
@@ -215,7 +216,13 @@ function player_above_bot(px, py)
 			max_to_jump = max(max_to_jump, o)
 		end
 		prev_jump = stored_jump
+		prev_jump_y = stored_jump_y
 		return max_to_jump
+	else
+		for o in all(min_jump) do
+			min_to_jump = min(min_to_jump,o)
+		end
+		return min_to_jump
 	end--if
 end
 
@@ -226,6 +233,11 @@ function update_bot(px, py, t)
 	--fix standing still bug
 	--fix windmill bug -- getting close, still have a few edge cases to cover
 	--fix bug that isn't updating goalx to player.x properly
+	if bot.x < 0 then
+		--this somehow fixes the bug causing the bot to favor the max over the min
+		--don't know how, don't care tbh
+		bot.x = 32
+	end
 	if collide_map(bot,"right",0) then
 		bot.x-=1
 	elseif collide_map(bot,"left",0) then
@@ -233,22 +245,28 @@ function update_bot(px, py, t)
 	end
 	if bot.dy != 0 then
 		prev_jump = 0
+		prev_jump_y = 0
 		bot.landed = false
 	end
 	if collide_map(bot, "down", 0) then
 		bot.dy=0
 		bot.y -= ((bot.y + bot.h + 1) % 8) - 1
 		bot.landed=true
+		prev_jump = stored_jump
+		stored_jump = 0
 	elseif collide_map(bot, "up", 0) then
 		bot.dy = 0
 		prev_jump = stored_jump
+		prev_jump_y = stored_jump_y
 		stored_jump = 0
+		stored_jump_y = 0
 	end
 
 	bot.dy += bot.g
 	if py < bot.y then
 		local goal = player_above_bot(px, py)
-		if goal == 0 then
+		if goal == px then
+			--if the player 
 			move_to_goal()
 		else
 			move_goalx(goal)
@@ -256,10 +274,12 @@ function update_bot(px, py, t)
 				move_to_goal()
 			end
 			if (bot.x >= bot.goalx-8 and bot.x <= bot.goalx+8) and bot.landed then
-				bot.dy -= 5
+				bot.dy -= 5.1
 				bot.landed=false
 				prev_jump = stored_jump
+				prev_jump_y = stored_jump_y
 				stored_jump = bot.x
+				stored_jump_y = bot.y
 			end
 		end
 	else
@@ -270,8 +290,6 @@ function update_bot(px, py, t)
 				move_goalx(flr(px)-8)
 			end
 		end
-		min_jump = {}
-		max_jump = {}
 		if bot.x==bot.mid-1 then
 			--left side of goalx
 			check_px(px)
