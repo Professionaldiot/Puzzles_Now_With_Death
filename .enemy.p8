@@ -6,7 +6,7 @@ __lua__
 --towards the player
 --64,65,80,81
 function botinit()
-	atk_frames={96,96,96,96,96,96,97,97,97,97,"end"}
+	atk_frames={96,96,96,96,96,96,96,96,96,96,96,96,96,96,96,96,96,96,97,97,97,97,97,97,97,97,97,97,97,97,"end"}
 	atk_cnt=0
 
 	min_jump = {}
@@ -34,6 +34,30 @@ function botinit()
 		bot.mid=0
 		bot.q3=0
 		--65,81,64,80,96,97
+end
+
+function can_attack_player(px, py)
+	if bot.y == py then
+		--do checks for x
+		if (bot.x >= px - 10 and bot.x <= px) or 
+				(bot.x >= px and bot.x <= px + 10) then
+			return true
+		end
+		return false
+	end
+end
+
+function update_attack_anim(t)
+	if t - bot.anim >= 0.3 then
+		if atk_frames[atk_cnt] == "end" then
+			bot.spr = 81
+			bot.anim = t
+		else
+			bot.spr = atk_frames[atk_cnt]
+			atk_cnt += 1
+			bot.anim = t
+		end
+	end
 end
 
 function draw_bot(t)
@@ -262,7 +286,9 @@ function update_bot(px, py, t)
 	end
 
 	bot.dy += bot.g
-	if py < bot.y then
+	if can_attack_player(px, py) then
+		update_attack_anim(t)
+	elseif py < bot.y then
 		local goal = player_above_bot(px, py)
 		if goal == px then
 			move_goalx(goal)
