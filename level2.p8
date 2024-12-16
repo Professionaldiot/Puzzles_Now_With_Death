@@ -38,17 +38,26 @@ function _update()
 	else
 		spring_update(3)
 	end
+	manage_health()
 	cam_update(0, 328, 48)
 	player_animate()
 end
 
 function _draw()
+	health = player.health.."/"
+  	h_px = abs((#health * 4) - 16)
 	cls()
 	map(0,0)
 	btn_draw(butts)
 	spring_draw()
 	box_draw()
 	spr(player.sp,player.x,player.y,1,1,player.flp)
+	rectfill(cam_x,cam_y,100+cam_x,8+cam_y,13)
+	if player.health > 0 then
+		rectfill(cam_x+1,cam_y+1,player.health+cam_x,7+cam_y,12)
+	end
+	print(health, cam_x + 101 + h_px/2, cam_y+2, 11)
+	print(player.max_health, cam_x + 118 - h_px/2, cam_y+2, 8)
 end
 
 __gfx__

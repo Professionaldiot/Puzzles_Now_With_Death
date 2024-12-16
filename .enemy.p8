@@ -18,7 +18,7 @@ function botinit()
 	
 	bot = {}
 		bot.x=32
-		bot.y=112
+		bot.y=100
 		bot.dy=0
 		bot.g=0.3
 		bot.goalx=nil
@@ -60,34 +60,40 @@ function update_attack_anim(t)
 	end
 end
 
+
 function draw_bot(t)
-	if atk_frames[atk_cnt]=="end" then
-		atk_cnt=0
-		bot.spr=65
-		bot.anim=t
-		move_goalx(random(bot.x,bot.y,t))
-	elseif atk_cnt>0 then
+	if atk_frames[atk_cnt]=="end" and atk_cnt > 0 then
+		atk_cnt = 0
+		bot.spr = 65
+		bot.anim = t
+	elseif atk_cnt > 0 then
 		bot.spr=atk_frames[atk_cnt]
-		atk_cnt+=1
+		atk_cnt += 1
 		if atk_frames[atk_cnt]==97 then
-			bot.x+=1
+			if not (bot.x + 7 == player.x) then
+				--check the left side of the player to see whether the bot is inside of it or not
+				bot.x += 1
+			elseif not (bot.x - 1 == player.x + 8) then
+				--check the right side of the player to see whether the bot is inside of it or not
+				bot.x -= 1
+			end
 		end
 	end
 	if bot.action=="stand" then
-		if t-bot.anim>=.3 and bot.spr==80 then
-			bot.spr=65
-			bot.anim=t
-		elseif t-bot.anim>=.3 then
-			bot.spr=80
-			bot.anim=t
+		if t-bot.anim >= .3 and bot.spr == 80 then
+			bot.spr = 65
+			bot.anim = t
+		elseif t-bot.anim >= .3 then
+			bot.spr = 80
+			bot.anim = t
 			end
-	elseif bot.action=="walk" then
-		if t-bot.anim>=.5 and bot.spr==81 then
-			bot.spr=64
-			bot.anim=t
-		elseif t-bot.anim>=.5 then
-			bot.spr=81
-			bot.anim=t
+	elseif bot.action == "walk" then
+		if t-bot.anim >= .5 and bot.spr == 81 then
+			bot.spr = 64
+			bot.anim = t
+		elseif t-bot.anim >= .5 then
+			bot.spr = 81
+			bot.anim =  t
 		end
 	end	
 end
@@ -108,7 +114,6 @@ function player_above_bot(px, py)
 	for i=0,3 do
 		--check the y values above bot for 3 "spaces"
 		--removed nested for loop for optimization, not readibilty
-		--min is not getting returned correctly,
 		temp.y-=8
 		temp.x = stored_x
 		if collide_map(temp, "right", 0) or collide_map(temp,"left",0) then
@@ -258,7 +263,7 @@ function update_bot(px, py, t)
 	--fix windmill bug -- getting close, still have a few edge cases to cover
 	--fix bug that isn't updating goalx to player.x properly
 	--player can cause bot to jump multiple times
-	if bot.x < 0 then
+	if bot.x <= 0 then
 		--this somehow fixes the bug causing the bot to favor the max over the min
 		--don't know how, don't care tbh
 		bot.x = 32

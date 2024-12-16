@@ -2,6 +2,34 @@ pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
 
+function manage_health()
+    --this function checks whether to remove health from the player that will be displayed later
+    local damage = 0
+    if old_y > player.y then
+        old_y = 512
+    end
+    if player.dy >= 2.5 and old_y == 512 then
+        old_y = player.y
+    end
+    if player.dy == 0 and old_y != 512 and (player.y - old_y) >= 50 then
+        damage = min(flr((player.y - old_y)*player.max_health%player.health), ((player.y - old_y)*(player.health/player.max_health)))
+        old_y = 512
+    end
+
+    if collide_map(player, "right", 1) or collide_map(player, "left", 1) or
+            collide_map(player, "down", 5) or collide_map(player,"down", 6) or player.spring then
+        damage = 0
+    end
+    damage = flr(damage)
+    damage = min(damage, min((1/3) * player.health, player.max_health))
+    damage = flr(damage)
+    player.health -= damage
+    if player.health <= 0 then
+        player.health = 0
+        --do kill anim?
+    end
+end
+
 function reset_level()
     r_save()
     load("level2.p8")
@@ -17,7 +45,11 @@ end
 
 function player_init()
     debug = true
+    old_y = 512
     player = {
+        spring = false,
+        health = 99,
+        max_health = 99,
         start = 0,
         sp = 1,
         x = 59,
@@ -107,6 +139,10 @@ function player_update()
         player.dy = limit_speed(player.dy, player.max_dy)
 
         if collide_map(player, "down", 0) then
+            if player.spring then
+                old_y = 512
+            end
+            player.spring = false
             player.landed = true
             player.falling = false
             player.dy = 0
@@ -246,11 +282,11 @@ end
 
 function cam_update(min_map_x, max_map_x, max_map_y)
     min_map_y = 0
-    if player.dx >= 1.5 then
-        cam_x += player.dx
-    elseif player.dx <= -1.5 then
-        cam_x += player.dx
-    elseif player.dx > -1.5 and player.dx < 1.5 and player.dx != 0 then
+    if player.dx >= 1 then
+        cam_x += player.dx*1.1
+    elseif player.dx <= -1 then
+        cam_x += player.dx*1.1
+    elseif player.dx > -1 and player.dx < 1 and player.dx != 0 then
         --calculate where the player is according to the camera, and move it towards the player
         if player.x - cam_x > 60 then
             cam_x += 1
@@ -260,7 +296,7 @@ function cam_update(min_map_x, max_map_x, max_map_y)
         end
     elseif player.dx == 0 then
         if 60 - flr(player.x - cam_x) != 0 then
-            cam_x -= mid(-4, 60 - flr(player.x - cam_x), 4)
+            cam_x -= mid(-2, 60 - flr(player.x - cam_x), 2)
         end
     end
     if cam_x <= min_map_x then 
@@ -443,19 +479,15 @@ function stairs()
 
         if collide_map(player, "left", 6) then
             player.dx = 0
-            --if collide_map()
-        end
+        end--if collide_map()
     elseif player.dx > 0 then
         player.dx = limit_speed(player.dx, player.max_dx)
 
         if collide_map(player, "right", 5) then
             player.dx = 0
-            --if collide_map()
-        end
-        --if player.dx<0
-    end
-    --function stairs()
-end
+        end--if collide_map()
+    end--if player.dx<0
+end --function stairs()
 
 function ladder()
     --code allowing you to ascend
@@ -464,24 +496,19 @@ function ladder()
         if btn(⬆️) then
             if collide_map(player, "up", 0) then
                 player.y += 1
-                --if collide_map
-            end
+            end--if collide_map
             player.y -= 1
             player.climbing = true
             player.climbing_down = false
-            --if btn()
-        end
+        end--if btn()
         if btn(⬇️) then
             player.y += 1
             player.climbing = false
             player.climbing_down = true
-            --if btn()
-        end
+        end--if btn()
         player.dy = -.3
-        --if collide_map(up)
-    end
-    --function ladder()
-end
+    end--if collide_map(up)
+end--function ladder()
 
 function btn_init()
     butts = {
@@ -551,6 +578,7 @@ function spring_update(boxToCheck)
         elseif time() - player.start >= 0.5 and player.start != 0 and box[b].start==0 then
             player.dy -= (player.boost * 1.6)
             player.landed = false
+            player.spring = true
             player.start = 0
             s.sp = 51
         end
