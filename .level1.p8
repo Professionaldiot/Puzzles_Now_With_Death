@@ -41,6 +41,7 @@ function _init()
   menuitem(5,"reset save data",function() r_save() end)
   player_init()
   botinit()
+  r_save(false)
   td_init()
   lvl1_buttons={
   {x=352,y=112,sp=6,act="level2.p8",p=false},
@@ -56,7 +57,8 @@ end
 --update and draw
 function _update()
   if lvl1_buttons[1]["p"]==true then
-    r_save()
+    save()
+    r_save(false)
     load(lvl1_buttons[1]["act"])
   elseif lvl1_buttons[2]["p"]==true then
     td_open()
@@ -82,8 +84,6 @@ function _update()
 end
 
 function _draw()
-  health = player.health.."/"
-  h_px = abs((#health * 4) - 16)
   cls()
   map(0,0)
   btn_draw(lvl1_buttons)

@@ -3,6 +3,8 @@ version 42
 __lua__
 
 function draw_health()
+    health = player.health.."/"
+  	h_px = abs((#health * 4) - 16)
     rectfill(cam_x, cam_y, 128 + cam_x, 8 + cam_y, 5)--draw the main background color for status bar
     rectfill(cam_x, cam_y, 100 + cam_x, 8 + cam_y, 13)--draw the padding for health bar
     rectfill(cam_x + 1, cam_y + 1, 99 + cam_x, 7 + cam_y, 2)--draw the red bar under the health bar
@@ -11,20 +13,30 @@ function draw_health()
     end
 	print(health, cam_x + 102 + h_px/2, cam_y+2, 11)
 	print(player.max_health, cam_x + 119 - h_px/2, cam_y+2, 8)
+    if player.dead then
+        str = 'you died'
+        print(str, 64-(#str*2) + cam_x, 112 + cam_y, 8)
+    end
 end
 
 function manage_health()
     --this function checks whether to remove health from the player that will be displayed later
     local damage = 0
     if old_y > player.y then
+        old_x = 1024
         old_y = 512
     end
     if player.dy >= 2.5 and old_y == 512 then
         old_y = player.y
+        old_x = player.x
     end
     if player.dy == 0 and old_y != 512 and (player.y - old_y) >= 50 then
         damage = min(ceil((player.y - old_y)*player.max_health%player.health), ((player.y - old_y)*(player.health/player.max_health)))
         old_y = 512
+        old_x = 1024
+    elseif player.dy == 0 then
+        old_y = 512
+        old_x = 1024
     end
 
     if collide_map(player, "right", 1) or collide_map(player, "left", 1) or
@@ -64,6 +76,7 @@ end
 
 function player_init()
     debug = true
+    old_x = 512
     old_y = 512
     player = {
         dead = false,
@@ -161,6 +174,7 @@ function player_update()
             if collide_map(player, "down", 0) then
                 if player.spring then
                     old_y = 512
+                    old_x = 1024
                 end
                 player.spring = false
                 player.landed = true
@@ -222,7 +236,6 @@ function player_update()
         player.anim = time()
         player.dy = 0
         player.dx = 0
-
     end
 end
 
@@ -368,31 +381,43 @@ function save()
     dset(1, player.y)
     dset(2, cam_x)
     dset(3, cam_y)
+    dset(4, player.health)
+    dset(5, player.dead)
     --save the player pos
     --now do the bot
-    dset(4, bot.x)
-    dset(5, bot.goalx)
-    dset(6, bot.q1)
-    dset(7, bot.mid)
-    dset(8, bot.q3)
-    dset(9, bot.aim)
-    dset(10, bot.action)
-    dset(11, bot.flp)
+    dset(14, bot.x)
+    dset(15, bot.goalx)
+    dset(16, bot.q1)
+    dset(17, bot.mid)
+    dset(18, bot.q3)
+    dset(19, bot.aim)
+    dset(20, bot.action)
+    dset(21, bot.flp)
 end
 
-function r_save()
+function r_save(r_health)
+    if r_health == nil then
+        r_health = true
+    end
     dset(0, 59)--player.x
     dset(1, 100)--player.y
     dset(2, 0)--cam_x
     dset(3, 0)--cam_y
-    dset(4, 0)--bot.x
-    dset(5, nil)--bot.goalx
-    dset(6, 0)--bot.q1
-    dset(7, 0)--bot.mid
-    dset(8, 0)--bot.q3
-    dset(9, "right")--bot.aim
-    dset(10, "stand")--bot.action
-    dset(11, false)--bot.flp
+    if r_health then
+        dset(4, 99)
+    end
+    if r_health then
+        dset(5, 0)--player.dead
+    end
+    dset(14, 0)--bot.x
+    dset(15, nil)--bot.goalx
+    dset(16, 0)--bot.q1
+    dset(17, 0)--bot.mid
+    dset(18, 0)--bot.q3
+    dset(19, "right")--bot.aim
+    dset(20, "stand")--bot.action
+    dset(21, false)--bot.flp
+
     dset(12, 1)--level on
     dset(13, false)--level load
 end
@@ -405,15 +430,21 @@ function lload()
         player.y = dget(1)
         cam_x = dget(2)
         cam_y = dget(3)
+        player.health = dget(4)
+        if dget(5) == 0 or dget(5) == false then
+            player.dead = false
+        else
+            player.dead = dget(5)
+        end
         --do the bot now
-        bot.x = dget(4)
-        bot.goalx = dget(5)
-        bot.q1 = dget(6)
-        bot.mid = dget(7)
-        bot.q3 = dget(8)
-        bot.aim = dget(9)
-        bot.action = dget(10)
-        bot.flp = dget(11)
+        bot.x = dget(14)
+        bot.goalx = dget(15)
+        bot.q1 = dget(16)
+        bot.mid = dget(17)
+        bot.q3 = dget(18)
+        bot.aim = dget(19)
+        bot.action = dget(20)
+        bot.flp = dget(21)
         return true
     end
 end

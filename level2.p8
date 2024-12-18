@@ -12,16 +12,18 @@ function _init()
 	btn_init()
 	botinit()
 	box_init()
+	r_save(false)
 	menuitem(1,"save",function() save() end)
 	menuitem(2,"load",function() lload() end)
 	menuitem(3,"main menu",function() load("main-menu.p8") end)
 	menuitem(4,"level reset",function() reset_level() end)
-	menuitem(5,"reset save data",function() r_save() end)
+	menuitem(5,"health = 1",function() player.health = 1 end)
 	if dget(12)>0 and dget(12)<2 then
 		dset(12,2)
 	end
 	if dget(13,true) then
 		lload()
+		player.health = dget(4)
 		dset(13,false)
 	end
 end
@@ -45,8 +47,6 @@ function _update()
 end
 
 function _draw()
-	health = player.health.."/"
-  	h_px = abs((#health * 4) - 16)
 	cls()
 	map(0,0)
 	btn_draw(butts)
