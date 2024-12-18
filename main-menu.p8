@@ -17,7 +17,7 @@ function _init()
 	canmove_d=true
 	canmove_u=true
 	action="play"
-	version="0.9.7.0"
+	version="0.9.7.2"
 	level_select_init()
 	--export -i 64 game-test.bin 
 	--.capstone.p8 level2.p8

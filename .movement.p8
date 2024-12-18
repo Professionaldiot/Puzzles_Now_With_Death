@@ -2,6 +2,17 @@ pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
 
+function draw_health()
+    rectfill(cam_x, cam_y, 128 + cam_x, 8 + cam_y, 5)--draw the main background color for status bar
+    rectfill(cam_x, cam_y, 100 + cam_x, 8 + cam_y, 13)--draw the padding for health bar
+    rectfill(cam_x + 1, cam_y + 1, 99 + cam_x, 7 + cam_y, 2)--draw the red bar under the health bar
+	if player.health > 0 then
+		rectfill(cam_x + 1, cam_y + 1, player.health + cam_x, 7 + cam_y, 3)
+    end
+	print(health, cam_x + 102 + h_px/2, cam_y+2, 11)
+	print(player.max_health, cam_x + 119 - h_px/2, cam_y+2, 8)
+end
+
 function manage_health()
     --this function checks whether to remove health from the player that will be displayed later
     local damage = 0
@@ -12,7 +23,7 @@ function manage_health()
         old_y = player.y
     end
     if player.dy == 0 and old_y != 512 and (player.y - old_y) >= 50 then
-        damage = min(flr((player.y - old_y)*player.max_health%player.health), ((player.y - old_y)*(player.health/player.max_health)))
+        damage = min(ceil((player.y - old_y)*player.max_health%player.health), ((player.y - old_y)*(player.health/player.max_health)))
         old_y = 512
     end
 
@@ -20,12 +31,20 @@ function manage_health()
             collide_map(player, "down", 5) or collide_map(player,"down", 6) or player.spring then
         damage = 0
     end
-    damage = flr(damage)
+    rand = random(player.x, player.y, time(), 100)
+    while rand == 0 do
+        --removes the possibility of dealing 0 damage
+        rand = random(player.x, player.y, time(), 100)
+    end
+    rand = flr(rand/10)
+    damage = ceil(damage)
     damage = min(damage, min((1/3) * player.health, player.max_health))
-    damage = flr(damage)
+    damage = ceil(damage)
+    damage = min(damage, rand)
     player.health -= damage
     if player.health <= 0 then
         player.health = 0
+        player.dead = true
         --do kill anim?
     end
 end
@@ -47,6 +66,7 @@ function player_init()
     debug = true
     old_y = 512
     player = {
+        dead = false,
         spring = false,
         health = 99,
         max_health = 99,
@@ -96,106 +116,113 @@ function player_update()
                " player.dy: "..player.dy..
                " player.sp: "..player.sp, "player_movement_log.txt", false, true)
     end
+    if not player.dead then
+        --physics
+        player.dy += gravity
+        player.dx *= friction
 
-    --physics
-    player.dy += gravity
-    player.dx *= friction
+        --controls
+        if btn(⬅️) then
+            player.dx -= player.acc
+            player.running = true
+            player.flp = true
+        end
+        if btn(➡️) then
+            player.dx += player.acc
+            player.running = true
+            player.flp = false
+        end
 
-    --controls
-    if btn(⬅️) then
-        player.dx -= player.acc
-        player.running = true
-        player.flp = true
-    end
-    if btn(➡️) then
-        player.dx += player.acc
-        player.running = true
-        player.flp = false
-    end
+        --slide
+        if player.running
+                and not btn(⬅️)
+                and not btn(➡️)
+                and not player.falling
+                and not player.jumping then
+            player.running = false
+            player.sliding = true
+        end
 
-    --slide
-    if player.running
-            and not btn(⬅️)
-            and not btn(➡️)
-            and not player.falling
-            and not player.jumping then
-        player.running = false
-        player.sliding = true
-    end
+        --jump
+        if btnp(⬆️)
+                and player.landed then
+            player.dy -= player.boost
+            player.landed = false
+        end
 
-    --jump
-    if btnp(⬆️)
-            and player.landed then
-        player.dy -= player.boost
-        player.landed = false
-    end
+        --check collision up and down
+        if player.dy > 0 then
+            player.falling = true
+            player.landed = false
+            player.jumping = false
 
-    --check collision up and down
-    if player.dy > 0 then
-        player.falling = true
-        player.landed = false
-        player.jumping = false
+            player.dy = limit_speed(player.dy, player.max_dy)
 
-        player.dy = limit_speed(player.dy, player.max_dy)
-
-        if collide_map(player, "down", 0) then
-            if player.spring then
-                old_y = 512
+            if collide_map(player, "down", 0) then
+                if player.spring then
+                    old_y = 512
+                end
+                player.spring = false
+                player.landed = true
+                player.falling = false
+                player.dy = 0
+                player.y -= ((player.y + player.h + 1) % 8) - 1
             end
-            player.spring = false
-            player.landed = true
-            player.falling = false
-            player.dy = 0
-            player.y -= ((player.y + player.h + 1) % 8) - 1
+        elseif player.dy < 0 then
+            player.jumping = true
+            if collide_map(player, "up", 0) then
+                player.dy = 0
+            end
         end
-    elseif player.dy < 0 then
-        player.jumping = true
-        if collide_map(player, "up", 0) then
-            player.dy = 0
+
+        --check collision left and right
+        if player.dx < 0 then
+            player.dx = limit_speed(player.dx, player.max_dx)
+
+            if collide_map(player, "left", 0) then
+                player.dx = 0
+            end
+        elseif player.dx > 0 then
+            player.dx = limit_speed(player.dx, player.max_dx)
+
+            if collide_map(player, "right", 0) then
+                player.dx = 0
+            end
         end
-    end
 
-    --check collision left and right
-    if player.dx < 0 then
-        player.dx = limit_speed(player.dx, player.max_dx)
-
-        if collide_map(player, "left", 0) then
-            player.dx = 0
+        --stop sliding
+        if player.sliding then
+            if abs(player.dx) < .2 or player.running then
+                player.dx = 0
+                player.sliding = false
+            end
         end
-    elseif player.dx > 0 then
-        player.dx = limit_speed(player.dx, player.max_dx)
 
-        if collide_map(player, "right", 0) then
-            player.dx = 0
+        --stop climbing
+        if player.climbing
+                or player.climbing_down then
+            if not collide_map(player, "up", 2) or not collide_map(player, "down", 2) then
+                player.climbing = false
+                player.climbing_down = false
+            end
         end
-    end
 
-    --stop sliding
-    if player.sliding then
-        if abs(player.dx) < .2 or player.running then
-            player.dx = 0
-            player.sliding = false
+        player.x += player.dx
+        player.y += player.dy
+
+        --limit player to map
+        if player.x < map_start then
+            player.x = map_start
         end
-    end
-
-    --stop climbing
-    if player.climbing
-            or player.climbing_down then
-        if not collide_map(player, "up", 2) or not collide_map(player, "down", 2) then
-            player.climbing = false
-            player.climbing_down = false
+        if player.x > map_end - player.w then
+            player.x = map_end - player.w
         end
-    end
+    else
+        player.sp = 63
+        player.anim = time()
+        player.dy = 0
+        player.dx = 0
 
-    player.x += player.dx
-    player.y += player.dy
-
-    --limit player to map
-    if player.x < map_start then
-        player.x = map_start
-    end
-    if player.x > map_end - player.w then
-        player.x = map_end - player.w
     end
 end
 
