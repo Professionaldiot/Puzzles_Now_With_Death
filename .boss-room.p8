@@ -9,6 +9,7 @@ function _init()
     cartdata("dc_capstone")
     player_init()
     botinit()
+    circle_init()
     dset(12,1)
     if dget(13,true) then
       dset(13,false)
@@ -21,6 +22,7 @@ function _update()
     update_bot(player.x, player.y, time())
     cam_update(0, 1024, 562)
     player_animate()
+    make_circle()
     if collide_map(bot,"right",0) then
         bot.x-=1
     elseif collide_map(bot,"left",0) then
@@ -34,6 +36,7 @@ function _draw()
     map(0,0)
     spr(bot.spr,bot.x,bot.y,1,1,bot.flp)
     spr(player.sp,player.x,player.y,1,1,player.flp)
+    draw_circle()
 end
 
 __gfx__

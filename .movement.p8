@@ -2,6 +2,87 @@ pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
 
+function circle_init()
+    c = {
+        x = 0,
+        y = 0,
+        angle_in_deg = 110,
+        x_center = 147,
+        y_center = 80,
+        radius = 30,
+        da = 0,
+        values = {}
+    }
+end
+
+function update_circle_x(angle_in_deg)
+    angle_in_deg += 180
+    if angle_in_deg > 360 then
+        angle_in_deg -= 360
+    elseif angle_in_deg < 0 then
+        angle_in_deg += 360
+    end
+    p_angle = angle_in_deg/360
+    x = c.x_center + c.radius * sin(p_angle)
+    y = c.y_center + c.radius * cos(p_angle)
+    h_angle = 360 - (180 - angle_in_deg)
+    add(c.values, {x1 = x, y1 = y, hangle = h_angle, angle = angle_in_deg})
+    return {x1 = x, y1 = y, hangle = h_angle, angle = angle_in_deg}
+end
+
+function change_angle(angle)
+    if angle >= 180 and c.da > 2 and c.da <= 3 then
+        c.da -= 0.3
+    elseif angle >= 180 and c.da < -2 and c.da >= -3 then
+        c.da += 0.3
+    elseif angle >= 225 and c.da >= 1 and c.da <= 2 then
+        c.da -= 0.75
+    elseif angle <= 135 and c.da <= -1 and c.da >= -2 then
+        c.da += 0.75
+    elseif angle >= 250 and c.da < 1 and c.da > 0 then
+        c.da -= 0.15
+    elseif angle <= 110 and c.da > -1 and c.da < 0 then 
+        c.da += 0.15
+    elseif angle <= 250 and angle >= 225 and c.da > 0 then
+        c.da += 0.75
+    elseif angle >= 110 and angle <= 135 and c.da < 0 then
+        c.da -= 0.75
+    elseif c.da == 0 and angle == 110 then
+        c.da = 3
+    end
+
+    if c.da >= 3 then
+        c.da = 3
+    elseif c.da <= -3 then
+        c.da = -3
+    end
+
+end
+
+function dist(x1, x2, y1, y2)
+    num = sqrt(((x2-x1)*(x2-x1)) + ((y2-y1)*(y2-y1)))
+    if sgn(num-6) == -1 then
+        return flr(num)
+    elseif sgn(num-6) == 1 then
+        return ceil(num)
+    else
+        return num
+    end
+end
+
+function make_circle()
+    pos = update_circle_x(c.angle_in_deg)
+    dis = dist(c.x_center, pos["x1"], c.y_center, pos["y1"])
+    change_angle(c.angle_in_deg)
+    c.angle_in_deg += c.da
+    c.x = pos['x1']
+    c.y = pos['y1']
+end
+
+function draw_circle()
+    line(c.x_center, c.y_center, c.x, c.y, 9)
+end
+
 function draw_health()
     health = player.health.."/"
   	h_px = abs((#health * 4) - 16)
