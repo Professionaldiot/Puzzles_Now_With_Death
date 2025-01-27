@@ -47,9 +47,26 @@ function can_attack_player(px, py)
 	end
 end
 
-function update_attack_anim(t)
+function bot_hit_player(px, py)
+	if bot.y == py then
+		if bot.aim == "right" then
+			--check the left side
+			if bot.x >= px - 10 and bot.x <= px then
+				player.health -= 10
+			end
+		else
+			--check the right side
+			if bot.x >= px and bot.x <= px + 10 then
+				player.health -= 10
+			end
+		end
+	end
+end
+
+function update_attack_anim(t, px, py)
 	if t - bot.anim >= 0.3 then
 		if atk_frames[atk_cnt] == "end" then
+			bot_hit_player(px,py)
 			bot.spr = 81
 			bot.anim = t
 		else
@@ -291,7 +308,7 @@ function update_bot(px, py, t)
 
 	bot.dy += bot.g
 	if can_attack_player(px, py) then
-		update_attack_anim(t)
+		update_attack_anim(t, px, py)
 	elseif py < bot.y then
 		local goal = player_above_bot(px, py)
 		if goal == px then

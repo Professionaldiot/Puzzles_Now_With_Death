@@ -6,22 +6,19 @@ function circle_init()
     c = {
         x = 0,
         y = 0,
-        angle_in_deg = 110,
+        angle_in_deg = 270,
         x_center = 147,
         y_center = 80,
         radius = 30,
         da = 0,
+        a_res = 0.6,
+        acc = 0.5,
+        grav = .1,
         values = {}
     }
 end
 
 function update_circle_x(angle_in_deg)
-    angle_in_deg += 180
-    if angle_in_deg > 360 then
-        angle_in_deg -= 360
-    elseif angle_in_deg < 0 then
-        angle_in_deg += 360
-    end
     p_angle = angle_in_deg/360
     x = c.x_center + c.radius * sin(p_angle)
     y = c.y_center + c.radius * cos(p_angle)
@@ -31,30 +28,46 @@ function update_circle_x(angle_in_deg)
 end
 
 function change_angle(angle)
-    if angle >= 180 and c.da > 2 and c.da <= 3 then
-        c.da -= 0.3
-    elseif angle >= 180 and c.da < -2 and c.da >= -3 then
-        c.da += 0.3
-    elseif angle >= 225 and c.da >= 1 and c.da <= 2 then
-        c.da -= 0.75
-    elseif angle <= 135 and c.da <= -1 and c.da >= -2 then
-        c.da += 0.75
-    elseif angle >= 250 and c.da < 1 and c.da > 0 then
-        c.da -= 0.15
-    elseif angle <= 110 and c.da > -1 and c.da < 0 then 
-        c.da += 0.15
-    elseif angle <= 250 and angle >= 225 and c.da > 0 then
-        c.da += 0.75
-    elseif angle >= 110 and angle <= 135 and c.da < 0 then
-        c.da -= 0.75
-    elseif c.da == 0 and angle == 110 then
-        c.da = 3
+    --[[
+    try to vectorize the angle, y will be a constant since gravity will be pulling down on it always, the rest to figure
+    out is how large and how much the resulting x vector should be
+    ]]
+    local cday = -c.grav --set as zero for right now
+
+    local x_ang = 360 - (180 - angle) --gets the angle of the resulting vector 
+
+    if x_ang >= 360 then
+        x_ang -= 360
+    elseif x_ang < 0 then
+        x_ang += 360
     end
 
-    if c.da >= 3 then
-        c.da = 3
-    elseif c.da <= -3 then
-        c.da = -3
+    cday *= ((x_ang - 180)/90) --make gravity heavy for higher angles
+    --this tells us, in percentage, how far away from 180 we are, where 0 is the closest and 135 SHOULD be the max
+    local cdax = 1 - cday
+    cdax = cdax * c.acc
+    cdax *= c.a_res
+    c.da += cdax * cday
+    if (c.da < 2 and c.da >= 0 and angle > 90 and angle < 180) or (c.da > -2 and c.da <= 0 and angle < 270 and angle > 180) then
+        --simulate momentum loss when reaching the top of the swing
+        --bigger = quicker time to go down after reaching 90 or 270
+        --less means slower to go down and more momentum perserved
+        c.da *= sgn(cdax) * 0.8
+    elseif (c.da > 0.1 or c.da < -0.1) then
+        --simulate momentum loss
+        --increasing x in the formula 1/x will make the "swing" stay in motion longer, while smaller x values
+        --will make it stop quicker, but make it take longer to stop once it gets real slow
+        c.da += -sgn(c.da) * (1/1000)
+    elseif c.da <= 0.1 and c.da >= -0.1 and (angle <= 1 or angle >= 359) then
+        --if we're going real slow, just stop it, otherwise it will never stop
+        c.da = 0
+    end
+
+
+    if c.da >= 2 then
+        c.da = 2
+    elseif c.da <= -2 then
+        c.da = -2
     end
 
 end
@@ -75,6 +88,11 @@ function make_circle()
     dis = dist(c.x_center, pos["x1"], c.y_center, pos["y1"])
     change_angle(c.angle_in_deg)
     c.angle_in_deg += c.da
+    if c.angle_in_deg > 360 then
+        c.angle_in_deg -= 360
+    elseif c.angle_in_deg < 0 then
+        c.angle_in_deg += 360
+    end
     c.x = pos['x1']
     c.y = pos['y1']
 end
