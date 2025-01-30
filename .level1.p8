@@ -12,8 +12,6 @@ todo:
 *create more levels
 
 *update the bot to be able to jump and climb stairs and such
-  > get bot gravity working
-  > get bot collision down working
   > get bot climbing working
   > bot right and left collsion is working
 
@@ -25,6 +23,8 @@ todo:
 *design the character for the game
 
 *actually create interesting bot desgins
+
+*do box TODOs
 
 ]]
 -->8

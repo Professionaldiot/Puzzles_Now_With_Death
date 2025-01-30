@@ -39,26 +39,18 @@ end
 function can_attack_player(px, py)
 	if bot.y == py then
 		--do checks for x
-		if (bot.x >= px - 10 and bot.x <= px) or 
-				(bot.x >= px and bot.x <= px + 10) then
+		if bot.x + 9 >= px and bot.x <= px + 9  then
 			return true
 		end
 		return false
 	end
+	return false
 end
 
 function bot_hit_player(px, py)
 	if bot.y == py then
-		if bot.aim == "right" then
-			--check the left side
-			if bot.x >= px - 10 and bot.x <= px then
-				player.health -= 10
-			end
-		else
-			--check the right side
-			if bot.x >= px and bot.x <= px + 10 then
-				player.health -= 10
-			end
+		if bot.x >= flr(px) - 4 and bot.x <= ceil(px) + 14 and bot.spr == 97 then
+			player.health -= 10
 		end
 	end
 end
@@ -66,9 +58,14 @@ end
 function update_attack_anim(t, px, py)
 	if t - bot.anim >= 0.3 then
 		if atk_frames[atk_cnt] == "end" then
-			bot_hit_player(px,py)
+			bot_hit_player(px, py)
 			bot.spr = 81
 			bot.anim = t
+		elseif atk_frames[atk_cnt] == 97 and atk_cnt > 25 and can_attack_player(px, py) then
+			bot_hit_player(px, py)
+			bot.spr = 81
+			bot.anim = t
+			atk_cnt = 0
 		else
 			bot.spr = atk_frames[atk_cnt]
 			atk_cnt += 1
@@ -278,7 +275,9 @@ function update_bot(px, py, t)
 	--fix standing still bug
 	--fix windmill bug -- getting close, still have a few edge cases to cover
 	--fix bug that isn't updating goalx to player.x properly
-	--player can cause bot to jump multiple times
+
+	--fix the bug that is causing the bot to not go into the player when attacking
+	-- ^ fixed, but a new bug shows up that causes the bot to go in the opposite direction of player when moving
 	if bot.x <= 0 then
 		--this somehow fixes the bug causing the bot to favor the max over the min
 		--don't know how, don't care tbh
@@ -301,7 +300,6 @@ function update_bot(px, py, t)
 		stored_jump = 0
 	elseif collide_map(bot, "up", 0) then
 		bot.dy = 0
-		
 		stored_jump = 0
 		stored_jump_y = 0
 	end
@@ -327,6 +325,14 @@ function update_bot(px, py, t)
 				stored_jump = bot.x
 				stored_jump_y = bot.y
 			end
+		end
+	elseif bot.x + 8 >= px and bot.x <= px + 8 and bot.aim == "right" then
+		if can_attack_player(px, py) then
+			update_attack_anim(t, px, py)
+		end
+	elseif bot.x + 8 >= px and bot.x <= px + 8 and bot.aim == "left" then
+		if can_attack_player(px, py) then
+			update_attack_anim(t, px, py)
 		end
 	else
 		if bot.goalx==nil then
@@ -365,22 +371,24 @@ function update_bot(px, py, t)
 	bot.y += bot.dy
 end
 
-function move_to_goal() 
-	if (bot.goalx+1)<bot.x then
-		bot.x-=1
-		bot.action="walk"
-		bot.aim="left"
-	elseif bot.x<(bot.goalx-1) then
-		bot.x+=1
-		bot.action="walk"
-		bot.aim="right"
+function move_to_goal()
+	if bot.spr == 96 or bot.spr == 97 then
+		bot.action = "attack"
+	elseif (bot.goalx + 1) < bot.x then
+		bot.x -= 1
+		bot.action = "walk"
+		bot.aim = "left"
+	elseif bot.x < (bot.goalx - 1) then
+		bot.x += 1
+		bot.action = "walk"
+		bot.aim = "right"
 	else
-		bot.action="stand"
+		bot.action = "stand"
 	end
-	if bot.aim=="left" then
-		bot.flp=true
+	if bot.aim == "left" then
+		bot.flp = true
 	else
-		bot.flp=false
+		bot.flp = false
 	end
 end
 
@@ -397,8 +405,12 @@ function check_px(px)
 		move_goalx(abs(bot.mid+left_side))
 	elseif bot.mid<px-8 and px+8<=right_side then
 		move_goalx(abs(right_side-bot.mid))
-	else
+	elseif bot.x < px then
 		move_goalx(px)
+	elseif bot.x > px then
+		move_goalx(px + 8)
+	else
+		move_to_goal()
 	end
 end
 
