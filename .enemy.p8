@@ -39,7 +39,7 @@ end
 function can_attack_player(px, py)
 	if bot.y == py then
 		--do checks for x
-		if bot.x + 9 >= px and bot.x <= px + 9  then
+		if bot.x + 8 >= px and bot.x <= px + 8  then
 			return true
 		end
 		return false
@@ -49,8 +49,8 @@ end
 
 function bot_hit_player(px, py)
 	if bot.y == py then
-		if bot.x >= flr(px) - 4 and bot.x <= ceil(px) + 14 and bot.spr == 97 then
-			player.health -= 10
+		if bot.x >= flr(px) - 8 and bot.x <= ceil(px) + 8 and bot.spr == 97 then
+			player.health -= 1
 		end
 	end
 end
