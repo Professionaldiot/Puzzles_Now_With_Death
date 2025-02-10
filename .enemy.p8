@@ -37,9 +37,17 @@ function botinit()
 end
 
 function can_attack_player(px, py)
+	local pwt = player.w+1
+	local pwh = player.w//2
+	local pw2 = player.w*2
+	local left = bot.x >= player.x - pwt and bot.x + bot.w < player.x + 1--left side of the player, used for checking attack
+	local right = bot.x >= player.x + player.w - 1 and bot.x + bot.w < player.x + 1 + pw2--right side of player, accounting for difference in width
+	local playerleft = bot.x + bot.w >= player.x and bot.x + bot.w < player.x + pwh --check the left half of the player and make see if the bot is in it
+	local playerright = bot.x > player.x + player.w - 1  and bot.x < player.x + player.w --same for the right side
+	local onplayer = playerleft or playerright--see if bot is on player, made into one statement
 	if bot.y == py then
 		--do checks for x
-		if bot.x + 8 >= px and bot.x <= px + 8  then
+		if left or right and (not onplayer) then
 			return true
 		end
 		return false
@@ -47,9 +55,30 @@ function can_attack_player(px, py)
 	return false
 end
 
+function bot_debug()
+	printh(
+		"bot (x, y) : ("..bot.x..
+		", "..bot.y..")"..
+		"player (x, y) : ("..player.x..
+		", "..player.y..")"..
+		" bot.goalx : "..bot.goalx..
+		" bot.action : "..bot.action..
+		" bot.aim : "..bot.aim
+		, 
+		" bot_movement_log.txt", false, true)
+end
+
 function bot_hit_player(px, py)
+	local pwt = player.w + 1
+	local pwh = player.w//2
+	local pw2 = player.w*2
+	local left = bot.x >= player.x - pwt and bot.x + bot.w < player.x + 1--left side of the player, used for checking attack
+	local right = bot.x >= player.x + pwt and bot.x + bot.w < player.x + pw2--right side of player, accounting for difference in width
+	local playerleft = bot.x + bot.w >= player.x and bot.x + bot.w <= player.x + pwh --check the left half of the player and make see if the bot is in it
+	local playerright = bot.x > player.x + pwh and bot.x < player.x + player.w --same for the right side
+	local onplayer = playerleft or playerright--see if bot is on player, made into one statement
 	if bot.y == py then
-		if bot.x >= flr(px) - 8 and bot.x <= ceil(px) + 8 and bot.spr == 97 then
+		if left or right or onplayer then
 			player.health -= 1
 		end
 	end
@@ -61,7 +90,7 @@ function update_attack_anim(t, px, py)
 			bot_hit_player(px, py)
 			bot.spr = 81
 			bot.anim = t
-		elseif atk_frames[atk_cnt] == 97 and atk_cnt > 25 and can_attack_player(px, py) then
+		elseif atk_frames[atk_cnt] == 97 and atk_cnt > 20 and can_attack_player(px, py) then
 			bot_hit_player(px, py)
 			bot.spr = 81
 			bot.anim = t
@@ -108,7 +137,7 @@ function draw_bot(t)
 			bot.spr = 81
 			bot.anim =  t
 		end
-	end	
+	end
 end
 
 function player_above_bot(px, py)
@@ -276,8 +305,8 @@ function update_bot(px, py, t)
 	--fix windmill bug -- getting close, still have a few edge cases to cover
 	--fix bug that isn't updating goalx to player.x properly
 
-	--fix the bug that is causing the bot to not go into the player when attacking
-	-- ^ fixed, but a new bug shows up that causes the bot to go in the opposite direction of player when moving
+	--bot can go inside of the player when attacking
+	--bot does attack correctly, but moves to player.x+8 always, need to stop this from happening
 	if bot.x <= 0 then
 		--this somehow fixes the bug causing the bot to favor the max over the min
 		--don't know how, don't care tbh

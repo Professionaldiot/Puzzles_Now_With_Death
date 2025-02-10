@@ -97,7 +97,6 @@ function _update()
 	end--if
 end--function
 
-
 function _draw()
 	cls()
 	map(0,0)
@@ -112,7 +111,7 @@ function _draw()
 	spr(player.spr,player.x,player.y)
 	camera(cx,cy)
 end
--->8
+
 function level_select_init()
 	lvl={
 	{name=1,x=4,y=176,cx=0,cy=152,g=false,ld=".level1.p8"},
@@ -195,7 +194,6 @@ function sel_move()
 	end
 end
 
--->8
 function next_level(lvl_on)
 		--function needs to be able to change our level from lvl_on to lvl_on+1
 		if lvl[lvl_on+1]["ld"]!="" then

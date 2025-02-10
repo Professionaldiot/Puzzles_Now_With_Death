@@ -99,10 +99,6 @@ end
 
 function draw_circle()
     line(c.x_center, c.y_center, c.x, c.y, 9)
-
-    line(player.x-10, player.y+8, player.x-10, player.y-8)
-
-    line(player.x+18, player.y+8, player.x+18, player.y-8)
 end
 
 function draw_health()

@@ -29,6 +29,7 @@ function _update()
     player_animate()
     make_circle()
     manage_health()
+    bot_debug()
     if collide_map(bot,"right",0) then
         bot.x-=1
     elseif collide_map(bot,"left",0) then
@@ -44,6 +45,8 @@ function _draw()
     spr(player.sp,player.x,player.y,1,1,player.flp)
     draw_health()
     draw_circle()
+    line(player.x-player.w, player.y+8, player.x-player.w, player.y-8)
+    line(player.x+(player.w*2), player.y+8, player.x+(player.w*2), player.y-8)
 end
 
 __gfx__
