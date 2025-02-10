@@ -2,6 +2,61 @@ pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
 
+function special_pickup_init(x, y, spr, min_spr)
+    --only one special pickup per level
+    pickup = {x = x, y = y, spr = spr, picked_up = false, anim = 0, max_spr = spr + 4, min_spr = spr}
+end
+
+function special_pickup_update()
+    if player.y == pickup.y then
+        if (player.x > pickup.x and player.x < pickup.x + 8) or 
+            (player.x + player.w > pickup.x and player.x + player.w < pickup.x + 8) then
+                pickup.picked_up = true
+        end
+    end
+end
+
+function special_pickup_draw()
+    if time() - pickup.anim >= 0.1 then
+        if pickup.spr >= pickup.max_spr - 1 then
+            pickup.spr = pickup.min_spr
+        else
+            pickup.spr += 1
+        end
+        pickup.anim = time()
+    end
+    if not pickup.picked_up then
+        spr(pickup.spr, pickup.x, pickup.y)
+    end
+end
+
+function weapon_pickup_init(x_table, y_table, possible_weapons_table)
+    --table[i] --> starts at one
+    pwt = possible_weapons_table
+    local c_x = count(x_table)
+    local c_y = count(y_table)
+    local c_total = c_x
+    if c_x != c_y then
+        if c_x > c_y then
+            c_total = c_y
+            --if the length of the x_table is shorter then the y_table, then
+            --we would be using c_x anyways, so since its the first assigned value, it doesn't matter
+        end
+    end
+    local time_table = {}
+    j = 0
+    while j < c_total do
+        add(time_table, 100+j)
+    end
+    i = 1
+    local weapon_pickups = {}
+    while i < c_total do
+        random(x_table[i], y_table[i], time_table[i], count(pwt))
+        add(weapon_pickups, {x = x_table[i], y_table[i]})
+        i+=1
+    end
+end
+
 function circle_init()
     c = {
         x = 0,

@@ -8,6 +8,7 @@ __lua__
 function random(x,y,t,cnt,prime)
 --  (prime(t + seed) + 
 --  (xy mod prime)) mod cnt
+--  cnt is the limit on the random number
 	prime = prime or 97
 	cnt = cnt or 100
 	xy=x*y
