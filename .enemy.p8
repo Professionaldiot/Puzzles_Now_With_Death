@@ -313,15 +313,16 @@ function player_above_bot(px, py)
 end
 
 function update_bot(px, py, t)
-	--todo for 1.0
-	--update the bot to let it attack the player
-	--fix ladder bug
-	--fix standing still bug
-	--fix windmill bug -- getting close, still have a few edge cases to cover
-	--fix bug that isn't updating goalx to player.x properly
 
-	--bot can go inside of the player when attacking
-	--bot does attack correctly, but moves to player.x+8 always, need to stop this from happening
+	--[[
+	todo for 1.0
+	*fix ladder bug
+	*fix standing still bug
+
+	*bot sometimes stops correctly, not rounding error anymore
+	*when bot.x + 8 > player.x the bot stands still, need to move him the opposite direction
+		*this should fix the bug that causes the bot to go in the opposite direction when on the right side of the player
+	]]
 	if bot.x <= 0 then
 		--this somehow fixes the bug causing the bot to favor the max over the min
 		--don't know how, don't care tbh
