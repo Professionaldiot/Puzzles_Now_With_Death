@@ -37,13 +37,18 @@ function botinit()
 end
 
 function can_attack_player(px, py)
+	if px - flr(px) <= 0.5 then
+		px = flr(px)
+	else
+		px = ceil(px)
+	end
 	local pwt = player.w+1
 	local pwh = player.w//2
 	local pw2 = player.w*2
-	local left = bot.x >= player.x - pwt and bot.x + bot.w < player.x + 1--left side of the player, used for checking attack
-	local right = bot.x >= player.x + player.w - 1 and bot.x + bot.w < player.x + 1 + pw2--right side of player, accounting for difference in width
-	local playerleft = bot.x + bot.w >= player.x and bot.x + bot.w < player.x + pwh --check the left half of the player and make see if the bot is in it
-	local playerright = bot.x > player.x + player.w - 1  and bot.x < player.x + player.w --same for the right side
+	local left = bot.x >= px - pwt and bot.x + bot.w < px + 1--left side of the player, used for checking attack
+	local right = bot.x >= px + player.w - 1 and bot.x + bot.w < px + 1 + pw2--right side of player, accounting for difference in width
+	local playerleft = bot.x + bot.w >= px and bot.x + bot.w < px + pwh --check the left half of the player and make see if the bot is in it
+	local playerright = bot.x > px + player.w - 1  and bot.x < px + player.w --same for the right side
 	local onplayer = playerleft or playerright--see if bot is on player, made into one statement
 	if bot.y == py then
 		--do checks for x
@@ -69,16 +74,21 @@ function bot_debug()
 end
 
 function bot_hit_player(px, py)
-	local pwt = player.w + 1
+	if px - flr(px) <= 0.5 then
+		px = flr(px)
+	else
+		px = ceil(px)
+	end
+	local pwt = player.w+1
 	local pwh = player.w//2
 	local pw2 = player.w*2
-	local left = bot.x >= player.x - pwt and bot.x + bot.w < player.x + 1--left side of the player, used for checking attack
-	local right = bot.x >= player.x + pwt and bot.x + bot.w < player.x + pw2--right side of player, accounting for difference in width
-	local playerleft = bot.x + bot.w >= player.x and bot.x + bot.w <= player.x + pwh --check the left half of the player and make see if the bot is in it
-	local playerright = bot.x > player.x + pwh and bot.x < player.x + player.w --same for the right side
+	local left = bot.x >= px - pwt and bot.x + bot.w < px + 1--left side of the player, used for checking attack
+	local right = bot.x >= px + player.w - 1 and bot.x + bot.w < px + 1 + pw2--right side of player, accounting for difference in width
+	local playerleft = bot.x + bot.w >= px and bot.x + bot.w < px + pwh --check the left half of the player and make see if the bot is in it
+	local playerright = bot.x > px + player.w - 1  and bot.x < px + player.w --same for the right side
 	local onplayer = playerleft or playerright--see if bot is on player, made into one statement
 	if bot.y == py then
-		if left or right or onplayer then
+		if left or right and (not onplayer) then
 			player.health -= 1
 		end
 	end
@@ -141,6 +151,11 @@ function draw_bot(t)
 end
 
 function player_above_bot(px, py)
+	if px - flr(px) <= 0.5 then
+		px = flr(px)
+	else
+		px = ceil(px)
+	end
 	--function for determining bot movement when the player is above the bot on the stage
 	--assume bot is below player
 	local temp = {}
