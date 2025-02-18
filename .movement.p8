@@ -743,53 +743,17 @@ function btn_update(btns, obj)
     elseif lvl1_buttons[3]["p"]==true then
         td_open()
     end
-    if lvl1_buttons[1].p == true then
-        if lvl1_buttons[1].sfx >= 0 and time() - lvl1_buttons[1].sfx <= 0.1 then
-          sfx(63, 3)
-          lvl1_buttons[1].p = false
-        elseif lvl1_buttons[1].sfx == 0 then
-          lvl1_buttons[1].sfx = time()
+    i = 1
+    while i <= #btns do
+        if btns[i].p == true then
+            if btns[i].sfx >= 0 and time() - btns[i].sfx <= 0.1 then
+                sfx(63, 3)
+                btns[i].p = false
+            elseif btns[i].sfx == 0 then
+                btns[i].sfx = time()
+            end
         end
-    end
-    if lvl1_buttons[2].p == true then
-        if lvl1_buttons[2].sfx >= 0 and time() - lvl1_buttons[2].sfx <= 0.1 then
-          sfx(63, 3)
-          lvl1_buttons[2].p = false
-        elseif lvl1_buttons[2].sfx == 0 then
-          lvl1_buttons[2].sfx = time()
-        end
-    end
-    if lvl1_buttons[3].p == true then
-        if lvl1_buttons[3].sfx >= 0 and time() - lvl1_buttons[3].sfx <= 0.1 then
-          sfx(63, 3)
-          lvl1_buttons[3].p = false
-        elseif lvl1_buttons[3].sfx == 0 then
-          lvl1_buttons[3].sfx = time()
-        end
-    end
-      if lvl1_buttons[4].p == true then
-        if lvl1_buttons[4].sfx >= 0 and time() - lvl1_buttons[4].sfx <= 0.1 then
-          sfx(63, 3)
-          lvl1_buttons[4].p = false
-        elseif lvl1_buttons[4].sfx == 0 then
-          lvl1_buttons[4].sfx = time()
-        end
-    end
-    if lvl1_buttons[5].p == true then
-        if lvl1_buttons[5].sfx >= 0 and time() - lvl1_buttons[5].sfx <= 0.1 then
-          sfx(63, 3)
-          lvl1_buttons[5].p = false
-        elseif lvl1_buttons[5].sfx == 0 then
-          lvl1_buttons[5].sfx = time()
-        end
-    end
-    if lvl1_buttons[6].p == true then
-        if lvl1_buttons[6].sfx >= 0 and time() - lvl1_buttons[6].sfx <= 0.1 then
-          sfx(63, 3)
-          lvl1_buttons[6].p = false
-        elseif lvl1_buttons[6].sfx == 0 then
-          lvl1_buttons[6].sfx = time()
-        end
+        i+=1
     end
     for b in all(btns) do
         if obj.x - 8 <= b.x and b.x <= obj.x + 4 and obj.y - 8 <= b.y and b.y <= obj.y + 2 and not b.p and b.sfx == 0 then
