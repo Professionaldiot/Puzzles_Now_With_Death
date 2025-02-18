@@ -724,25 +724,16 @@ end--function ladder()
 
 function btn_init()
     butts = {
-        { x = 216, y = 104, sp = 19, act = "tp", p = false },
-        { x = 72, y = 104, sp = 19, act = "nil", p = false },
-        { x = 136, y = 104, sp = 19, act = "door", p = false },
-        { x = 56, y = 48, sp = 19, act = "nil", p = false}
+        { x = 216, y = 104, sp = 19, act = "tp", p = false, sfx = 0},
+        { x = 72, y = 104, sp = 19, act = "nil", p = false, sfx = 0},
+        { x = 136, y = 104, sp = 19, act = "door", p = false, sfx = 0},
+        { x = 56, y = 48, sp = 19, act = "nil", p = false, sfx = 0}
     }
 end
 
 function btn_update(btns, obj)
     --updates the button sprites
     --if the player stands on them
-    if lvl1_buttons[1]["p"]==true then
-        save()
-        r_save(false)
-        load(lvl1_buttons[1]["act"])
-    elseif lvl1_buttons[2]["p"]==true then
-        td_open()
-    elseif lvl1_buttons[3]["p"]==true then
-        td_open()
-    end
     i = 1
     while i <= #btns do
         if btns[i].p == true then

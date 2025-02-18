@@ -31,7 +31,7 @@ end
 function _update()
 	player_update()
 	box_update()	
-	btn_update(butts,player)
+	btn_update(butts, player)
 	if player.x >= 256 then
 		if box[3]['x'] > 240 then
 			spring_update(3)

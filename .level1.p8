@@ -60,6 +60,15 @@ end
 
 --update and draw
 function _update()
+  if lvl1_buttons[1]["p"]==true then
+    save()
+    r_save(false)
+    load(lvl1_buttons[1]["act"])
+  elseif lvl1_buttons[2]["p"]==true then
+    td_open()
+  elseif lvl1_buttons[3]["p"]==true then
+    td_open()
+end
   player_update()
   special_pickup_update()
   ladder()
