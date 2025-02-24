@@ -29,6 +29,7 @@ function _update()
     player_animate()
     make_circle()
     manage_health()
+    player_hit_bot(player.x, player.y)
     bot_debug()
     if collide_map(bot,"right",0) then
         bot.x-=1
@@ -43,7 +44,7 @@ function _draw()
     map(0,0)
     spr(bot.spr,bot.x,bot.y,1,1,bot.flp)
     spr(player.sp,player.x,player.y,1,1,player.flp)
-    spr(atk_spr.spr, atk_spr.x, atk_spr.y)
+    spr(atk_spr.spr, atk_spr.x, atk_spr.y, 1, 1, atk_spr.flp)
     draw_health()
     draw_circle()
 end

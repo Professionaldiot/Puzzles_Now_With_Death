@@ -10,6 +10,7 @@ todo:
 make the bot take fall damage
 ]]
 function botinit()
+	levels = {".level1.p8", ".level2.p8"}
 	atk_frames={96,96,96,96,96,96,96,96,96,96,96,96,96,96,96,96,96,96,97,97,97,97,97,97,97,97,97,97,97,97,"end"}
 	atk_cnt=0
 
@@ -22,7 +23,7 @@ function botinit()
 	
 	bot = {}
 		bot.dead = false
-		bot.hp = 50
+		bot.health = 50
 		bot.x=32
 		bot.y=100
 		bot.dy=0
@@ -49,13 +50,13 @@ function player_hit_bot(px, py)
 	local bot_left = px > bot.x - bot.w and px < bot.x + bw_h --player on the left side of the bot
 	if bot_right then
 		if player.flp and player.hitting then
-			bot.health -= 1
+			bot.health -= 10
 			player.hitting = false
 		end
 	end
 	if bot_left then
 		if player.flp and player.hitting then
-			bot.health -= 1
+			bot.health -= 10
 			player.hitting = false
 		end
 	end
@@ -386,6 +387,11 @@ function update_bot(px, py, t)
 	bot.dy += bot.g
 	if bot.dead then
 		bot.spr = 62
+		local temp = 0
+		for i = 1, dget(15) do
+			temp = i
+		end
+		load(levels[temp])
 	elseif can_attack_player(px, py)then
 		update_attack_anim(t, px, py)
 	elseif py < bot.y then
