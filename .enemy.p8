@@ -52,7 +52,17 @@ function can_attack_player(px, py)
 	local onplayer = playerleft or playerright--see if bot is on player, made into one statement
 	if bot.y == py then
 		--do checks for x
-		if left or right and (not onplayer) then
+		if not (left or right or onplayer) then
+			bot.action = "walk"
+		elseif bot.action == "attack" then
+			if bot.aim == "left" then
+				bot.x -= 2
+			elseif bot.aim == "right" and playerright then
+				bot.aim = "left"
+				bot.x -= 2
+			end
+		end
+		if left or right or onplayer then
 			return true
 		end
 		return false
@@ -88,7 +98,7 @@ function bot_hit_player(px, py)
 	local playerright = bot.x > px + player.w - 1  and bot.x < px + player.w --same for the right side
 	local onplayer = playerleft or playerright--see if bot is on player, made into one statement
 	if bot.y == py then
-		if left or right and (not onplayer) then
+		if left or right or onplayer then
 			player.health -= 1
 		end
 	end
@@ -313,16 +323,11 @@ function player_above_bot(px, py)
 end
 
 function update_bot(px, py, t)
-
-	--[[
-	todo for 1.0
-	*fix ladder bug
-	*fix standing still bug
-
-	*bot sometimes stops correctly, not rounding error anymore
-	*when bot.x + 8 > player.x the bot stands still, need to move him the opposite direction
-		*this should fix the bug that causes the bot to go in the opposite direction when on the right side of the player
-	]]
+	if px - flr(px) <= 0.5 then
+		px = flr(px)
+	else
+		px = ceil(px)
+	end
 	if bot.x <= 0 then
 		--this somehow fixes the bug causing the bot to favor the max over the min
 		--don't know how, don't care tbh
@@ -350,7 +355,7 @@ function update_bot(px, py, t)
 	end
 
 	bot.dy += bot.g
-	if can_attack_player(px, py) then
+	if can_attack_player(px, py)then
 		update_attack_anim(t, px, py)
 	elseif py < bot.y then
 		local goal = player_above_bot(px, py)
@@ -371,15 +376,7 @@ function update_bot(px, py, t)
 				stored_jump_y = bot.y
 			end
 		end
-	elseif bot.x + 8 >= px and bot.x <= px + 8 and bot.aim == "right" then
-		if can_attack_player(px, py) then
-			update_attack_anim(t, px, py)
-		end
-	elseif bot.x + 8 >= px and bot.x <= px + 8 and bot.aim == "left" then
-		if can_attack_player(px, py) then
-			update_attack_anim(t, px, py)
-		end
-	else
+	elseif bot.action != "attack" then
 		if bot.goalx==nil then
 			if bot.x>=px then
 				move_goalx(flr(px)+8)
@@ -446,10 +443,10 @@ function check_px(px)
 	--bots' "safe space"
 	local right_side=(bot.q3+(abs(bot.q3-bot.mid)))
 	--does the right side
-	if left_side<=px-8 and px+8<bot.mid then
-		move_goalx(abs(bot.mid+left_side))
-	elseif bot.mid<px-8 and px+8<=right_side then
-		move_goalx(abs(right_side-bot.mid))
+	if left_side <= px - 8 and px + 8 < bot.mid then
+		move_goalx(abs(bot.mid + left_side))
+	elseif bot.mid < px - 8 and px + 8 <= right_side then
+		move_goalx(abs(right_side - bot.mid))
 	elseif bot.x < px then
 		move_goalx(px)
 	elseif bot.x > px then
