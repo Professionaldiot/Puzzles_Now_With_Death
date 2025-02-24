@@ -45,7 +45,7 @@ function _init()
   r_save(false)
   td_init()
   lvl1_buttons={
-  {x = 352,y = 112, sp = 6, act = "level2.p8", p = false, sfx = 0},
+  {x = 352,y = 112, sp = 6, act = ".boss-room.p8", p = false, sfx = 0},
   {x = 136, y = 48, sp = 6, p = false, sfx = 0},
   {x = 24, y = 24, sp = 6, p = false, sfx = 0},
   {x = 144, y = 112, sp = 8, p = false, sfx = 0},
@@ -63,6 +63,7 @@ function _update()
   if lvl1_buttons[1]["p"]==true then
     save()
     r_save(false)
+    dset(15, "level2.p8")
     load(lvl1_buttons[1]["act"])
   elseif lvl1_buttons[2]["p"]==true then
     td_open()
@@ -87,6 +88,7 @@ function _draw()
   td_draw()
   special_pickup_draw()
   spr(player.sp,player.x,player.y,1,1,player.flp)
+  spr(atk_spr.sp, atk_spr.x, atk_spr.y)
   draw_health()
 end
 

@@ -228,7 +228,13 @@ function debug_any()
     end
 end
 
+
 function player_init()
+    atk_spr = {}
+        atk_spr.anim = 0
+        atk_spr.spr = 10
+        atk_spr.x = 0
+        atk_spr.y = 0
     debug = true
     old_x = 512
     old_y = 512
@@ -257,7 +263,9 @@ function player_init()
         climbing = false,
         climbing_down = false,
         sliding = false,
-        landed = false
+        landed = false,
+        attacking = false,
+        hitting = false
     }
 
     gravity = 0.3
@@ -287,17 +295,26 @@ function player_update()
         --physics
         player.dy += gravity
         player.dx *= friction
-
+        if btnp(🅾️) then
+            player.attacking = true
+        end
         --controls
         if btn(⬅️) then
-            player.dx -= player.acc
-            player.running = true
-            player.flp = true
+            if not player.attacking then
+                player.dx -= player.acc
+                player.running = true
+                player.flp = true
+            end
         end
         if btn(➡️) then
-            player.dx += player.acc
-            player.running = true
-            player.flp = false
+            if not player.attacking then
+                player.dx += player.acc
+                player.running = true
+                player.flp = false
+            end
+        end
+        if player.attacking then
+            player.dx = 0
         end
 
         --slide
@@ -305,7 +322,8 @@ function player_update()
                 and not btn(⬅️)
                 and not btn(➡️)
                 and not player.falling
-                and not player.jumping then
+                and not player.jumping 
+                and not player.attacking then
             player.running = false
             player.sliding = true
         end
@@ -316,6 +334,7 @@ function player_update()
             player.dy -= player.boost
             player.landed = false
         end
+        --❎🅾️
 
         --check collision up and down
         if player.dy > 0 then
@@ -390,6 +409,33 @@ function player_update()
         player.anim = time()
         player.dy = 0
         player.dx = 0
+    end
+    if player.attacking and not player.hitting then
+        if time() - atk_spr.anim >= .3 then
+            player.hitting = true
+            player.attacking = false
+            atk_spr.anim = time()
+            atk_spr.spr -= 1
+            atk_spr.y = player.y
+            if player.flp then
+                atk_spr.x = player.x - 8
+            else
+                atk_spr.x = player.x + 8
+            end
+        else
+
+        end
+    elseif player.hitting and not player.attacking then
+        if time() - atk_spr.anim > 0.5 then
+            player.hitting = false
+            atk_spr.anim = time()
+            atk_spr.spr -= 1
+        end
+    elseif not player.hitting and not player.attacking then
+        if time() - atk_spr.anim > 0.5 then
+            atk_spr.spr = 10
+            atk_spr.anim = 0
+        end
     end
 end
 

@@ -4,7 +4,11 @@ __lua__
 --goal of this is to create the
 --'ai' needed to move an enemy
 --towards the player
---64,65,80,81
+--64,65,80,81,62
+--[[
+todo:
+make the bot take fall damage
+]]
 function botinit()
 	atk_frames={96,96,96,96,96,96,96,96,96,96,96,96,96,96,96,96,96,96,97,97,97,97,97,97,97,97,97,97,97,97,"end"}
 	atk_cnt=0
@@ -17,6 +21,8 @@ function botinit()
 	prev_jump_y = 0
 	
 	bot = {}
+		bot.dead = false
+		bot.hp = 50
 		bot.x=32
 		bot.y=100
 		bot.dy=0
@@ -34,6 +40,29 @@ function botinit()
 		bot.mid=0
 		bot.q3=0
 		--65,81,64,80,96,97
+end
+
+function player_hit_bot(px, py)
+	local bw_d = bot.w*2
+	local bw_h = bot.w/2
+	local bot_right = px > bot.x + bw_h and px < bot.x + bw_d --player on the right side of the bot
+	local bot_left = px > bot.x - bot.w and px < bot.x + bw_h --player on the left side of the bot
+	if bot_right then
+		if player.flp and player.hitting then
+			bot.health -= 1
+			player.hitting = false
+		end
+	end
+	if bot_left then
+		if player.flp and player.hitting then
+			bot.health -= 1
+			player.hitting = false
+		end
+	end
+	if bot.health <= 0 then
+		bot.dead = true
+		bot.health = 0
+	end
 end
 
 function can_attack_player(px, py)
@@ -355,7 +384,9 @@ function update_bot(px, py, t)
 	end
 
 	bot.dy += bot.g
-	if can_attack_player(px, py)then
+	if bot.dead then
+		bot.spr = 62
+	elseif can_attack_player(px, py)then
 		update_attack_anim(t, px, py)
 	elseif py < bot.y then
 		local goal = player_above_bot(px, py)
@@ -376,7 +407,7 @@ function update_bot(px, py, t)
 				stored_jump_y = bot.y
 			end
 		end
-	elseif bot.action != "attack" then
+	else
 		if bot.goalx==nil then
 			if bot.x>=px then
 				move_goalx(flr(px)+8)
