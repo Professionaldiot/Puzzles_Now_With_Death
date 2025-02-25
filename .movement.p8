@@ -418,7 +418,7 @@ function player_update()
             player.hitting = true
             player.attacking = false
             atk_spr.anim = time()
-            atk_spr.spr -= 1
+            atk_spr.spr = 9
             atk_spr.y = player.y
             atk_spr.flp = player.flp
             if player.flp then
@@ -433,7 +433,7 @@ function player_update()
         if time() - atk_spr.anim > 0.1 then
             player.hitting = false
             atk_spr.anim = time()
-            atk_spr.spr -= 1
+            atk_spr.spr = 8
         end
     elseif not player.hitting and not player.attacking then
         if time() - atk_spr.anim > 0.1 then

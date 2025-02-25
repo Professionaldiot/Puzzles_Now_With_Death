@@ -18,7 +18,7 @@ function _init()
 	menuitem(3,"main menu",function() load("main-menu.p8") end)
 	menuitem(4,"level reset",function() reset_level() end)
 	menuitem(5,"health = 1",function() player.health = 1 end)
-	if dget(12)>0 and dget(12)<2 then
+	if dget(12) > 0 and dget(12) < 2 then
 		dset(12,2)
 	end
 	if dget(13,true) then
