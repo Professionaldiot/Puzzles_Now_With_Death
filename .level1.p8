@@ -59,7 +59,7 @@ function _update()
     save()
     r_save(false)
     dset(15, 2)
-    load(lvl1_buttons[1]["act"])
+    load(lvl1_buttons[1].act)
   elseif lvl1_buttons[2]["p"]==true then
     td_open()
   elseif lvl1_buttons[3]["p"]==true then
