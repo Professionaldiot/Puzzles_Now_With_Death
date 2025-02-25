@@ -783,7 +783,8 @@ function btn_init()
         { x = 216, y = 104, sp = 19, act = "tp", p = false, sfx = 0},
         { x = 72, y = 104, sp = 19, act = "nil", p = false, sfx = 0},
         { x = 136, y = 104, sp = 19, act = "door", p = false, sfx = 0},
-        { x = 56, y = 48, sp = 19, act = "nil", p = false, sfx = 0}
+        { x = 56, y = 48, sp = 19, act = "nil", p = false, sfx = 0},
+        { x = 57*8, y = 13 * 8, sp = 19, act=".boss-room.p8", p = false, sfx = 0}
     }
 end
 
