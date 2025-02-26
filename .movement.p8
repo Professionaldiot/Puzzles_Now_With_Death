@@ -235,6 +235,7 @@ function player_init()
         atk_spr.x = 0
         atk_spr.y = 0
         atk_spr.flp = false
+        atk_spr.charge = 0
     debug = true
     old_x = 512
     old_y = 512
@@ -243,6 +244,7 @@ function player_init()
         spring = false,
         health = 99,
         max_health = 99,
+        base_dmg = 1,
         start = 0,
         sp = 1,
         x = 59,
@@ -265,7 +267,8 @@ function player_init()
         sliding = false,
         landed = false,
         attacking = false,
-        hitting = false
+        hitting = false,
+        charging = false
     }
 
     gravity = 0.3
@@ -325,14 +328,32 @@ function player_update()
             player.landed = false
         end
         --❎🅾️
-        if btnp(🅾️) then
+        if btn(🅾️) then
             player.attacking = true
+            atk_spr.flp = player.flp 
+            if not player.charging or atk_spr.charge == 0 then
+                player.charging = true
+                atk_spr.charge = time()
+            end
+        elseif btnp(🅾️) then
+            player.attacking = false
+            player.charging = false
+        end
+        if not btn(🅾️) then
+            player.attacking = false
+            player.hitting = false
+            player.charging = false
+            player.base_dmg = 1
+            atk_spr.charge = 0
+        end
+        if atk_spr.charge != 0 and player.charging then
+            player.base_dmg = mid(1, (time() - atk_spr.charge), 10)
         end
 
-        if not player.attacking and not player.hitting then
+        if not player.attacking and not player.hitting and not player.charging then
             lold_x = player.x
             lold_y = player.y
-        elseif player.attacking or player.hitting then
+        elseif player.attacking or player.hitting or player.charging then
             player.x = lold_x
             player.y = lold_y
             player.dy = 0
@@ -438,7 +459,7 @@ function player_update()
     elseif not player.hitting and not player.attacking then
         if time() - atk_spr.anim > 0.1 then
             atk_spr.spr = 10
-            atk_spr.anim = 0
+            atk_spr.anim = time()
         end
     end
     if atk_spr.spr < 8 then
@@ -460,6 +481,8 @@ function player_animate()
         player.sp = 33
     elseif player.sliding then
         player.sp = 48
+    elseif player.charging then
+        player.sp = 47
     elseif player.running then
         if time() - player.anim > .1 then
             player.anim = time()
