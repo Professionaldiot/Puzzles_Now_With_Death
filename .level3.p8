@@ -31,8 +31,7 @@ function _draw()
     spr(player.sp, player.x, player.y, 1, 1, player.flp)
     spr(atk_spr.spr, atk_spr.x, atk_spr.y, 1, 1, atk_spr.flp)
     if proj.dx != 0 then
-        
-        spr(24, proj.x, proj.y, 1, 1, player.flp)
+        spr(24, proj.x, proj.y, 1, 1, proj.flp)
     end
     draw_health()
 end

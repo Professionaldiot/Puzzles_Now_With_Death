@@ -237,42 +237,44 @@ function projectile_init()
         x_start = 0,
         x_end = 0,
         dmg = 0,
-        dx = 0
+        dx = 0,
+        flp = 0
     }
 end
 
 function projectile_update()
+    if proj.dmg == 0 or player.charging then
+        proj.dmg = player.base_dmg
+        proj.y = player.y
+    end
     if (not player.charging) and player.shooting and player.ranged then
         --when the player stops holding the charge, store the damage the proj will do on impact
-        if proj.dmg == 0 or player.charging then
-            proj.dmg = player.base_dmg
-            proj.y = player.y
-            atk_spr.charge = 0
-            player.charging = false
-        end
         --then set atk_spr.charge to 0 and player.charging = false
         --dget(60) stores the value for the start of the line
         --dget(61) stores the max value of the line
+        if proj.flp == 0 then
+            proj.flp = player.flp
+        end
         if proj.x_start == 0 then
             if player.flp then
                 proj.x_start = player.x
-                proj.dx = -1-- the player is now out of control of the bullet until it stops flying
+                proj.dx = -2.5 -- the player is now out of control of the bullet until it stops flying
             else
                 proj.x_start = player.x + 8
-                proj.dx = 1 -- the player is now out of control of the bullet until it stops flying
+                proj.dx = 2.5 -- the player is now out of control of the bullet until it stops flying
             end
         end
         --the projectile can only go so far, need to max it out on the edge of the screen
         if proj.x_end == 0 then
             if player.flp then
-                proj.x_end = (player.x + (player.x - cam_x))
+                proj.x_end = (player.x - (player.x - cam_x))
             else
                 proj.x_end = (player.x + (128 - (player.x - cam_x)))
             end
         end
         if proj.x == 0 then
             proj.x = player.x -- set the starting point for the proj, this RAM address will be what moves in value
-        elseif proj.x > 0 and (proj.dx == -1 and (proj.x > proj.x_end) or (proj.dx == 1 and proj.x < proj.x_end)) then
+        elseif proj.x > 0 and ((proj.dx == -2.5 and (proj.x > proj.x_end)) or (proj.dx == 2.5 and (proj.x < proj.x_end))) then
             proj.x += proj.dx
         else -- the proj reached the end of the path, reset everything
             proj.x = 0
@@ -281,6 +283,7 @@ function projectile_update()
             proj.x_end = 0
             proj.dmg = 0
             proj.dx = 0
+            proj.flp = 0
             player.shooting = false
         end
     end
@@ -431,6 +434,7 @@ function player_update()
         end
         if atk_spr.charge != 0 and player.charging then
             player.base_dmg = mid(1, (time() - atk_spr.charge), 10)
+            
         end
         projectile_update()
 
