@@ -230,50 +230,64 @@ function debug_any()
     end
 end
 
-function projectile_math()
-    if (not player.shooting) and player.ranged then
+function projectile_init()
+    proj = {
+        x = 0,
+        y = 0,
+        x_start = 0,
+        x_end = 0,
+        dmg = 0,
+        dx = 0
+    }
+end
+
+function projectile_update()
+    if (not player.charging) and player.shooting and player.ranged then
         --when the player stops holding the charge, store the damage the proj will do on impact
-        if dget(63) == 0 then
-            dset(63, player.base_dmg)
-            dset(58, player.y)
+        if proj.dmg == 0 or player.charging then
+            proj.dmg = player.base_dmg
+            proj.y = player.y
             atk_spr.charge = 0
             player.charging = false
         end
         --then set atk_spr.charge to 0 and player.charging = false
         --dget(60) stores the value for the start of the line
         --dget(61) stores the max value of the line
-        if dget(60) <= 0 then
+        if proj.x_start == 0 then
             if player.flp then
-                dset(60, player.x)
-                dset(59, -1) -- the player is now out of control of the bullet until it stops flying
+                proj.x_start = player.x
+                proj.dx = -1-- the player is now out of control of the bullet until it stops flying
             else
-                dset(60, player.x + 8)
-                dset(59, 1) -- the player is now out of control of the bullet until it stops flying
+                proj.x_start = player.x + 8
+                proj.dx = 1 -- the player is now out of control of the bullet until it stops flying
             end
         end
         --the projectile can only go so far, need to max it out on the edge of the screen
-        if dget(61) <= 0 then
+        if proj.x_end == 0 then
             if player.flp then
-                dset(61, (player.x + (player.x - cam_x)))
+                proj.x_end = (player.x + (player.x - cam_x))
             else
-                dset(61, (player.x + (128 - (player.x - cam_x))))
+                proj.x_end = (player.x + (128 - (player.x - cam_x)))
             end
         end
-        if dget(62) <= 0 then
-            dset(62, player.x) -- set the starting point for the proj, this RAM address will be what moves in value
-        elseif dget(62) > 0 and (dget(59) == -1 and dget(62) > dget(61)) or (dget(59) == 1 and dget(62) < dget(61)) then
-            dset(62, dget(62) + dget(59))
+        if proj.x == 0 then
+            proj.x = player.x -- set the starting point for the proj, this RAM address will be what moves in value
+        elseif proj.x > 0 and (proj.dx == -1 and (proj.x > proj.x_end) or (proj.dx == 1 and proj.x < proj.x_end)) then
+            proj.x += proj.dx
         else -- the proj reached the end of the path, reset everything
-            dset(59, 0)
-            dset(60, 0)
-            dset(61, 0)
-            dset(62, 0)
-            dset(63, 0)
+            proj.x = 0
+            proj.y = 0
+            proj.x_start = 0
+            proj.x_end = 0
+            proj.dmg = 0
+            proj.dx = 0
+            player.shooting = false
         end
     end
 end
 
 function player_init()
+    projectile_init()
     atk_spr = {}
         atk_spr.anim = 0
         atk_spr.spr = 10
@@ -400,6 +414,7 @@ function player_update()
             if not player.charging and atk_spr.charge == 0 then
                 player.charging = true
                 atk_spr.charge = time()
+                projectile_init()
             end
         end
         if (not btn(🅾️)) and (player.attacking or player.hitting) then
@@ -409,17 +424,15 @@ function player_update()
             player.base_dmg = 1
             atk_spr.charge = 0
         end
-        if (not btn(🅾️)) and (player.ranged or player.hitting) then
-            player.shooting = false
+        if (not btn(🅾️)) and (player.ranged or player.shooting) then
+            player.charging = false
             player.base_dmg = 1
             atk_spr.charge = 0
         end
         if atk_spr.charge != 0 and player.charging then
             player.base_dmg = mid(1, (time() - atk_spr.charge), 10)
         end
-        if atk_spr.charge != 0 and player.charging then
-            projectile_math()
-        end
+        projectile_update()
 
         if not player.attacking and not player.hitting and not player.charging then
             lold_x = player.x
