@@ -366,7 +366,7 @@ function player_update()
             player.base_dmg = 1
             atk_spr.charge = 0
         elseif (not btn(🅾️)) and (player.ranged or player.hitting) then
-            player.shotting = false
+            player.shooting = false
             player.hitting = false
             player.charging = false
             player.base_dmg = 1
