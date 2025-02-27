@@ -2,6 +2,8 @@ pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
 
+--export -i 64 pnwd.bin .level1.p8 .level2.p8 .level3.p8 .boss-room.p8
+
 function special_pickup_init(x, y, spr, min_spr)
     --only one special pickup per level
     pickup = {x = x, y = y, spr = spr, picked_up = false, anim = 0, max_spr = spr + 4, min_spr = spr}
