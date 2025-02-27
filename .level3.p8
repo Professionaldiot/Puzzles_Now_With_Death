@@ -30,6 +30,9 @@ function _draw()
     camera(cam_x, cam_y)
     spr(player.sp, player.x, player.y, 1, 1, player.flp)
     spr(atk_spr.spr, atk_spr.x, atk_spr.y, 1, 1, atk_spr.flp)
+    if dget(59) != 0 then
+        pset(dget(62), dget(58), 5)
+    end
     draw_health()
 end
 
