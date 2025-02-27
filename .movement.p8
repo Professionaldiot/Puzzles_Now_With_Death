@@ -270,7 +270,10 @@ function player_init()
         landed = false,
         attacking = false,
         hitting = false,
-        charging = false
+        shooting = false,
+        charging = false,
+        melee = true,
+        ranged = false
     }
 
     gravity = 0.3
@@ -294,7 +297,9 @@ function player_update()
                " player.y: "..player.y..
                " player.dx: "..player.dx..
                " player.dy: "..player.dy..
-               " player.sp: "..player.sp, "player_movement_log.txt", false, true)
+               " player.sp: "..player.sp..
+               " atk_spr.spr: "..atk_spr.spr..
+               " atk_spr.charge: "..atk_spr.charge, "player_movement_log.txt", false, true)
     end
     if not player.dead then
         --physics
@@ -330,19 +335,38 @@ function player_update()
             player.landed = false
         end
         --❎🅾️
-        if btn(🅾️) then
+        if btnp(❎) then
+            if player.melee then 
+                player.ranged = true
+                player.melee = false
+            else
+                player.melee = true
+                player.ranged = false
+            end
+        end
+        if btn(🅾️) and player.melee then
             player.attacking = true
             atk_spr.flp = player.flp 
-            if not player.charging or atk_spr.charge == 0 then
+            if not player.charging and atk_spr.charge == 0 then
                 player.charging = true
                 atk_spr.charge = time()
             end
-        elseif btnp(🅾️) then
-            player.attacking = false
-            player.charging = false
+        elseif btn(🅾️) and player.ranged then
+            player.shooting = true
+            atk_spr.flp = player.flp
+            if not player.charging and atk_spr.charge == 0 then
+                player.charging = true
+                atk_spr.charge = time()
+            end
         end
-        if not btn(🅾️) then
+        if (not btn(🅾️)) and (player.attacking or player.hitting) then
             player.attacking = false
+            player.hitting = false
+            player.charging = false
+            player.base_dmg = 1
+            atk_spr.charge = 0
+        elseif (not btn(🅾️)) and (player.ranged or player.hitting) then
+            player.shotting = false
             player.hitting = false
             player.charging = false
             player.base_dmg = 1
@@ -483,8 +507,10 @@ function player_animate()
         player.sp = 33
     elseif player.sliding then
         player.sp = 48
-    elseif player.charging then
+    elseif player.attacking and player.melee then
         player.sp = 47
+    elseif (player.charging or player.shooting) and player.ranged then
+        player.sp = 31
     elseif player.running then
         if time() - player.anim > .1 then
             player.anim = time()
@@ -494,7 +520,7 @@ function player_animate()
                 player.sp = 17
             end
         end
-    else
+    elseif atk_spr.charge == 0 or (not player.attacking and not player.hitting and not player.shooting and not player.charging) then
         --player idle
         if time() - player.anim > .3 then
             player.anim = time()
