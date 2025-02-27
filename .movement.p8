@@ -509,7 +509,7 @@ function player_animate()
         player.sp = 48
     elseif player.attacking and player.melee then
         player.sp = 47
-    elseif (player.charging or player.shooting) and player.ranged then
+    elseif player.charging and player.ranged then
         player.sp = 31
     elseif player.running then
         if time() - player.anim > .1 then
