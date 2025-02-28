@@ -111,12 +111,12 @@ function level_select_init()
 	lvl={
 	{name=1,x=4,y=176,cx=0,cy=152,g=false,ld=".level1.p8"},
 	{name=2,x=180,y=176,cx=144,cy=152,g=false,ld=".level2.p8"},
-	{name=3,x=356,y=176,cx=288,cy=152,g=false,ld=""},
-	{name=4,x=532,y=176,cx=432,cy=152,g=false,ld=""},
-	{name=5,x=580,y=200,cx=576,cy=152,g=false,ld=""},
-	{name=6,x=756,y=200,cx=720,cy=152,g=false,ld=""},
-	{name=7,x=932,y=200,cx=864,cy=152,g=false,ld=""},
-	{name=8,x=964,y=56,cx=864,cy=8,g=false,ld=""}}
+	{name=3,x=356,y=176,cx=288,cy=152,g=false,ld=".level3.p8"},
+	{name=4,x=532,y=176,cx=432,cy=152,g=false,ld=".level4.p8"},
+	{name=5,x=580,y=200,cx=576,cy=152,g=false,ld=".level5.p8"},
+	{name=6,x=756,y=200,cx=720,cy=152,g=false,ld=".level6.p8"},
+	{name=7,x=932,y=200,cx=864,cy=152,g=false,ld=".level7.p8"},
+	{name=8,x=964,y=56,cx=864,cy=8,g=false,ld=".level8.p8"}}
 end
 
 

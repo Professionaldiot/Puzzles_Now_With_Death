@@ -23,6 +23,7 @@ function _init()
 	end
 	if dget(13,true) then
 		lload()
+		
 		player.health = dget(4)
 		dset(13,false)
 	end
