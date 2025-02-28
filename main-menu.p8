@@ -2,9 +2,6 @@ pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
 function _init()
-	#include .movement.p8
-	#include .enemy.p8
-	botinit()
 	cartdata("dc_capstone")
 	lvl_hl=1
 	player={}
@@ -17,7 +14,7 @@ function _init()
 	canmove_d=true
 	canmove_u=true
 	action="play"
-	version="0.9.9.8"
+	version="1.0.0.0"
 	level_select_init()
 end
 
@@ -98,10 +95,10 @@ end--function
 function _draw()
 	cls()
 	map(0,0)
-	local str="version: a-"
-	print(str..version,39,112,7)
-	print(str..version,167,112,7)
-	print(str..version,295,112,7)
+	local str="version: b-"
+	print(str..version,((72-#(str..version))/2),112,7)
+	print(str..version,((72-#(str..version))/2)+128,112,7)
+	print(str..version,((72-#(str..version))/2)+256,112,7)
 	print("press: z/🅾️",80,38,8)
 	print("press: z/🅾️",336,62,8)
 	print("press: z/🅾️",208,87,8)

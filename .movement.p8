@@ -234,12 +234,39 @@ function projectile_init()
     proj = {
         x = 0,
         y = 0,
+        w = 8,
+        h = 8,
         x_start = 0,
         x_end = 0,
         dmg = 0,
         dx = 0,
-        flp = 0
+        flp = 0,
+        stop = false
     }
+end
+
+function projectile_hit_reg()
+    --make a box around it that will do damage ONCE, then remove it
+    local bx = bot.x + 4
+    local by = bot.y + 4 -- the middle of the bot is probs best for hit reg
+    local x_check = bx > proj.x and bx < proj.x + 8
+    local y_check = by > proj.y and by < proj.y + 8
+    local hit_bot = x_check and y_check
+    if proj.dx > 0 then
+        if collide_map(proj, "right", 0) then
+            proj.stop = true
+        elseif hit_bot then
+            proj.stop = true
+            bot.health -= proj.dmg
+        end
+    elseif proj.dx < 0 then
+        if collide_map(proj, "left", 0) then
+            proj.stop = true
+        elseif hit_bot then
+            proj.stop = true
+            bot.health -= proj.dmg
+        end
+    end
 end
 
 function projectile_update()
@@ -247,7 +274,17 @@ function projectile_update()
         proj.dmg = player.base_dmg
         proj.y = player.y
     end
-    if (not player.charging) and player.shooting and player.ranged then
+    projectile_hit_reg()
+    if proj.stop then
+        proj.x = 0
+        proj.y = 0
+        proj.x_start = 0
+        proj.x_end = 0
+        proj.dmg = 0
+        proj.dx = 0
+        proj.flp = 0
+        player.shooting = false
+    elseif (not player.charging) and player.shooting and player.ranged then
         --when the player stops holding the charge, store the damage the proj will do on impact
         --then set atk_spr.charge to 0 and player.charging = false
         --dget(60) stores the value for the start of the line
