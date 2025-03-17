@@ -596,10 +596,15 @@ function player_update()
 end
 
 function player_animate()
-    if player.climbing then
-        player.sp = 49
-    elseif player.climbing_down then
-        player.sp = 50
+    if player.climbing or player.climbing_down then
+        if time() - player.anim > .3 then
+            player.anim = time()
+            if player.sp == 49 then
+                player.sp = 50
+            else
+                player.sp = 49
+            end
+        end
     elseif player.jumping then
         player.sp = 32
     elseif player.falling then
