@@ -3,6 +3,41 @@ version 42
 __lua__
 
 --export -i 64 pnwd.bin .level1.p8 .level2.p8 .level3.p8 .boss-room.p8
+function door_init(x, y)
+    door = {x = x, y = y, open = false, sp = 79}
+end
+
+function door_update(btn_list, index_list)
+    --door_amnt is the total amount of doors, 0 < door_amnt < 1 to not stress the program too much
+    --index_list is a table like the following: {1,3,4}, this tells the program where to check the button list for door stuff
+    -- 0 < #index_list < 5
+    if player.flp and not door.open then
+        if player.x < door.x + 8 and player.x > door.x and player.y == door.y then
+            --player is to the right of the door, and its not open, push them out
+            player.dx = 0
+            player.x = door.x + 8
+        end
+    else
+        if player.x + 8 > door.x and player.x + 8 < door.x + 8 and player.y == door.y then
+            player.dx = 0
+            player.x = door.x - 8
+        end
+    end
+    all_pressed = false
+    if not all_pressed then
+        all_pressed = true
+        for item in all(index_list) do
+            if btn_list[item].p == false then
+                all_pressed = false
+            end
+        end
+    end
+end
+
+function door_draw()
+    spr(door.sp, door.x, door.y)
+end
+
 
 function special_pickup_init(x, y, spr, min_spr)
     --only one special pickup per level
@@ -142,7 +177,7 @@ end
 
 function make_circle()
     pos = update_circle_x(c.angle_in_deg)
-    dis = dist(c.x_center, pos["x1"], c.y_center, pos["y1"])
+    dis = dist(c.x_center, pos.x1, c.y_center, pos.y1)
     change_angle(c.angle_in_deg)
     c.angle_in_deg += c.da
     if c.angle_in_deg > 360 then
@@ -150,8 +185,8 @@ function make_circle()
     elseif c.angle_in_deg < 0 then
         c.angle_in_deg += 360
     end
-    c.x = pos['x1']
-    c.y = pos['y1']
+    c.x = pos.x1
+    c.y = pos.y1
 end
 
 function draw_circle()
@@ -346,7 +381,7 @@ function player_init()
         base_dmg = 1,
         start = 0,
         sp = 1,
-        x = 59,
+        x = 24,
         y = 100,
         w = 8,
         h = 8,
@@ -816,34 +851,50 @@ end
 
 function td_init()
     td_locs = {
-        { x = 160, y = 56, sp = 21, flp = true, open = false },
-        { x = 168, y = 56, sp = 21, flp = false, open = false },
-        { x = 96, y = 32, sp = 21, flp = true, open = false },
-        { x = 104, y = 32, sp = 21, flp = false, open = false }
+        {x = 120, y = 80, sp = 21, flp = true, open = false},
+        {x = 128, y = 80, sp = 21, flp = false, open = false},
+
+        {x = 96, y = 24, sp = 21, flp = true, open = false},
+        {x = 104, y = 24, sp = 21, flp = false, open = false},
+        
+        {x = 160, y = 96, sp = 21, flp = true, open = false},
+        {x = 168, y = 96, sp = 21, flp = false, open = false},
+
+        {x = 336, y = 96, sp = 21, flp = true, open = false},
+        {x = 344, y = 96, sp = 21, flp = false, open = false}
     }
 end
 
-function td_update()
+function td_grav()
     for t in all(td_locs) do
-        if flr(player.y) <= t.y - 8 and flr(player.y) > t.y - 11 and player.x >= t.x - 5 and player.x < t.x + 5 and not t.open then
+        if flr(player.y) >= t.y - 8 and flr(player.y) < t.y and player.x >= t.x - 5 and player.x < t.x + 5 and not t.open then
             player.dy = 0
             player.y = t.y - 8
             player.falling = false
+            if player.dx > 0 then
+                player.running = true
+                player.idle = false
+            else
+                player.running = false
+                player.idle = true
+            end
             player.landed = true
         end
     end
 end
 
-function td_open()
-    if td_locs[1]["open"] == false and lvl1_buttons[2]["p"] == true then
-        for t = 1, 2 do
-            td_locs[t]["open"] = true
-            td_locs[t]["sp"] -= 1
-        end
-    elseif td_locs[3]["open"] == false and lvl1_buttons[3]["p"] == true then
-        for t = 3, 4 do
-            td_locs[t]["open"] = true
-            td_locs[t]["sp"] -= 1
+function td_update(level)
+    if level == 1 then
+        if td_locs[1].open == false and lvl1_buttons[2].p == true then
+            for t = 1, 2 do
+                td_locs[t].open = true
+                td_locs[t].sp -= 1
+            end
+        elseif td_locs[3].open == false and lvl1_buttons[3].p == true then
+            for t = 3, 4 do
+                td_locs[t].open = true
+                td_locs[t].sp -= 1
+            end
         end
     end
 end
