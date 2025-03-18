@@ -3,9 +3,11 @@ version 42
 __lua__
 
 function _init()
-	#include .movement.p8
+	#include .movement.p8:0
+	#include .movement.p8:2
 	#include .enemy.p8
 	#include random.p8
+	#include .movement2.p8
 	cartdata("dc_capstone")
 	player_init()
 	spring_init()

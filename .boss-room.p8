@@ -4,6 +4,7 @@ __lua__
 
 function _init()
     #include .movement.p8
+    #include .movement2.p8:1
     #include .enemy.p8
     #include random.p8
     cartdata("dc_capstone")
