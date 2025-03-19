@@ -394,6 +394,9 @@ function player_update()
         end
 
         --stairs
+        if player.falling and player.stairs and player.dy < 0 then
+            player.stairs = false
+        end
         if player.running and player.stairs and player.dy >= 0 then
             --set the stair flag to false when not on the stairs
             player.stairs = false
@@ -590,7 +593,11 @@ function player_animate()
                 player.sp = 49
             end
         end
-    elseif player.running or player.stairs then
+    elseif player.jumping and not player.stairs then
+        player.sp = 32
+    elseif player.falling and not player.trapdoor and not player.stairs then
+        player.sp = 33
+    elseif (player.running or player.stairs) then
         if time() - player.anim > .1 then
             player.anim = time()
             if player.sp == 17 then
@@ -599,10 +606,6 @@ function player_animate()
                 player.sp = 17
             end
         end
-    elseif player.jumping then
-        player.sp = 32
-    elseif player.falling and not player.trapdoor then
-        player.sp = 33
     elseif player.sliding then
         player.sp = 48
     elseif player.attacking and player.melee then
