@@ -2,6 +2,9 @@ pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
 function _init()
+	#include .movement.p8:0
+	#include .enemy.p8
+	botinit()
 	cartdata("dc_capstone")
 	lvl_hl=1
 	player={}

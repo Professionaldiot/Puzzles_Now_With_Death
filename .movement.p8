@@ -91,6 +91,14 @@ function special_pickup_draw()
 end
 
 function weapon_pickup_init(x_table, y_table, possible_weapons_table)
+    --[[
+    Variables:
+    * x_table: list[int] --> x coordinates to place weapons at
+    * y_table: list[int] --> y coordinates to place weapons at, have to be correlated to the x_table
+    * possible_weapons_table: list[table] --> a list of possible weapons for the level
+        * as long as the x and y stay the same the weapons will be the same between play sessions
+    returns: NIL
+    ]]
     --table[i] --> starts at one
     pwt = possible_weapons_table
     local c_x = count(x_table)
@@ -106,14 +114,23 @@ function weapon_pickup_init(x_table, y_table, possible_weapons_table)
     local time_table = {}
     j = 0
     while j < c_total do
+        --simulate time, since we are doing this at the beginning of the game
         add(time_table, 100+j)
+        j+=1
     end
     i = 1
-    local weapon_pickups = {}
+    weapon_pickups = {}
     while i < c_total do
-        random(x_table[i], y_table[i], time_table[i], count(pwt))
-        add(weapon_pickups, {x = x_table[i], y_table[i]})
+        --create weapons
+        weapon =  random(x_table[i], y_table[i], time_table[i], count(pwt))
+        add(weapon_pickups, {x = x_table[i], y = y_table[i], atk_mult = pwt[weapon].atk_mult, sp = pwt[weapon].sp})
         i+=1
+    end
+end
+
+function draw_weapons()
+    for i = 1, #weapon_pickups do
+        spr(weapon_pickups[i].sp, weapon_pickups[i].x, weapon_pickups[i].y)
     end
 end
 
@@ -317,6 +334,7 @@ function player_init()
         acc = 0.5,
         boost = 4,
         anim = 0,
+        stairs = false,
         trapdoor = false,
         running = false,
         jumping = false,
@@ -373,6 +391,12 @@ function player_update()
             player.dx += player.acc
             player.running = true
             player.flp = false
+        end
+
+        --stairs
+        if player.running and player.stairs and player.dy >= 0 then
+            --set the stair flag to false when not on the stairs
+            player.stairs = false
         end
 
         --slide
@@ -566,6 +590,15 @@ function player_animate()
                 player.sp = 49
             end
         end
+    elseif player.running or player.stairs then
+        if time() - player.anim > .1 then
+            player.anim = time()
+            if player.sp == 17 then
+                player.sp = 1
+            else
+                player.sp = 17
+            end
+        end
     elseif player.jumping then
         player.sp = 32
     elseif player.falling and not player.trapdoor then
@@ -576,15 +609,6 @@ function player_animate()
         player.sp = 47
     elseif player.charging and player.ranged then
         player.sp = 31
-    elseif player.running then
-        if time() - player.anim > .1 then
-            player.anim = time()
-            if player.sp == 17 then
-                player.sp = 1
-            else
-                player.sp = 17
-            end
-        end
     elseif atk_spr.charge == 0 or (not player.attacking and not player.hitting and not player.shooting and not player.charging) then
         --player idle
         if time() - player.anim > .3 then
@@ -748,6 +772,60 @@ function r_save(r_health)
     dset(13, false)--level load
 end
 
+function stairs()
+    --nullify gravity
+    --set player.dy to 0
+    --check for stairs on right
+    if collide_map(player, "right", 5) then
+        if btn(➡️) then
+            player.x += 1
+            player.y -= 1.5
+            player.dy = -.3
+            player.stairs = true
+        end--if btn()
+    end--if collide_map()
+    if collide_map(player, "left", 6) then
+        if btn(⬅️) then
+            player.x -= 1
+            player.y -= 1.5
+            player.dy = -.3
+            player.stairs = true
+        end--if btn()
+    end--if collide_map()
+
+    if player.dy > 0 then
+        player.falling = true
+        player.landed = false
+        player.jumping = false
+
+        player.dy = limit_speed(player.dy, player.max_dy)
+
+        if collide_map(player, "down", 5) or collide_map(player, "down", 6) then
+            player.landed = true
+            player.falling = false
+            player.dy = 0
+            player.y -= ((player.y + player.h + 1) % 8) - 1
+        end--if collide_map()
+    elseif player.dy < 0 then
+        player.jumping = true
+    end--if player.dy < 0
+
+    --check collision left and right
+    if player.dx < 0 then
+        player.dx = limit_speed(player.dx, player.max_dx)
+
+        if collide_map(player, "left", 6) then
+            player.dx = 0
+        end--if collide_map()
+    elseif player.dx > 0 then
+        player.dx = limit_speed(player.dx, player.max_dx)
+
+        if collide_map(player, "right", 5) then
+            player.dx = 0
+        end--if collide_map()
+    end--if player.dx > 0
+end --function stairs()
+
 function lload()
     if dget(0) == 0 then
         return false
@@ -835,64 +913,6 @@ function td_draw()
         spr(t.sp, t.x, t.y, 1, 1, t.flp)
     end
 end
-
-function stairs()
-    --nullify gravity
-    --set player.dy to 0
-    --check for stairs on right
-    if collide_map(player, "right", 5) then
-        if btn(➡️) then
-            player.x += 1
-            player.y -= 1.5
-            player.dy = -.3
-            --if btn()
-        end
-        --if collide_map()
-    end
-    if collide_map(player, "left", 6) then
-        if btn(⬅️) then
-            player.x -= 1
-            player.y -= 1.5
-            player.dy = -.3
-            --if btn()
-        end
-        --if collide_map()
-    end
-
-    if player.dy > 0 then
-        player.falling = true
-        player.landed = false
-        player.jumping = false
-
-        player.dy = limit_speed(player.dy, player.max_dy)
-
-        if collide_map(player, "down", 5) or collide_map(player, "down", 6) then
-            player.landed = true
-            player.falling = false
-            player.dy = 0
-            player.y -= ((player.y + player.h + 1) % 8) - 1
-            --if collide_map()
-        end
-    elseif player.dy < 0 then
-        player.jumping = true
-        --if player.dy>0
-    end
-
-    --check collision left and right
-    if player.dx < 0 then
-        player.dx = limit_speed(player.dx, player.max_dx)
-
-        if collide_map(player, "left", 6) then
-            player.dx = 0
-        end--if collide_map()
-    elseif player.dx > 0 then
-        player.dx = limit_speed(player.dx, player.max_dx)
-
-        if collide_map(player, "right", 5) then
-            player.dx = 0
-        end--if collide_map()
-    end--if player.dx<0
-end --function stairs()
 
 function ladder()
     --code allowing you to ascend
