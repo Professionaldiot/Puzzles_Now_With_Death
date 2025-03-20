@@ -3,6 +3,13 @@ version 42
 __lua__
 
 function box_init()
+    --[[
+    Intialzes the boxes for .level2.p8
+
+    Variables: NIL
+
+    returns NIL
+    ]]
     box = {
         { x = 220, y = 72, dx = 0, dy = 0, w = 8, h = 8, sp = 4, g = 0.3, f = 0.8, acc = 0.5, mx_dy = 6, mx_dx = 3, boost = 4, start = 0 },
         { x = 240, y = 104, dx = 0, dy = 0, w = 8, h = 8, sp = 4, g = 0.3, f = 0.8, acc = 0.5, mx_dy = 6, mx_dx = 3, boost = 4, start = 0},
@@ -12,6 +19,13 @@ function box_init()
 end
 
 function box_update()
+    --[[
+    Updates the box based on whether the player is "pushing it" or not
+
+    Variables: NIL
+
+    returns NIL
+    ]]
     --todo for 1.0
     --get boxes landing on top of each other
     --get boxes pushing each other
@@ -142,12 +156,26 @@ function box_update()
 end--function
 
 function box_draw()
+    --[[
+    Draws the box to the screen
+
+    Variables: NIL
+
+    returns NIL
+    ]]
     for b in all(box) do
         spr(b.sp, b.x, b.y)
     end
 end
 
 function spring_init()
+    --[[
+    Intializes the spring for .level2.p8
+
+    Variables: NIL
+
+    returns NIL
+    ]]
     spring_locs = { 
         { x = 104, y = 104, sp = 51 },
         { x = 368, y = 160, sp = 51 },
@@ -156,8 +184,17 @@ function spring_init()
     }
 end
 
-function spring_update(boxToCheck)
-    b = boxToCheck
+function spring_update(box_to_check)
+    --[[
+    Computes whether or not the player (or a box that's decided based on level) 
+    should be sprung up or not and given immunity to fall damage
+
+    Variables: 
+    box_to_check: table --> the box to check whether the spring should launch that box or not
+
+    returns NIL
+    ]]
+    b = box_to_check
     for s in all(spring_locs) do
         if box[b].x >= s.x - 6 and box[b].x < s.x + 6 and box[b].start == 0 
                 and flr(box[b].y) <= s.y and flr(box[b].y) > s.y - 2 
@@ -196,13 +233,27 @@ function spring_update(boxToCheck)
 end
 
 function spring_draw()
+    --[[
+    Draws the spring to the screen
+
+    Variables: NIL
+
+    returns NIL
+    ]]
     for s in all(spring_locs) do
         spr(s.sp, s.x, s.y)
     end
 end
 
 -->8
+--circle functions
 function circle_init()
+    --[[
+    Intializes the circle for .boss-room.p8
+    Variables: NIL
+
+    returns NIL
+    ]]
     c = {
         x = 0,
         y = 0,
@@ -219,6 +270,14 @@ function circle_init()
 end
 
 function update_circle_x(angle_in_deg)
+    --[[
+    Takes in an angle and returns a table of values that represents where the circle should be next
+
+    Variables:
+    angle_in_deg: int (0-360) --> the angle to calcute the next circle point to be on
+
+    returns TABLE: a table of values containing an x and y coordinate and the angle it's at
+    ]]
     p_angle = angle_in_deg/360
     x = c.x_center + c.radius * sin(p_angle)
     y = c.y_center + c.radius * cos(p_angle)
@@ -228,6 +287,15 @@ function update_circle_x(angle_in_deg)
 end
 
 function change_angle(angle)
+    --[[
+    Takes the angle the circle is at, and changes the circles movement speed based on it's speed and angle
+
+    Variables:
+    angle: int (0-360) --> the angle the circle is currently at
+
+    returns NIL
+    ]]
+
     --[[
     try to vectorize the angle, y will be a constant since gravity will be pulling down on it always, the rest to figure
     out is how large and how much the resulting x vector should be
@@ -273,6 +341,17 @@ function change_angle(angle)
 end
 
 function dist(x1, x2, y1, y2)
+    --[[
+    Computes the euclidean distance of two points in space
+
+    Variables:
+    * x1: int --> first x point
+    * x2: int --> second x point
+    * y1: int --> first y point
+    * y2: int --> second y point
+
+    returns INT: a number rounded to the closest digit
+    ]]
     num = sqrt(((x2-x1)*(x2-x1)) + ((y2-y1)*(y2-y1)))
     if sgn(num-6) == -1 then
         return flr(num)
@@ -284,6 +363,13 @@ function dist(x1, x2, y1, y2)
 end
 
 function make_circle()
+    --[[
+    Makes the circle, doesn't need anything put into it
+
+    Variables: NIL
+
+    returns NIL
+    ]]
     pos = update_circle_x(c.angle_in_deg)
     dis = dist(c.x_center, pos.x1, c.y_center, pos.y1)
     change_angle(c.angle_in_deg)
@@ -298,5 +384,12 @@ function make_circle()
 end
 
 function draw_circle()
+    --[[
+    Draws the circle to the screen
+    
+    Variables: NIL
+
+    returns NIL
+    ]]
     line(c.x_center, c.y_center, c.x, c.y, 9)
 end
