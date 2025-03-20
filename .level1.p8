@@ -26,7 +26,6 @@ function _init()
   #include .enemy.p8
   #include random.p8
   #include .movement.p8
-  #include background.p8
   cartdata("dc_capstone")
   menuitem(1,"save",function() save() end)
   menuitem(2,"load",function() lload() end)
@@ -35,7 +34,6 @@ function _init()
   menuitem(5,"reset save data",function() r_save() end)
   block = {x = -8, y = -8, w = 8, h = 8, sp = 78}
   special_pickup_init(96, 112, 51, 51)
-  bg_init()
   door_init(112, 112)
   botinit()
   player_init()
@@ -65,7 +63,6 @@ end
 
 --update and draw
 function _update()
-  bg_update()
   if lvl1_buttons[1].sfx > 0 then
     save()
     r_save(false)
