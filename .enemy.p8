@@ -23,7 +23,7 @@ function botinit()
 	
 	bot = {}
 		bot.dead = false
-		bot.health = 50
+		bot.health = 10
 		bot.x=32
 		bot.y=100
 		bot.dy=0
@@ -388,10 +388,13 @@ function update_bot(px, py, t)
 	if bot.dead then
 		bot.spr = 62
 		local temp = 0
-		for i = 1, dget(15) do
+		for i = 1, dget(12) + 1 do
 			temp = i
 		end
-		load(levels[temp])
+		if temp < #levels and temp != 0 then
+			r_save()
+			load(levels[temp])
+		end
 	elseif can_attack_player(px, py)then
 		update_attack_anim(t, px, py)
 	elseif py < bot.y then

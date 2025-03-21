@@ -185,6 +185,7 @@ function special_pickup_update()
         if (player.x > pickup.x and player.x < pickup.x + 8) or 
             (player.x + player.w > pickup.x and player.x + player.w < pickup.x + 8) then
                 pickup.picked_up = true
+                player.base_dmg *= 2.5
         end
     end
 end
@@ -403,14 +404,14 @@ function projectile_hit_reg()
             proj.stop = true
         elseif hit_bot then
             proj.stop = true
-            bot.health -= proj.dmg
+            bot.health -= proj.dmg * player.base_dmg
         end
     elseif proj.dx < 0 then
         if collide_map(proj, "left", 0) then
             proj.stop = true
         elseif hit_bot then
             proj.stop = true
-            bot.health -= proj.dmg
+            bot.health -= proj.dmg * player.base_dmg
         end
     end
 end
@@ -972,6 +973,7 @@ function save()
     dset(3, cam_y)
     dset(4, player.health)
     dset(5, player.dead)
+    dset(6, player.base_dmg)
     --save the player pos
     --now do the bot
     dset(14, bot.x)
@@ -984,7 +986,7 @@ function save()
     dset(21, bot.flp)
 end
 
-function r_save(r_health)
+function r_save(r_health, r_base_dmg)
     --[[
     Resets the player save game
 
@@ -993,6 +995,9 @@ function r_save(r_health)
 
     returns NIL
     ]]
+    if r_base_dmg == nil then
+        r_base_dmg = true
+    end
     if r_health == nil then
         r_health = true
     end
@@ -1002,10 +1007,12 @@ function r_save(r_health)
     dset(3, 0)--cam_y
     if r_health then
         dset(4, 99)
+        dset(5, 0)
     end
-    if r_health then
-        dset(5, 0)--player.dead
+    if r_base_dmg then
+        dset(6, 0)
     end
+    dset(12, 1)--level player is on
     dset(14, 0)--bot.x
     dset(15, nil)--bot.goalx
     dset(16, 0)--bot.q1
