@@ -181,11 +181,12 @@ function special_pickup_update()
 
     returns NIL
     ]]
-    if player.y == pickup.y then
+    if player.y == pickup.y and not pickup.picked_up then
         if (player.x > pickup.x and player.x < pickup.x + 8) or 
             (player.x + player.w > pickup.x and player.x + player.w < pickup.x + 8) then
                 pickup.picked_up = true
-                player.base_dmg *= 2.5
+                player.m_base_dmg *= 2.5
+                player.r_base_dmg *= 2.5
         end
     end
 end
@@ -504,7 +505,8 @@ function player_init()
         spring = false,
         health = 99,
         max_health = 99,
-        base_dmg = 1,
+        m_base_dmg = 1,
+        r_base_dmg = 2,
         start = 0,
         sp = 1,
         x = 24,
@@ -973,7 +975,9 @@ function save()
     dset(3, cam_y)
     dset(4, player.health)
     dset(5, player.dead)
-    dset(6, player.base_dmg)
+    dset(6, player.m_base_dmg)
+    dset(7, player.r_base_dmg)
+    dset(13, true)
     --save the player pos
     --now do the bot
     dset(14, bot.x)
@@ -1010,7 +1014,8 @@ function r_save(r_health, r_base_dmg)
         dset(5, 0)
     end
     if r_base_dmg then
-        dset(6, 0)
+        dset(6, 1)
+        dset(7, 1)
     end
     dset(12, 1)--level player is on
     dset(14, 0)--bot.x
@@ -1108,6 +1113,8 @@ function lload()
         else
             player.dead = dget(5)
         end
+        player.m_base_dmg = dget(6)
+        player.r_base_dmg = dget(7)
         --do the bot now
         bot.x = dget(14)
         bot.goalx = dget(15)
@@ -1146,7 +1153,7 @@ function td_init()
     }
 end
 
-function td_grav()
+function td_grav(td_list)
     --[[
     Decides whether the player should fall or not when standing over where a trapdoor is
 
@@ -1154,7 +1161,10 @@ function td_grav()
 
     returns NIL
     ]]
-    for t in all(td_locs) do
+    if td_list == nil then
+        td_list = td_locs
+    end
+    for t in all(td_list) do
         if flr(player.y) >= t.y - 8 and flr(player.y) < t.y and player.x >= t.x - 5 and player.x < t.x + 5 and not t.open then
             player.dy = 0
             player.y = t.y - 8
@@ -1165,7 +1175,7 @@ function td_grav()
     end
 end
 
-function td_update(level)
+function td_update(level, td_list)
     --[[
     Updates the trapdoors based on level the player is on
 
@@ -1174,32 +1184,35 @@ function td_update(level)
 
     returns NIL
     ]]
-    if level == 1 then
-        if td_locs[1].open == false and lvl1_buttons[3].p == true then
+    if td_list == nil then
+        td_list = td_locs
+    end
+    if level == 2 then
+        if td_list[1].open == false and lvl2_buttons[3].p == true then
             for t = 1, 2 do
-                td_locs[t].open = true
-                td_locs[t].sp -= 1
+                td_list[t].open = true
+                td_list[t].sp -= 1
             end
-        elseif td_locs[3].open == false and lvl1_buttons[4].p == true then
+        elseif td_list[3].open == false and lvl2_buttons[4].p == true then
             for t = 3, 4 do
-                td_locs[t].open = true
-                td_locs[t].sp -= 1
+                td_list[t].open = true
+                td_list[t].sp -= 1
             end
-        elseif td_locs[5].open == false and lvl1_buttons[5].p == true then
+        elseif td_list[5].open == false and lvl2_buttons[5].p == true then
             for t = 5, 6 do
-                td_locs[t].open = true
-                td_locs[t].sp -= 1
+                td_list[t].open = true
+                td_list[t].sp -= 1
             end
-        elseif td_locs[7].open == false and lvl1_buttons[2].p == true then
+        elseif td_list[7].open == false and lvl2_buttons[2].p == true then
             for t = 7, 8 do
-                td_locs[t].open = true
-                td_locs[t].sp -= 1
+                td_list[t].open = true
+                td_list[t].sp -= 1
             end
         end
     end
 end
 
-function td_draw()
+function td_draw(td_list)
     --[[
     Draws the trapdoors to the screen
 
@@ -1207,7 +1220,10 @@ function td_draw()
 
     returns NIL
     ]]
-    for t in all(td_locs) do
+    if td_list == nil then
+        td_list = td_locs
+    end
+    for t in all(td_list) do
         spr(t.sp, t.x, t.y, 1, 1, t.flp)
     end
 end
@@ -1253,7 +1269,7 @@ function btn_init()
         { x = 72, y = 104, sp = 19, act = "nil", p = false, sfx = 0},
         { x = 136, y = 104, sp = 19, act = "door", p = false, sfx = 0},
         { x = 56, y = 48, sp = 19, act = "nil", p = false, sfx = 0},
-        { x = 57*8, y = 13 * 8, sp = 19, act=".boss-room.p8", p = false, sfx = 0}
+        { x = 57*8, y = 104, sp = 19, act=".boss-room.p8", p = false, sfx = 0}
     }
 end
 

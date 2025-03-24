@@ -18,7 +18,7 @@ function box_init()
     }
 end
 
-function box_update()
+function box_update(box_list)
     --[[
     Updates the box based on whether the player is "pushing it" or not
 
@@ -31,7 +31,10 @@ function box_update()
     --get boxes pushing each other
     --get boxes working with trapdoors, maybe stairs? i don't think it's needed though
     --def get boxes working with springs
-    for b in all(box) do
+    if box_list == nil then
+        box_list = box
+    end
+    for b in all(box_list) do
         btn_update(butts, b)
         b.dy += b.g
         b.dx *= b.f
@@ -51,7 +54,7 @@ function box_update()
             end
             --if
         end
-        --this checks if the player is standing on top of the box or not
+        --this checks if the player is standing on top of the box_list or not
         if player.dy > 0 and b.dy == 0 then
             if player.y < b.y - 4 and player.y >= b.y - 8 and player.x >= b.x - 6 and player.x <= b.x + 6 then
                 player.falling = false
@@ -60,9 +63,9 @@ function box_update()
                 player.dy = 0
             end
             --[[
-            first we check if the player is attempting to enter the box, if the player is inside of the box we "push" the box by
+            first we check if the player is attempting to enter the box_list, if the player is inside of the box_list we "push" the box_list by
             making it accelerate in the direction the player is going then we check collision and in those checks we stop the
-            player moving into the box if necessary
+            player moving into the box_list if necessary
             ]]
         elseif ((player.x >= b.x and player.x < b.x + 8) or (player.x >= b.x - 8 and player.x < b.x)) and (player.y <= b.y and player.y > b.y - 8) then
             if player.dx < 0 or player.x >= b.x + 8 then
@@ -94,8 +97,8 @@ function box_update()
 
         b.x += b.dx
         b.y += b.dy
-        for h in all(box) do
-            --this checks for collision on all other boxes
+        for h in all(box_list) do
+            --this checks for collision on all other box_listes
             if h != b then
                 --check collision
                 if (b.x >= h.x and b.x <= h.x + 8 and b.y == h.y)
@@ -148,14 +151,14 @@ function box_update()
                             h.dx = b.dx
                             b.dx *= b.f/4
                         end--if/else collide_map(h,"left",0)
-                    end--elseif the boxes are the same height
-                end--if box in other box
-            end--if the box isn't the same as the box were on (to stop some bugs from happening that would occur from checking the box over again)
+                    end--elseif the box_listes are the same height
+                end--if box_list in other box_list
+            end--if the box_list isn't the same as the box_list were on (to stop some bugs from happening that would occur from checking the box_list over again)
         end--for
     end--for
 end--function
 
-function box_draw()
+function box_draw(box_list)
     --[[
     Draws the box to the screen
 
@@ -163,7 +166,10 @@ function box_draw()
 
     returns NIL
     ]]
-    for b in all(box) do
+    if box_list == nil then
+        box_list = box
+    end
+    for b in all(box_list) do
         spr(b.sp, b.x, b.y)
     end
 end
@@ -184,7 +190,7 @@ function spring_init()
     }
 end
 
-function spring_update(box_to_check)
+function spring_update(box_to_check, spring_list)
     --[[
     Computes whether or not the player (or a box that's decided based on level) 
     should be sprung up or not and given immunity to fall damage
@@ -195,7 +201,10 @@ function spring_update(box_to_check)
     returns NIL
     ]]
     b = box_to_check
-    for s in all(spring_locs) do
+    if spring_list == nil then
+        spring_list = spring_locs
+    end
+    for s in all(spring_list) do
         if box[b].x >= s.x - 6 and box[b].x < s.x + 6 and box[b].start == 0 
                 and flr(box[b].y) <= s.y and flr(box[b].y) > s.y - 2 
                 and box[b].start==0 and player.start==0 then
@@ -232,7 +241,7 @@ function spring_update(box_to_check)
     end
 end
 
-function spring_draw()
+function spring_draw(spring_list)
     --[[
     Draws the spring to the screen
 
@@ -240,7 +249,10 @@ function spring_draw()
 
     returns NIL
     ]]
-    for s in all(spring_locs) do
+    if spring_list == nil then
+        spring_list = spring_locs
+    end
+    for s in all(spring_list) do
         spr(s.sp, s.x, s.y)
     end
 end

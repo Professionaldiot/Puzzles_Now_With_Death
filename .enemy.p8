@@ -50,13 +50,21 @@ function player_hit_bot(px, py)
 	local bot_left = px > bot.x - bot.w and px < bot.x + bw_h --player on the left side of the bot
 	if bot_right then
 		if player.flp and player.hitting then
-			bot.health -= player.base_dmg
+			if player.meele then
+				bot.health -= player.m_base_dmg
+			else
+				bot.health -= player.r_base_dmg
+			end
 			player.hitting = false
 		end
 	end
 	if bot_left then
 		if player.flp and player.hitting then
-			bot.health -= player.base_dmg
+			if player.meele then
+				bot.health -= player.m_base_dmg
+			else
+				bot.health -= player.r_base_dmg
+			end
 			player.hitting = false
 		end
 	end
@@ -388,7 +396,7 @@ function update_bot(px, py, t)
 	if bot.dead then
 		bot.spr = 62
 		local temp = 0
-		for i = 1, dget(12) + 1 do
+		for i = 1, dget(12) do
 			temp = i
 		end
 		if temp < #levels and temp != 0 then

@@ -1,5 +1,18 @@
 pico-8 cartridge // http://www.pico-8.com
 version 42
+__lua__
+function _init()
+    cartdata("dc_capstone")
+    menuitem(1,"save",function() save() end)
+    menuitem(2,"load",function() lload() end)
+    menuitem(3,"main menu",function() load("main-menu.p8") end)
+    menuitem(4,"debug file on/off",function() debug_any() end)
+    menuitem(5,"reset save data",function() r_save() end)
+    botinit()
+    player_init()
+    r_save(false)
+end
+
 __gfx__
 0000000000444000bbbbbbbbbbbbbbbb0000222222220000000000000000000090000000500d0600060000000000000000000000000000000000000000000000
 00000000004ff0003bbbb333333bbbbb000022222222000000000000000000000955000a050d0600000000000000000000000000000000000000000000000000
