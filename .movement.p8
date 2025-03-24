@@ -224,9 +224,9 @@ function weapon_pickup_init(x_table, y_table, possible_weapons_table)
     returns: NIL
     ]]
     --table[i] --> starts at one
-    pwt = possible_weapons_table
-    local c_x = count(x_table)
-    local c_y = count(y_table)
+    local pwt = possible_weapons_table
+    local c_x = #x_table
+    local c_y = #y_table
     local c_total = c_x
     if c_x != c_y then
         if c_x > c_y then
@@ -244,13 +244,45 @@ function weapon_pickup_init(x_table, y_table, possible_weapons_table)
     end
     i = 1
     weapon_pickups = {}
-    while i < c_total do
+    while i < c_total + 1 do
         --create weapons
-        weapon =  random(x_table[i], y_table[i], time_table[i], count(pwt))
-        add(weapon_pickups, {x = x_table[i], y = y_table[i], atk_mult = pwt[weapon].atk_mult, sp = pwt[weapon].sp})
+        weapon =  random(x_table[i], y_table[i], time_table[i], #pwt)%c_total
+        if weapon == 0 then
+            weapon = random(x_table[i], y_table[i], time_table[i], #pwt)%c_total
+        end
+        if weapon == 0 then
+            weapon += 1
+        end
+        add(weapon_pickups, {x = x_table[i], y = y_table[i], atk_mult = pwt[weapon].atk_mult, 
+                            sp = pwt[weapon].sp, ranged = pwt[weapon].ranged, picked_up = false})
         i+=1
     end
 end
+
+function update_weapons()
+    local wp = weapon_pickups
+    for w in all(wp) do
+        if player.y == w.y and not w.picked_up then
+            if (player.x > w.x and player.x < w.x + 8) or 
+                (player.x + player.w > w.x and player.x + player.w < w.x + 8) then
+                w.picked_up = true
+                if w.ranged then
+                    if player.r_base_dmg < w.atk_mult and not pickup.picked_up then
+                        player.r_base_dmg = w.atk_mult
+                    elseif player.m_base_dmg < w.atk_mult and pickup.picked_up then
+                        player.r_base_dmg *= w.atk_mult
+                    end
+                else
+                    if player.m_base_dmg < w.atk_mult and not pickup.picked_up then
+                        player.m_base_dmg = w.atk_mult
+                    elseif player.m_base_dmg < w.atk_mult and pickup.picked_up then
+                        player.m_base_dmg *= w.atk_mult
+                    end
+                end--if player ranged
+            end--if player on weapon
+        end--if player y == w.y
+    end--for                 
+end 
 
 function draw_weapons()
     --[[
@@ -261,7 +293,9 @@ function draw_weapons()
     returns NIL
     ]]
     for i = 1, #weapon_pickups do
-        spr(weapon_pickups[i].sp, weapon_pickups[i].x, weapon_pickups[i].y)
+        if not weapon_pickups[i].picked_up then
+            spr(weapon_pickups[i].sp, weapon_pickups[i].x, weapon_pickups[i].y)
+        end
     end
 end
 
