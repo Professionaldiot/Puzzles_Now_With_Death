@@ -39,7 +39,7 @@ I want to do a video game for this project, because I wish to go into game devel
 ### Misc.
 - I’ve also used Youtube quite a bit in order to understand the Lua language better. 
 
-# What is the mimimum viable product?
+# What is the minimum viable product?
 The mimimum viable product is a .bin file with four files that let the user play it on different systems (Rasberry PI, Windows, Mac, Linux)
 
 ## General requirements:
