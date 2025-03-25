@@ -212,7 +212,7 @@ function special_pickup_draw()
     end
 end
 
-function weapon_pickup_init(x_table, y_table, possible_weapons_table)
+function weapon_pickup_init(x_table, y_table, possible_weapons_table, best_value_time, best_value_mult)
     --[[
     Intializes the weapons for a stage, with semi random choices based on the x and y table given.
 
@@ -239,7 +239,7 @@ function weapon_pickup_init(x_table, y_table, possible_weapons_table)
     j = 0
     while j < c_total do
         --simulate time, since we are doing this at the beginning of the game
-        add(time_table, 100+j)
+        add(time_table, (100*best_value_time)+(j*best_value_mult))
         j+=1
     end
     i = 1
@@ -269,13 +269,16 @@ function update_weapons()
                 if w.ranged then
                     if player.r_base_dmg < w.atk_mult and not pickup.picked_up then
                         player.r_base_dmg = w.atk_mult
-                    elseif player.m_base_dmg < w.atk_mult and pickup.picked_up then
+                    elseif pickup.picked_up then
+                        --hopefully this doesn't happen as much, but it can happen
+                        --levels will be designed around the fact that the special 
+                        --pickup is the last thing you have to pickup
                         player.r_base_dmg *= w.atk_mult
                     end
                 else
                     if player.m_base_dmg < w.atk_mult and not pickup.picked_up then
                         player.m_base_dmg = w.atk_mult
-                    elseif player.m_base_dmg < w.atk_mult and pickup.picked_up then
+                    elseif pickup.picked_up then
                         player.m_base_dmg *= w.atk_mult
                     end
                 end--if player ranged

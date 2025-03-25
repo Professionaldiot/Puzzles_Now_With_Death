@@ -21,7 +21,7 @@ function _init()
             {atk_mult = 2.1, sp = 78, ranged = false},
             {atk_mult = 2.4, sp = 79, ranged = false}
             }
-    weapon_pickup_init(weapon_xs, weapon_ys, pw)
+    weapon_pickup_init(weapon_xs, weapon_ys, pw, 2, 3)
     --weapons need atk_mult, sp, ranged
     if dget(13,true) then
         dset(13,false)
