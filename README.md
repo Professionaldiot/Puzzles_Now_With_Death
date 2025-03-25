@@ -1,22 +1,21 @@
 ﻿# Table of contents
-- How to run the game
-- Resource briefing
-    - Proposal abstract
-    - Tools I'm using for this project
-        - Project management
-        - Game design
-        - IDE choice
-        - Misc.
-- What is the mimimum viable product?
-    - General requirements
-    - Game specific requirements
+- [How to run the game](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#how-to-run-the-game)
+- [Resource briefing](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#resource-briefing)
+    - [Proposal abstract](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#proposal-briefing)
+    - [Tools I'm using for this project](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#tools-im-using-for-this-project)
+        - [Project management](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#project-management)
+        - [Game design](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#game-design)
+        - [IDE choice](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#ide-choice)
+        - [Misc.](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#misc)
+- [What is the mimimum viable product?](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#what-is-the-minimum-viable-product)
+    - [General requirements](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#general-requirements)
+    - [Game specific requirements](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#game-specific-requirements)
 
 # How to run the game:
 - To open the file, first figure out your OS in the naming scheme. Then download only that file to your machine from GitHub, and open it on your machine. 
     - For MacOS, download and open game.app, then go to Contents, then MacOS and launch the game file.
     - For linux, download and open linux then run the game file, however you choose to do so.
     - For Windows, download and open windows and run game.exe.
-
 
 # Resource briefing
 
