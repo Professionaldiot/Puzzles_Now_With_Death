@@ -7,7 +7,7 @@ function _init()
 	#include .movement.p8:2
 	#include .enemy.p8
 	#include random.p8
-	#include .movement2.p8:
+	#include .movement2.p8:0
 	cartdata("dc_capstone")
 	player_init()
 	spring_init()
