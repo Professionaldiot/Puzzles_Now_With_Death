@@ -2,163 +2,14 @@ pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
 
---export -i 64 pnwd.bin .level1.p8 .level2.p8 .level3.p8 .boss-room.p8
-function combo_lock_update(combo, btn_list, combo_as_list, max_length, block_x, block_y, block_w, block_h)
-    --[[
-    Updates the combo lock [buttons] based on the combo the player provides
 
-    Variables:
-    * combo: list[int] --> the combo the user is inputting
-    * btn_list: list[table] --> a list containing all the buttons in the level
-    * combo_as_list: list[int] --> a list of ints that describe the correct combo, i.e. {1,2,3}
-    * max_length: int --> the maximum length of the combo
-    * block_x: int --> the x coordinate of the block to be placed
-    * block_y: int --> the y coordinate of the block to be placed
-    * block_w: int --> block width
-    * block_h: int --> block height
-
-    returns BOOL: whether to reset the stored_combo and the buttons associated with those buttons
-    ]]
-    local reset_combo = false
-    if #combo == max_length then
-        if check_combo(combo_as_list, combo) then
-            --create a block at x, y
-            block = {x = block_x, y = block_y, w = block_w, h = block_h, sp = 78}
-        else
-            reset_combo = true
-        end
-    end
-    return reset_combo
-end
-
-function check_block_collision(b)
-    --[[
-    Checks whether the player should be pushed out of the block based on their x and y
-
-    Variables:
-    * b: table --> the block to check collision on
-
-    returns NIL
-    ]]
-    --block needs a x, y, w, h
-    y_check = flr(player.y) >= b.y - 8 and flr(player.y) < b.y and player.x >= b.x - 5 and player.x < b.x + 5
-    --check player.x + 8 (right)
-    if player.x + 8 > b.x and player.x + 8 < b.x + 8 and player.y + 4 > b.y and player.y + 4 < b.y + 8 then
-        --push the player out
-        player.dx = 0
-        player.x = b.x - 8
-    end
-    --check player.x (left)
-    if player.x > b.x and player.x < b.x + 8 and player.y + 4 > b.y and player.y + 4 < b.y + 8 then
-        player.dx = 0
-        player.x = b.x + 8
-    end
-    --check player.y + 8 (down)
-    if flr(player.y) >= b.y - 8 and flr(player.y) < b.y and player.x >= b.x - 4 and player.x < b.x + 8 then
-        player.dy = 0
-        player.y = b.y - 8
-        player.falling = false
-    end
-    --check player.y (up)
-    if flr(player.y) >= b.y and flr(player.y) < b.y + 8 and player.x > b.x - 4 and player.x < b.x + 8 then
-        player.dy = 0
-        player.y = b.y + 8
-    end
-end
-
-function draw_block(b)
-    --[[
-    Draws the block to the screen
-
-    Variables:
-    * b: table --> the block to check collision on
-
-    returns NIL
-    ]]
-    spr(b.sp, b.x, b.y)
-end
-
-function check_combo(correct_combo, current_attempt)
-    --[[
-    Checks the combo that the player is doing on the stage and compares it with the correct combo
-
-    Variables:
-    * correct_combo: list[int] --> describes the correct combo as a list of ints
-    * current_attempt: list[int] --> describes the current attempt that user is providing
-
-    returns BOOL: whether the current combo is correct or not
-    ]]
-    --runs in O(n) time
-    for i = 1, #correct_combo do
-        if correct_combo[i] != current_attempt[i] then
-            return false
-        end
-    end
-    return true
-end
-
-function door_init(x, y)
-    --[[
-    Intializes the door on the stage with a given x, y
-
-    Variables:
-    * x: int --> x coordinate of the door
-    * y: int --> y coordinate of the door
-
-    returns NIL
-    ]]
-    all_pressed = false
-    door = {x = x, y = y, open = false, sp = 79}
-end
-
-function door_update(btn_list, index_list)
-    --[[
-    Updates the door based on whether certain buttons are pressed or not
-
-    Variables:
-    * btn_list: list[table] --> a list of buttons on the level
-    * index_list: list[int] --> a list of the indexs to check whether they are pressed or not in the level
-
-    returns NIL
-    ]]
-    --door_amnt is the total amount of doors, 0 < door_amnt < 1 to not stress the program too much
-    --index_list is a table like the following: {1,3,4}, this tells the program where to check the button list for door stuff
-    -- 0 < #index_list < 5
-    if player.flp and not door.open then
-        if player.x < door.x + 8 and player.x > door.x and player.y == door.y then
-            --player is to the right of the door, and its not open, push them out
-            player.dx = 0
-            player.x = door.x + 8
-        end
-    elseif not door.open then
-        if player.x + 8 > door.x and player.x + 8 < door.x + 8 and player.y == door.y then
-            player.dx = 0
-            player.x = door.x - 8
-        end
-    end
-    if not all_pressed then
-        all_pressed = true
-        for item in all(index_list) do
-            if btn_list[item].sfx == 0 then
-                all_pressed = false
-            end
-        end
-    else
-        door.open = true
-        door.sp = 95
-    end
-end
-
-function door_draw()
-    --[[
-    Draws the door to the screen
-
-    Variables: NIL
-
-    returns NIL
-    ]]
-    spr(door.sp, door.x, door.y)
-end
+--export -i 64 pnwd.bin .level1.p8 .level2.p8 .level3.p8 .level4.p8 .level5.p8 .level6.p8 .level7.p8 .level8.p8 .boss-room.p8
+--[[.movement.p8:0 is the player's code, and code that will be in every level
+1 is level1 functions (stairs, ladders, trapdoors)
+2 is the button functinons
+3 is combo lock + block functions
+4 is the door functions
+]]
 
 function special_pickup_init(x, y, spr, min_spr)
     --[[
@@ -260,6 +111,8 @@ function weapon_pickup_init(x_table, y_table, possible_weapons_table, best_value
 end
 
 function update_weapons()
+    local max_ranged_dmg = 10
+    local max_melee_dmg = 5.25
     local wp = weapon_pickups
     for w in all(wp) do
         if player.y == w.y and not w.picked_up then
@@ -274,12 +127,18 @@ function update_weapons()
                         --levels will be designed around the fact that the special 
                         --pickup is the last thing you have to pickup
                         player.r_base_dmg *= w.atk_mult
+                        if player.r_base_dmg >= max_ranged_dmg then
+                            player.r_base_dmg = max_ranged_dmg
+                        end
                     end
                 else
                     if player.m_base_dmg < w.atk_mult and not pickup.picked_up then
                         player.m_base_dmg = w.atk_mult
                     elseif pickup.picked_up then
                         player.m_base_dmg *= w.atk_mult
+                        if player.m_base_dmg >= max_melee_dmg then
+                            player.m_base_dmg = max_melee_dmg
+                        end
                     end
                 end--if player ranged
             end--if player on weapon
@@ -676,7 +535,7 @@ function player_update()
                 projectile_init()
             end
         end
-        if (not btn(🅾️)) and (player.attacking or player.hitting) then
+        if (not btn(🅾️)) and (player.attacking) then
             player.attacking = false
             player.hitting = false
             player.charging = false
@@ -1068,67 +927,6 @@ function r_save(r_health, r_base_dmg)
     dset(13, false)--level load
 end
 
-function stairs()
-    --[[
-    Allows the player to 'go up' stairs at will
-
-    Variables: NIL
-
-    returns NIL
-    ]]
-    --nullify gravity
-    --set player.dy to 0
-    --check for stairs on right
-    if collide_map(player, "right", 5) then
-        if btn(➡️) then
-            player.x += 1
-            player.y -= 1.5
-            player.dy = -.3
-            player.stairs = true
-        end--if btn()
-    end--if collide_map()
-    if collide_map(player, "left", 6) then
-        if btn(⬅️) then
-            player.x -= 1
-            player.y -= 1.5
-            player.dy = -.3
-            player.stairs = true
-        end--if btn()
-    end--if collide_map()
-
-    if player.dy > 0 then
-        player.falling = true
-        player.landed = false
-        player.jumping = false
-
-        player.dy = limit_speed(player.dy, player.max_dy)
-
-        if collide_map(player, "down", 5) or collide_map(player, "down", 6) then
-            player.landed = true
-            player.falling = false
-            player.dy = 0
-            player.y -= ((player.y + player.h + 1) % 8) - 1
-        end--if collide_map()
-    elseif player.dy < 0 then
-        player.jumping = true
-    end--if player.dy < 0
-
-    --check collision left and right
-    if player.dx < 0 then
-        player.dx = limit_speed(player.dx, player.max_dx)
-
-        if collide_map(player, "left", 6) then
-            player.dx = 0
-        end--if collide_map()
-    elseif player.dx > 0 then
-        player.dx = limit_speed(player.dx, player.max_dx)
-
-        if collide_map(player, "right", 5) then
-            player.dx = 0
-        end--if collide_map()
-    end--if player.dx > 0
-end --function stairs()
-
 function lload()
     --[[
     Allows the player to load a savefile they've created with the save() function
@@ -1167,6 +965,70 @@ end
 
 -->8
 --level1 functions
+function stairs()
+    --[[
+    Allows the player to 'go up' stairs at will
+
+    Variables: NIL
+
+    returns NIL
+    ]]
+    --nullify gravity
+    --set player.dy to 0
+    --check for stairs on right
+    --[[
+    btn(➡️)
+    btn(⬅️)
+    ]]
+    --check collision left and right
+    if collide_map(player, "right", 5) then
+        if btn(➡️) then
+            player.x += 1
+            player.y -= 1.5
+            player.dy = -.3
+            player.stairs = true
+        end--if btn()
+    end--if collide_map()
+    if collide_map(player, "left", 6) then
+        if btn(⬅️) then
+            player.x -= 1
+            player.y -= 1.5
+            player.dy = -.3
+            player.stairs = true
+        end--if btn()
+    end--if collide_map()
+
+    if player.dy > 0 then
+        player.falling = true
+        player.landed = false
+        player.jumping = false
+
+        player.dy = limit_speed(player.dy, player.max_dy)
+
+        if collide_map(player, "down", 5) or collide_map(player, "down", 6) then
+            player.landed = true
+            player.falling = false
+            player.dy = 0
+            player.y -= ((player.y + player.h + 1) % 8) - 1
+        end--if collide_map()
+    elseif player.dy < 0 then
+        player.jumping = true
+    end--if player.dy < 0
+    if player.dx < 0 then
+        player.dx = limit_speed(player.dx, player.max_dx)
+
+        if collide_map(player, "left", 6) then
+            player.dx = 0
+        end--if collide_map()
+    elseif player.dx > 0 then
+        player.dx = limit_speed(player.dx, player.max_dx)
+
+        if collide_map(player, "right", 5) then
+            player.dx = 0
+        end--if collide_map()
+    end--if player.dx > 0
+end --function stairs()
+
 function td_init()
     --[[
     Intializes the trapdoors for .level1.p8
@@ -1354,6 +1216,167 @@ function btn_draw(btns)
     for b in all(btns) do
         spr(b.sp, b.x, b.y)
     end
+end
+
+-->8
+--combo lock + block code
+function combo_lock_update(combo, btn_list, combo_as_list, max_length, block_x, block_y, block_w, block_h)
+    --[[
+    Updates the combo lock [buttons] based on the combo the player provides
+
+    Variables:
+    * combo: list[int] --> the combo the user is inputting
+    * btn_list: list[table] --> a list containing all the buttons in the level
+    * combo_as_list: list[int] --> a list of ints that describe the correct combo, i.e. {1,2,3}
+    * max_length: int --> the maximum length of the combo
+    * block_x: int --> the x coordinate of the block to be placed
+    * block_y: int --> the y coordinate of the block to be placed
+    * block_w: int --> block width
+    * block_h: int --> block height
+
+    returns BOOL: whether to reset the stored_combo and the buttons associated with those buttons
+    ]]
+    local reset_combo = false
+    if #combo == max_length then
+        if check_combo(combo_as_list, combo) then
+            --create a block at x, y
+            block = {x = block_x, y = block_y, w = block_w, h = block_h, sp = 78}
+        else
+            reset_combo = true
+        end
+    end
+    return reset_combo
+end
+
+function check_block_collision(b)
+    --[[
+    Checks whether the player should be pushed out of the block based on their x and y
+
+    Variables:
+    * b: table --> the block to check collision on
+
+    returns NIL
+    ]]
+    --block needs a x, y, w, h
+    y_check = flr(player.y) >= b.y - 8 and flr(player.y) < b.y and player.x >= b.x - 5 and player.x < b.x + 5
+    --check player.x + 8 (right)
+    if player.x + 8 > b.x and player.x + 8 < b.x + 8 and player.y + 4 > b.y and player.y + 4 < b.y + 8 then
+        --push the player out
+        player.dx = 0
+        player.x = b.x - 8
+    end
+    --check player.x (left)
+    if player.x > b.x and player.x < b.x + 8 and player.y + 4 > b.y and player.y + 4 < b.y + 8 then
+        player.dx = 0
+        player.x = b.x + 8
+    end
+    --check player.y + 8 (down)
+    if flr(player.y) >= b.y - 8 and flr(player.y) < b.y and player.x >= b.x - 4 and player.x < b.x + 8 then
+        player.dy = 0
+        player.y = b.y - 8
+        player.falling = false
+    end
+    --check player.y (up)
+    if flr(player.y) >= b.y and flr(player.y) < b.y + 8 and player.x > b.x - 4 and player.x < b.x + 8 then
+        player.dy = 0
+        player.y = b.y + 8
+    end
+end
+
+function draw_block(b)
+    --[[
+    Draws the block to the screen
+
+    Variables:
+    * b: table --> the block to check collision on
+
+    returns NIL
+    ]]
+    spr(b.sp, b.x, b.y)
+end
+
+function check_combo(correct_combo, current_attempt)
+    --[[
+    Checks the combo that the player is doing on the stage and compares it with the correct combo
+
+    Variables:
+    * correct_combo: list[int] --> describes the correct combo as a list of ints
+    * current_attempt: list[int] --> describes the current attempt that user is providing
+
+    returns BOOL: whether the current combo is correct or not
+    ]]
+    --runs in O(n) time
+    for i = 1, #correct_combo do
+        if correct_combo[i] != current_attempt[i] then
+            return false
+        end
+    end
+    return true
+end
+
+-->8
+--door functions
+function door_init(x, y)
+    --[[
+    Intializes the door on the stage with a given x, y
+
+    Variables:
+    * x: int --> x coordinate of the door
+    * y: int --> y coordinate of the door
+
+    returns NIL
+    ]]
+    all_pressed = false
+    door = {x = x, y = y, open = false, sp = 79}
+end
+
+function door_update(btn_list, index_list)
+    --[[
+    Updates the door based on whether certain buttons are pressed or not
+
+    Variables:
+    * btn_list: list[table] --> a list of buttons on the level
+    * index_list: list[int] --> a list of the indexs to check whether they are pressed or not in the level
+
+    returns NIL
+    ]]
+    --door_amnt is the total amount of doors, 0 < door_amnt < 1 to not stress the program too much
+    --index_list is a table like the following: {1,3,4}, this tells the program where to check the button list for door stuff
+    -- 0 < #index_list < 5
+    if player.flp and not door.open then
+        if player.x < door.x + 8 and player.x > door.x and player.y == door.y then
+            --player is to the right of the door, and its not open, push them out
+            player.dx = 0
+            player.x = door.x + 8
+        end
+    elseif not door.open then
+        if player.x + 8 > door.x and player.x + 8 < door.x + 8 and player.y == door.y then
+            player.dx = 0
+            player.x = door.x - 8
+        end
+    end
+    if not all_pressed then
+        all_pressed = true
+        for item in all(index_list) do
+            if btn_list[item].sfx == 0 then
+                all_pressed = false
+            end
+        end
+    else
+        door.open = true
+        door.sp = 95
+    end
+end
+
+function door_draw()
+    --[[
+    Draws the door to the screen
+
+    Variables: NIL
+
+    returns NIL
+    ]]
+    spr(door.sp, door.x, door.y)
 end
 
 

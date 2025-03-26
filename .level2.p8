@@ -70,6 +70,8 @@ function _update()
     save()
     r_save(false, false)
     dset(12, 3)
+    dset(6, player.r_base_dmg)
+    dset(7, player.m_base_dmg)
     load(lvl2_buttons[1].act)
   end
   reset_combo = combo_lock_update(stored_combo, lvl2_buttons, {2, 3, 1}, 3, 200, 40, 8, 8)

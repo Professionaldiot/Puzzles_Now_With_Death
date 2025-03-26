@@ -7,7 +7,7 @@ function _init()
 	#include .movement.p8:2
 	#include .enemy.p8
 	#include random.p8
-	#include .movement2.p8
+	#include .movement2.p8:
 	cartdata("dc_capstone")
 	player_init()
 	spring_init()
@@ -36,6 +36,8 @@ function _update()
 		save()
     	r_save(false)
 		dset(12, 4)
+		dset(6, player.r_base_dmg)
+        dset(7, player.m_base_dmg)
 		load(butts[5].act)
 	end
 	player_update()

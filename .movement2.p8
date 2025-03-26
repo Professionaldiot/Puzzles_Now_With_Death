@@ -1,6 +1,10 @@
 pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
+--[[
+1 is the box and spring functions
+2 is the circle functions
+]]
 
 function box_init()
     --[[
