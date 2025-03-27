@@ -112,28 +112,28 @@ PICO-8 gives you literally nothing to start with, you are given the engine itsel
 
 ### Includes
 As explained in the above section, PICO-8 doesn't use the traditional import statements as many other langauges do, but it uses the _#include_ statement for importing differnet files into your file that your working on. Here is a picture of my _#includes_ (and other code) from _.level3.p8_.
-![includes example](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/includes.png?raw=true)
+![includes example](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/images/includes.png?raw=true)
 
 ## Key data structures and algorithms
 
 ### Key data structures
 The main data structure of PICO-8's Lua is tables, they can act like lists or, how most people use them, dictionaries with a little extra functionality. 
-![tables example](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/tables.png?raw=true)
+![tables example](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/images/tables.png?raw=true)
 (Referencing the above image here) So take the x value of player, your question might be, how do I reference this in PICO-8's system? There are three different way's to do this, the most popular seeming to be the dot structure to referencing, as seen in the below image.
-![player dot structure example](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/player_exmaple.png?raw=true)
+![player dot structure example](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/images/player_exmaple.png?raw=true)
 There are other ways to do this, but I've removed them all from my code, so I'll just put them in _italics_ here. The second most popular way to reference these values is what I call the dictionary reference, since it's referenced similarly to Python's dictionaries, the way to reference in this fashion is (using player.x here again) _player['x']_ or _player["x"]_ (either way works, but i used the single quote more). And finally the least popular way to reference them is by index, so lets take _player.dead_ in the above table, you could reference it like _player[1]_ (PICO-8s' Lua starts at 1, not 0), but this is not a good coding practice, as if you put something else before it, now the code where you referenced it is broken, and has to be changed, so the other two, referencing by the name, is much more popular.
 
 I said at the beginning that tables can work like lists too, and in this case, I've done this a lot, take for example, the list of tables that contains button information for _.level2.p8_ (the image below).
-![level 2 buttons](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/lvl2_buttons.png/raw=true)
+![level 2 buttons](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/images/lvl2_buttons.png/raw=true)
 This is what the initilization for those buttons looks like. As you can see, the data structure is a table of tables that contain the information I need, but I'll refer to this type of data structure as a list of tables for simplicity. The way you reference these is a combination of the ways above, instead of saying _lvl2_buttons[{...}].x_ we can say _lvl2_buttons[1].x_, which is much more useful in this case, and that's in fact how I use it in code when referencing these, and it also makes it possible to use for loops with integers as the variable possible. Speaking of that, PICO-8 has the unique syntax _for btn in all(btnlst) do ..._ which (assuming _btnlst_ is a list of buttons like the example before), takes each value of that table and lets me do stuff like _for btn in all(btnlst) do __if btn.pressed then foo() end__ end_ which allows the simplicity of code even more. The other way of using tables is as a literal list of data (or as in the example below, a list of integers, just look at the not crossed out part of the function call)
-![function call with a list of ints](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/combo_list.png?raw=true)
+![function call with a list of ints](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/images/combo_list.png?raw=true)
 These are simply referenced with an integer value, as it's the easiest way to do it.
 
 ### Key algorithms
 The only algorithms you have in PICO-8 are the ones you make yourself, I'll show the images of the bot algorithm I made, but in order to simplify it, all you need to know is that the bot moves towards the player and once it's close enough it attacks the player, and if it hits the player, it removes health from the player. If the player is above the bot, the bot jumps to move towards the player.
-![update_bot() function](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/update_bot.png?raw=true)
-![move_to_goal() function](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/move_to_goal.png?raw=true)
-![check_px() function](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/check_px.png?raw=true)
+![update_bot() function](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/images/update_bot.png?raw=true)
+![move_to_goal() function](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/images/move_to_goal.png?raw=true)
+![check_px() function](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/images/check_px.png?raw=true)
 
 ## Problems
 I have encoutered many problems developing this code, such as the bot attempting to jump towards the player, just to go away from it immediately and repeat that process, or the Off By One Error that happened when creating the weapons on _.level1.p8_, for which, I simply increased the limit of how many times the code ran by one, but it took me a while to figure out that was happneing. Over all, in game development, the bugs you make while making the game kind of create the experience of finding what's causing those problems and fixing them. Sometimes they're small, like the weapon example, but sometimes they're big, like bot bug I started this off with, whatever bug appears though, will be fixed usually within the version, unless it isn't impacting gameplay super heavily.
