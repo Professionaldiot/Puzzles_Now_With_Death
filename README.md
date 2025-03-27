@@ -10,7 +10,7 @@
 - [What is the mimimum viable product?](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#what-is-the-minimum-viable-product)
     - [General requirements](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#general-requirements)
     - [Game specific requirements](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#game-specific-requirements)
-- [Alpha release briefing](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#aplha-release-briefing)
+- [Alpha release briefing](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#alpha-release-briefing)
     - [Purpose](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#purpose)
     - [Measure of success](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#measure-of-success)
     - [Game concepts](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#game-concepts)
