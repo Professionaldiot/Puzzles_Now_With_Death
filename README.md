@@ -92,7 +92,7 @@ I think that these requirements actually encompass the game better, I also think
 than the general requirements.
 
 
-# Alhpa release briefing
+# Alpha release briefing
 
 ## Purpose
 The purpose of my project is to gain valuable insight into how the game design process works and at the same time learn a new programming language. An employer looking at this project will see the game, fully realized, and they will also be able to see how I approached handling the different difficulties of creating a game [basically] from scratch.
