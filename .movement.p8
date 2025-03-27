@@ -1157,7 +1157,7 @@ end--function ladder()
 --button code
 function btn_init()
     --[[
-    Intializes the button list for .level2.p8
+    Intializes the button list for .level3.p8
 
     Variables: NIL
 

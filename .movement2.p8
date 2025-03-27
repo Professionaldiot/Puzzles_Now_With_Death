@@ -409,3 +409,6 @@ function draw_circle()
     ]]
     line(c.x_center, c.y_center, c.x, c.y, 9)
 end
+
+-->8
+--new puzzle mechanics here

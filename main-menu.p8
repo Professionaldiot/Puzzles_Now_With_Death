@@ -117,6 +117,8 @@ function _draw()
 	draw_gray_sprites()
 	spr(player.spr,player.x,player.y)
 	camera(cx,cy)
+	pal(10, -4, 1)
+	pal(9, -15, 1)
 end
 
 function level_select_init()

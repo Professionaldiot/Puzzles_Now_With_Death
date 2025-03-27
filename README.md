@@ -10,6 +10,18 @@
 - [What is the mimimum viable product?](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#what-is-the-minimum-viable-product)
     - [General requirements](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#general-requirements)
     - [Game specific requirements](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#game-specific-requirements)
+- [Alpha release briefing](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#aplha-release-briefing)
+    - [Purpose](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#purpose)
+    - [Measure of success](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#measure-of-success)
+    - [Game concepts](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#game-concepts)
+    - [The engine](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#the-engine)
+        - [What is given to you](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#what-is-given-to-you)
+        - [Includes](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#includes)
+    - [Key data structures and algorithms](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#key-data-structures-and-algorithms)
+        - [Key data structures](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#key-data-structures)
+        - [Key algorithms](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#key-algorithms)
+    - [Problems](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#problems)
+    - [Expansion and customization](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#expansion-and-customization)
 
 # How to run the game:
 - To open the file, first figure out your OS in the naming scheme. Then download only that file to your machine from GitHub, and open it on your machine. 
@@ -76,7 +88,55 @@ The mimimum viable product for this project, is a game in which, there is a char
         - On top of this, the player should do more damage the longer they hold the attack button
     - The player should be able to swap between two different weapons and use them interchangeably
 
-
 I think that these requirements actually encompass the game better, I also think they fit what I want to go for better
 than the general requirements.
 
+
+# Alhpa release briefing
+
+## Purpose
+The purpose of my project is to gain valuable insight into how the game design process works and at the same time learn a new programming language. An employer looking at this project will see the game, fully realized, and they will also be able to see how I approached handling the different difficulties of creating a game [basically] from scratch.
+
+## Measure of success
+3,227 lines of code (as of v.1.3.0) and 65 different functions across 3 different files, with 38 of them being in _.movement.p8_ (as of v.1.3.0)
+
+## Game concepts
+- FPS is one of the most important things in video games, the higher the FPS, the smoother the gameplay, this game only runs at _30 fps flat_, although it can be changed to 60, I am keeping it at 30 for the final release.
+- The game uses a coordinate system, but you don’t need to understand it to play the game, if you were making a game in PICO-8 though, you would need to know that x = 0 and y = 0 starts at the top left and goes to x = 1024 and y = 512
+- So the way Lua works, everything is a global variable unless you declare it _local_ inside of a functions’ scope. The main global variable the game always has is the _player_ variable, referenced by using _player.x_, _player.y_, _player.sp_, etc.
+
+## The engine
+
+### What is given to you
+PICO-8 gives you literally nothing to start with, you are given the engine itself, and the ability to type bash like commands (help, load, save, cd, etc) which allow you save and load the different files you create. The only files I have are _——.p8_ files which contain all the data that the files need, however you can use _#include ——.p8_ or _#include ——.lua_ to import different files that contain functions that you want to use, this is the strategy I use when making the levels, instead of creating the functions over and over again, or including from the level files, I created the _.movement.p8_ and _.movement2.p8_ files, which contain all the level code that I want to use. The dot naming scheme in PICO-8 is to signify that you don’t want to include that file in the _splore_ function that’s included in the PICO-8 engine once you buy it.
+
+### Includes
+As explained in the above section, PICO-8 doesn't use the traditional import statements as many other langauges do, but it uses the _#include_ statement for importing differnet files into your file that your working on. Here is a picture of my _#includes_ (and other code) from _.level3.p8_.
+![includes example](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/includes.png?raw=true)
+
+## Key data structures and algorithms
+
+### Key data structures
+The main data structure of PICO-8's Lua is tables, they can act like lists or, how most people use them, dictionaries with a little extra functionality. 
+![tables example](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/tables.png?raw=true)
+(Referencing the above image here) So take the x value of player, your question might be, how do I reference this in PICO-8's system? There are three different way's to do this, the most popular seeming to be the dot structure to referencing, as seen in the below image.
+![player dot structure example](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/player_exmaple.png?raw=true)
+There are other ways to do this, but I've removed them all from my code, so I'll just put them in _italics_ here. The second most popular way to reference these values is what I call the dictionary reference, since it's referenced similarly to Python's dictionaries, the way to reference in this fashion is (using player.x here again) _player['x']_ or _player["x"]_ (either way works, but i used the single quote more). And finally the least popular way to reference them is by index, so lets take _player.dead_ in the above table, you could reference it like _player[1]_ (PICO-8s' Lua starts at 1, not 0), but this is not a good coding practice, as if you put something else before it, now the code where you referenced it is broken, and has to be changed, so the other two, referencing by the name, is much more popular.
+
+I said at the beginning that tables can work like lists too, and in this case, I've done this a lot, take for example, the list of tables that contains button information for _.level2.p8_ (the image below).
+![level 2 buttons](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/lvl2_buttons.png/raw=true)
+This is what the initilization for those buttons looks like. As you can see, the data structure is a table of tables that contain the information I need, but I'll refer to this type of data structure as a list of tables for simplicity. The way you reference these is a combination of the ways above, instead of saying _lvl2_buttons[{...}].x_ we can say _lvl2_buttons[1].x_, which is much more useful in this case, and that's in fact how I use it in code when referencing these, and it also makes it possible to use for loops with integers as the variable possible. Speaking of that, PICO-8 has the unique syntax _for btn in all(btnlst) do ..._ which (assuming _btnlst_ is a list of buttons like the example before), takes each value of that table and lets me do stuff like _for btn in all(btnlst) do __if btn.pressed then foo() end__ end_ which allows the simplicity of code even more. The other way of using tables is as a literal list of data (or as in the example below, a list of integers, just look at the not crossed out part of the function call)
+![function call with a list of ints](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/combo_list.png?raw=true)
+These are simply referenced with an integer value, as it's the easiest way to do it.
+
+### Key algorithms
+The only algorithms you have in PICO-8 are the ones you make yourself, I'll show the images of the bot algorithm I made, but in order to simplify it, all you need to know is that the bot moves towards the player and once it's close enough it attacks the player, and if it hits the player, it removes health from the player. If the player is above the bot, the bot jumps to move towards the player.
+![update_bot() function](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/update_bot.png?raw=true)
+![move_to_goal() function](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/move_to_goal.png?raw=true)
+![check_px() function](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/check_px.png?raw=true)
+
+## Problems
+I have encoutered many problems developing this code, such as the bot attempting to jump towards the player, just to go away from it immediately and repeat that process, or the Off By One Error that happened when creating the weapons on _.level1.p8_, for which, I simply increased the limit of how many times the code ran by one, but it took me a while to figure out that was happneing. Over all, in game development, the bugs you make while making the game kind of create the experience of finding what's causing those problems and fixing them. Sometimes they're small, like the weapon example, but sometimes they're big, like bot bug I started this off with, whatever bug appears though, will be fixed usually within the version, unless it isn't impacting gameplay super heavily.
+
+## Expansion and customization
+After the game is compiled, the player can't change anything about the game, so custimaztion is quite low, but for expansion, I could always add more levels. Just recently (as of like v1.2.3 or v.1.2.4) I made the functions for the puzzles able to be used on any level instead of level specific, so if someone wanted to, they could redesign my levels if they knew what they were doing.
