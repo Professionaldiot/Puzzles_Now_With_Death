@@ -2,8 +2,9 @@ pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
 --[[
-1 is the box and spring functions
-2 is the circle functions
+0 is the box and spring functions
+1 is the circle functions
+2 is the portal functions
 ]]
 
 function box_init()
@@ -22,7 +23,7 @@ function box_init()
     }
 end
 
-function box_update(box_list)
+function box_update(box_list, btn_list)
     --[[
     Updates the box based on whether the player is "pushing it" or not
 
@@ -38,8 +39,13 @@ function box_update(box_list)
     if box_list == nil then
         box_list = box
     end
+    if btn_list == nil then
+        btn_list = butts
+    end
     for b in all(box_list) do
-        btn_update(butts, b)
+        if btn_list != nil then
+            btn_update(btn_list, b)
+        end
         b.dy += b.g
         b.dx *= b.f
 
@@ -79,7 +85,7 @@ function box_update(box_list)
             end
         end
         if collide_map(b, "right", 0) and collide_map(b, "right", 2) and b.dx >= 0 then
-            b.dx = b.dx
+            b.dx = b.dx * 1.25
         elseif collide_map(b, "right", 0) and b.dx >= 0 then
             b.dx = 0
             if player.dx > 0 and player.x + 8 > b.x and player.x < b.x and player.y <= b.y and player.y >= b.y - 7 then
@@ -87,7 +93,7 @@ function box_update(box_list)
                 player.x = b.x - 8
             end
         elseif collide_map(b, "left", 0) and collide_map(b, "left", 2) and b.dx <= 0 then
-            b.dx = b.dx
+            b.dx = b.dx * 1.25
         elseif collide_map(b, "left", 0) and b.dx <= 0 then
             b.dx = 0
             if player.dx < 0 and player.x < b.x + 8 and player.x > b.x and player.y <= b.y and player.y >= b.y - 7 then
@@ -96,7 +102,7 @@ function box_update(box_list)
             end
         end
 
-        b.dx = mid(-b.mx_dx, b.dx, b.mx_dx)
+        b.dx = mid(-b.mx_dx * 2, b.dx, b.mx_dx * 2)
         b.dy = mid(-b.mx_dy, b.dy, b.mx_dy)
 
         b.x += b.dx
@@ -187,14 +193,14 @@ function spring_init()
     returns NIL
     ]]
     spring_locs = { 
-        { x = 104, y = 104, sp = 51 },
-        { x = 368, y = 160, sp = 51 },
-        { x = 288, y = 160, sp = 51 },
-        { x = 22*8, y = 48, sp = 51 }
+        { x = 104, y = 104, sp = 51, start = 51, down_sp = 52},
+        { x = 368, y = 160, sp = 51, start = 51, down_sp = 52},
+        { x = 288, y = 160, sp = 51, start = 51, down_sp = 52},
+        { x = 22*8, y = 48, sp = 51, start = 51, down_sp = 52}
     }
 end
 
-function spring_update(box_to_check, spring_list)
+function spring_update(box_to_check, spring_list, box_list)
     --[[
     Computes whether or not the player (or a box that's decided based on level) 
     should be sprung up or not and given immunity to fall damage
@@ -205,42 +211,45 @@ function spring_update(box_to_check, spring_list)
     returns NIL
     ]]
     b = box_to_check
+    if box_list == nil then
+        box_list = box
+    end
     if spring_list == nil then
         spring_list = spring_locs
     end
     for s in all(spring_list) do
-        if box[b].x >= s.x - 6 and box[b].x < s.x + 6 and box[b].start == 0 
-                and flr(box[b].y) <= s.y and flr(box[b].y) > s.y - 2 
-                and box[b].start==0 and player.start==0 then
-            s.sp =52
-            box[b].start = time()
-        elseif not (flr(box[b].y) <= s.y and flr(box[b].y) > s.y - 2 
-                and box[b].x >= s.x - 6 and box[b].x < s.x + 6) 
-                and s.sp == 52 and player.start==0 then
-            box[b].start = 0
-            s.sp = 51
-        elseif time() - box[b].start >= 0.5 and box[b].start != 0 and player.start==0 then
-            box[b].dy -= (box[b].boost * 1.6)
-            box[b].start = 0
-            s.sp = 51
+        if box_list[b].x >= s.x - 6 and box_list[b].x < s.x + 6 and box_list[b].start == 0 
+                and flr(box_list[b].y) <= s.y and flr(box_list[b].y) > s.y - 2 
+                and box_list[b].start==0 and player.start==0 then
+            s.sp = s.down_sp
+            box_list[b].start = time()
+        elseif not (flr(box_list[b].y) <= s.y and flr(box_list[b].y) > s.y - 2 
+                and box_list[b].x >= s.x - 6 and box_list[b].x < s.x + 6) 
+                and s.sp == s.down and player.start==0 then
+            box_list[b].start = 0
+            s.sp = s.start
+        elseif time() - box_list[b].start >= 0.5 and box_list[b].start != 0 and player.start==0 then
+            box_list[b].dy -= (box_list[b].boost * 1.6)
+            box_list[b].start = 0
+            s.sp = s.start_sp
         end--if
         
         if player.x >= s.x - 6 and player.x < s.x + 6 and player.start == 0 
                 and flr(player.y) <= s.y and flr(player.y) > s.y - 2 
-                and player.start==0 and box[b].start==0 then
-            s.sp =52
+                and player.start==0 and box_list[b].start==0 then
+            s.sp = s.down_sp
             player.start = time()
         elseif not (flr(player.y) <= s.y and flr(player.y) > s.y - 2 
                 and player.x >= s.x - 6 and player.x < s.x + 6) 
-                and s.sp == 52 and box[b].start==0 then
+                and s.sp == s.down_sp and box_list[b].start==0 then
             player.start = 0
-            s.sp = 51
-        elseif time() - player.start >= 0.5 and player.start != 0 and box[b].start==0 then
+            s.sp = s.start
+        elseif time() - player.start >= 0.5 and player.start != 0 and box_list[b].start==0 then
             player.dy -= (player.boost * 1.6)
             player.landed = false
             player.spring = true
             player.start = 0
-            s.sp = 51
+            s.sp = s.start
         end
     end
 end
@@ -411,4 +420,66 @@ function draw_circle()
 end
 
 -->8
---new puzzle mechanics here
+--portal functions
+function portal_update(portal_list, box_list)
+    --[[
+    Takes a list of portals on a level and does the computations to update them correctly
+
+    Variables:
+    * portal_list: list[table] --> the list of portals on the level, must have x, y, link, sp, g_sp, orig_sp and cooldown, cooldown_start
+
+    returns NIL
+    ]]
+    for p in all(portal_list) do
+        --if the portal is on cooldown draw the grayed out version sprite of it
+        if player.y == p.y and p.cooldown == 0 then
+            p.sp = p.orig_sp
+            portal_list[p.link].sp = portal_list[p.link].orig_sp
+            --if the player is on the same y level and the portal is off cooldown
+            if (player.x > p.x and player.x < p.x + 8) or 
+                (player.x + player.w > p.x and player.x + player.w < p.x + 8) then
+                    p.cooldown = p.cooldown_start --start the cooldown period
+                    portal_list[p.link].cooldown = p.cooldown_start
+                    player.x = portal_list[p.link].x
+                    player.y = portal_list[p.link].y
+                    while player.x - cam_x > 60 do
+                        cam_x += 10
+                    end
+                    while player.x - cam_x < 60 do
+                        cam_x -= 10
+                    end
+            end
+        elseif p.cooldown > 0 then
+            p.sp = p.g_sp
+            portal_list[p.link].sp = portal_list[p.link].g_sp
+            p.cooldown -= 1
+        end
+        for b in all(box_list) do
+            if b.y == p.y and p.cooldown == 0 then
+                p.sp = p.orig_sp
+                portal_list[p.link].sp = portal_list[p.link].orig_sp
+                if (b.x > p.x and b.x < p.x + 8) or
+                    (b.x + b.w > p.x and b.x + b.w < p.x + 8) then
+                        p.cooldown = p.cooldown_start --start the cooldown period
+                        portal_list[p.link].cooldown = p.cooldown_start
+                        b.x = portal_list[p.link].x + b.w + 8
+                        b.y = portal_list[p.link].y
+                end--if
+            end--if
+        end--for
+    end--for
+end
+
+function portal_draw(portal_list)
+    --[[
+    Draws the portals to the level from the portal list speficied
+
+    Variables:
+    * portal_list: list[table] --> the list of portals on the level, must have x, y, index_link, sp, g_sp, orig_sp and cooldown, cooldown_start
+
+    returns NIL
+    ]]
+    for p in all(portal_list) do
+        spr(p.sp, p.x, p.y)
+    end
+end
