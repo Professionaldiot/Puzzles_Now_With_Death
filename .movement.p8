@@ -6,10 +6,12 @@ __lua__
 --export -i 64 pnwd.bin .level1.p8 .level2.p8 .level3.p8 .level4.p8 .level5.p8 .level6.p8 .level7.p8 .level8.p8 .boss-room.p8
 --[[.movement.p8:0 is the player's code, and code that will be in every level
 0 is player functions
-1 is level1 functions (stairs, ladders, trapdoors)
-2 is the button functinons
-3 is combo lock + block functions
-4 is the door functions
+1 is the trapdoor functions
+2 is the stair function
+3 is the ladder function
+4 is the button functinons
+5 is combo lock + block functions
+6 is the door functions
 ]]
 
 function special_pickup_init(x, y, spr, min_spr)
@@ -181,8 +183,10 @@ function draw_health()
 	print(health, cam_x + 102 + h_px/2, cam_y+2, 11)
 	print(player.max_health, cam_x + 119 - h_px/2, cam_y+2, 8)
     if player.dead then
-        str = 'you died'
-        print(str, 64-(#str*2) + cam_x, 112 + cam_y, 8)
+        local str = 'you died'
+        local str2 = "press 🅾️ to restart level"
+        print(str, (64 + cam_x)-(#str*2), 112 + cam_y, 8)
+        print(str2, (64 + cam_x)- (#str2/2) - abs(#str2 - #str)*2, 120 + cam_y, 8)
     end
 end
 
@@ -614,8 +618,7 @@ function player_update()
         end
 
         --stop climbing
-        if player.climbing
-                or player.climbing_down then
+        if player.climbing or player.climbing_down then
             if not collide_map(player, "up", 2) or not collide_map(player, "down", 2) then
                 player.climbing = false
                 player.climbing_down = false
@@ -637,6 +640,15 @@ function player_update()
         player.anim = time()
         player.dy = 0
         player.dx = 0
+        local j = 0
+        local levels = {".level1.p8", ".level2.p8", ".level3.p8",".level4.p8", ".level5.p8", ".level6.p8",".level7.p8", ".level8.p8"}
+        if btn(🅾️) then
+            for i = 1, dget(12) do
+                j += 1
+            end
+            load(levels[j])
+        end
+            
     end
     if player.attacking and not player.hitting then
         if time() - atk_spr.anim >= .3 then
@@ -914,7 +926,7 @@ function r_save(r_health, r_base_dmg)
         dset(6, 1)
         dset(7, 1)
     end
-    dset(12, 1)--level player is on
+    --dset(12, 1)--level player is on
     dset(14, 0)--bot.x
     dset(15, nil)--bot.goalx
     dset(16, 0)--bot.q1
@@ -965,71 +977,7 @@ function lload()
 end
 
 -->8
---level1 functions
-function stairs()
-    --[[
-    Allows the player to 'go up' stairs at will
-
-    Variables: NIL
-
-    returns NIL
-    ]]
-    --nullify gravity
-    --set player.dy to 0
-    --check for stairs on right
-    --[[
-    btn(➡️)
-    btn(⬅️)
-    ]]
-    --check collision left and right
-    if collide_map(player, "right", 5) then
-        if btn(➡️) then
-            player.x += 1
-            player.y -= 1.5
-            player.dy = -.3
-            player.stairs = true
-        end--if btn()
-    end--if collide_map()
-    if collide_map(player, "left", 6) then
-        if btn(⬅️) then
-            player.x -= 1
-            player.y -= 1.5
-            player.dy = -.3
-            player.stairs = true
-        end--if btn()
-    end--if collide_map()
-
-    if player.dy > 0 then
-        player.falling = true
-        player.landed = false
-        player.jumping = false
-
-        player.dy = limit_speed(player.dy, player.max_dy)
-
-        if collide_map(player, "down", 5) or collide_map(player, "down", 6) then
-            player.landed = true
-            player.falling = false
-            player.dy = 0
-            player.y -= ((player.y + player.h + 1) % 8) - 1
-        end--if collide_map()
-    elseif player.dy < 0 then
-        player.jumping = true
-    end--if player.dy < 0
-    if player.dx < 0 then
-        player.dx = limit_speed(player.dx, player.max_dx)
-
-        if collide_map(player, "left", 6) then
-            player.dx = 0
-        end--if collide_map()
-    elseif player.dx > 0 then
-        player.dx = limit_speed(player.dx, player.max_dx)
-
-        if collide_map(player, "right", 5) then
-            player.dx = 0
-        end--if collide_map()
-    end--if player.dx > 0
-end --function stairs()
-
+--trapdoor functions
 function td_init()
     --[[
     Intializes the trapdoors for .level1.p8
@@ -1128,6 +1076,74 @@ function td_draw(td_list)
     end
 end
 
+-->8
+--stair function
+function stairs()
+    --[[
+    Allows the player to 'go up' stairs at will
+
+    Variables: NIL
+
+    returns NIL
+    ]]
+    --nullify gravity
+    --set player.dy to 0
+    --check for stairs on right
+    --[[
+    btn(➡️)
+    btn(⬅️)
+    ]]
+    --check collision left and right
+    if collide_map(player, "right", 5) then
+        if btn(➡️) then
+            player.x += 1
+            player.y -= 1.5
+            player.dy = -.3
+            player.stairs = true
+        end--if btn()
+    end--if collide_map()
+    if collide_map(player, "left", 6) then
+        if btn(⬅️) then
+            player.x -= 1
+            player.y -= 1.5
+            player.dy = -.3
+            player.stairs = true
+        end--if btn()
+    end--if collide_map()
+
+    if player.dy > 0 then
+        player.falling = true
+        player.landed = false
+        player.jumping = false
+
+        player.dy = limit_speed(player.dy, player.max_dy)
+
+        if collide_map(player, "down", 5) or collide_map(player, "down", 6) then
+            player.landed = true
+            player.falling = false
+            player.dy = 0
+            player.y -= ((player.y + player.h + 1) % 8) - 1
+        end--if collide_map()
+    elseif player.dy < 0 then
+        player.jumping = true
+    end--if player.dy < 0
+    if player.dx < 0 then
+        player.dx = limit_speed(player.dx, player.max_dx)
+
+        if collide_map(player, "left", 6) then
+            player.dx = 0
+        end--if collide_map()
+    elseif player.dx > 0 then
+        player.dx = limit_speed(player.dx, player.max_dx)
+
+        if collide_map(player, "right", 5) then
+            player.dx = 0
+        end--if collide_map()
+    end--if player.dx > 0
+end --function stairs()
+
+-->8
+--ladder function
 function ladder()
     --[[
     Allows the player to climb and descend ladders

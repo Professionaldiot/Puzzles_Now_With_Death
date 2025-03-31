@@ -5,6 +5,7 @@ __lua__
 0 is the box and spring functions
 1 is the circle functions
 2 is the portal functions
+3 is the __ functions
 ]]
 
 function box_init()
@@ -244,7 +245,7 @@ function spring_update(box_to_check, spring_list, box_list)
                 and s.sp == s.down_sp and box_list[b].start==0 then
             player.start = 0
             s.sp = s.start
-        elseif time() - player.start >= 0.5 and player.start != 0 and box_list[b].start==0 then
+        elseif time() - player.start >= 0.5 and player.start != 0 and box_list[b].start == 0 then
             player.dy -= (player.boost * 1.6)
             player.landed = false
             player.spring = true
@@ -483,3 +484,5 @@ function portal_draw(portal_list)
         spr(p.sp, p.x, p.y)
     end
 end
+
+-->8

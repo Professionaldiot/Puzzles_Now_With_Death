@@ -29,7 +29,7 @@ function _init()
     end
     lvl_buttons = {{x = 496, y = 144, sp = 6, p = false, sfx = 0}}
     special_pickup_init(328, 32, 51, 51)
-    if dget(12) == 0 then
+    if dget(12) != 1 then
 		dset(12,1)
 	end
 

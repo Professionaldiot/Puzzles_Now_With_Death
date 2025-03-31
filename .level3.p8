@@ -4,7 +4,7 @@ __lua__
 
 function _init()
 	#include .movement.p8:0
-	#include .movement.p8:2
+	#include .movement.p8:4
 	#include .enemy.p8
 	#include random.p8
 	#include .movement2.p8:0
@@ -20,14 +20,13 @@ function _init()
 	menuitem(3,"main menu",function() load("main-menu.p8") end)
 	menuitem(4,"level reset",function() reset_level() end)
 	menuitem(5,"health = 1",function() player.health = 1 end)
-	if dget(12) == 2 then
-		dset(12,3)
-	end
 	if dget(13,true) then
 		lload()
-		
 		player.health = dget(4)
 		dset(13,false)
+	end
+	if dget(12) != 3 then
+		dset(12,3)
 	end
 end
 

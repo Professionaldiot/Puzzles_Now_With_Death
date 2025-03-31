@@ -10,7 +10,7 @@ todo:
 make the bot take fall damage
 ]]
 function botinit()
-	levels = {".level1.p8", ".level2.p8", ".level3.p8"}
+	levels = {".level1.p8", ".level2.p8", ".level3.p8",".level4.p8", ".level5.p8", ".level6.p8",".level7.p8", ".level8.p8"}
 	atk_frames={96,96,96,96,96,96,96,96,96,96,96,96,96,96,96,96,96,96,97,97,97,97,97,97,97,97,97,97,97,97,"end"}
 	atk_cnt=0
 

@@ -33,7 +33,6 @@ function _init()
   menuitem(4,"debug file on/off",function() debug_any() end)
   menuitem(5,"reset save data",function() r_save() end)
   block = {x = -8, y = -8, w = 8, h = 8, sp = 78}
-  looped_amnt = 1
   special_pickup_init(96, 112, 51, 51)
   door_init(112, 112)
   botinit()
@@ -59,7 +58,7 @@ function _init()
     dset(13,false)
     lload()
   end
-  if dget(12) == 1 then
+  if dget(12) != 2 then
     dset(12, 2)
   end
 end
