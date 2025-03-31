@@ -471,6 +471,9 @@ function player_update()
                " atk_spr.spr: "..atk_spr.spr..
                " atk_spr.charge: "..atk_spr.charge, "player_movement_log.txt", false, true)
     end
+    if player.y > 300 then
+        player.dead = true
+    end
     if not player.dead then
         --physics
         player.dy += gravity

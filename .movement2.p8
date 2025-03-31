@@ -5,7 +5,7 @@ __lua__
 0 is the box and spring functions
 1 is the circle functions
 2 is the portal functions
-3 is the __ functions
+3 is the bridge functions
 ]]
 
 function box_init()
@@ -427,27 +427,41 @@ function portal_update(portal_list, box_list)
     Takes a list of portals on a level and does the computations to update them correctly
 
     Variables:
-    * portal_list: list[table] --> the list of portals on the level, must have x, y, link, sp, g_sp, orig_sp and cooldown, cooldown_start
+    * portal_list: list[table] --> the list of portals on the level, must have x, y, link, sp, g_sp, orig_sp and cooldown, cooldown_start, flp_x, flp_y, shoot_x
 
     returns NIL
     ]]
+    local boost_x = 0
+    local boost_y = 0
     for p in all(portal_list) do
         --if the portal is on cooldown draw the grayed out version sprite of it
-        if player.y == p.y and p.cooldown == 0 then
+        if (player.y == p.y) or (player.y > p.y and player.y < p.y+8) and p.cooldown == 0 then
             p.sp = p.orig_sp
             portal_list[p.link].sp = portal_list[p.link].orig_sp
             --if the player is on the same y level and the portal is off cooldown
-            if (player.x > p.x and player.x < p.x + 8) or 
-                (player.x + player.w > p.x and player.x + player.w < p.x + 8) then
+            if (player.x > p.x and player.x < p.x + 8) or (player.x + player.w > p.x and player.x + player.w < p.x + 8) then
                     p.cooldown = p.cooldown_start --start the cooldown period
                     portal_list[p.link].cooldown = p.cooldown_start
+                    if p.shoot_x != 0 then
+                        boost_x = 10 * sgn(p.shoot_x)
+                    else
+                        boost_y = -5
+                    end
                     player.x = portal_list[p.link].x
                     player.y = portal_list[p.link].y
+                    player.dx += boost_x
+                    player.dy += boost_y
                     while player.x - cam_x > 60 do
                         cam_x += 10
                     end
                     while player.x - cam_x < 60 do
                         cam_x -= 10
+                    end
+                    while player.y - cam_y > 80 do
+                        cam_y += 10
+                    end
+                    while player.y - cam_y < 80 do
+                        cam_y -= 10
                     end
             end
         elseif p.cooldown > 0 then
@@ -455,19 +469,21 @@ function portal_update(portal_list, box_list)
             portal_list[p.link].sp = portal_list[p.link].g_sp
             p.cooldown -= 1
         end
-        for b in all(box_list) do
-            if b.y == p.y and p.cooldown == 0 then
-                p.sp = p.orig_sp
-                portal_list[p.link].sp = portal_list[p.link].orig_sp
-                if (b.x > p.x and b.x < p.x + 8) or
-                    (b.x + b.w > p.x and b.x + b.w < p.x + 8) then
-                        p.cooldown = p.cooldown_start --start the cooldown period
-                        portal_list[p.link].cooldown = p.cooldown_start
-                        b.x = portal_list[p.link].x + b.w + 8
-                        b.y = portal_list[p.link].y
+        if box_list != nil then
+            for b in all(box_list) do
+                if b.y == p.y and p.cooldown == 0 then
+                    p.sp = p.orig_sp
+                    portal_list[p.link].sp = portal_list[p.link].orig_sp
+                    if (b.x > p.x and b.x < p.x + 8) or
+                        (b.x + b.w > p.x and b.x + b.w < p.x + 8) then
+                            p.cooldown = p.cooldown_start --start the cooldown period
+                            portal_list[p.link].cooldown = p.cooldown_start
+                            b.x = portal_list[p.link].x + b.w + 8
+                            b.y = portal_list[p.link].y
+                    end--if
                 end--if
-            end--if
-        end--for
+            end--for
+        end--if
     end--for
 end
 
@@ -476,13 +492,74 @@ function portal_draw(portal_list)
     Draws the portals to the level from the portal list speficied
 
     Variables:
-    * portal_list: list[table] --> the list of portals on the level, must have x, y, index_link, sp, g_sp, orig_sp and cooldown, cooldown_start
+    * portal_list: list[table] --> the list of portals on the level, must have x, y, index_link, sp, g_sp, orig_sp and cooldown, cooldown_start, flp_x, flp_y
 
     returns NIL
     ]]
     for p in all(portal_list) do
-        spr(p.sp, p.x, p.y)
+        spr(p.sp, p.x, p.y, 1, 1, p.flp_x, p.flp_y)
     end
 end
 
 -->8
+--bridge functions
+function bridge_update(is_combo, current_combo, correct_combo, max_length, btn_list, btn_index_start, btn_index_end, btn_index)
+    --[[
+    Updates the brige based on whether a specific button is pressed, or whether a specific combination of buttons is pressed
+
+    Variables:
+    * is_combo: bool --> whether the function should use a combo or not
+    * current_combo: list[int] --> the current combo of the player
+    * correct_combo: list[int] --> the correct combo of buttons
+    * max_length: int --> the max length of the combo
+    * btn_list: list[table] --> a list of the buttons on the level, needs to have x, y, and sfx
+    * btn_index_start: int --> the start of the index where the combo is
+    * btn_index_end: int --> the end of the index where the combo is
+    * btn_index: int --> the index of the button to check whether it is pressed or not, only used in non-combo button lists
+    ]]
+    local max = 0
+    if is_combo and not stop_bridge then
+        --checks whether the plyaer combo should be reset and whether the combo is the correct length or not
+        load_bridge = not combo_lock_update(current_combo, btn_list, correct_combo, max_length, 0, 0, 8, 8) and #current_combo == max_length
+    elseif not stop_bridge then
+        load_bridge = btn_list[btn_index].sfx > 0
+    end
+    if load_bridge and not stop_bridge then
+        if dget(63) == -1 then
+            if bridge_list[1].x > bridge_list[1].x_end then
+                dset(63, bridge_list[1].x - (bridge_list[1].x_end-8))
+                a = dget(63)
+            else
+                dset(63, (bridge_list[1].x_end+8) - bridge_list[1].x)
+                a = dget(63)
+            end
+        end
+        dset(63, dget(63) -1)--subtract one from the timer
+        x = bridge_list[1].x + ((sgn(bridge_list[1].x_end - bridge_list[1].x)) * (dget(63) - max))-- x - sgn(end - x) * -(max - iterator   )
+        if x%8 == 0 then
+            add(bridge_list, {x = x, y = bridge_list[1].y, sp = bridge_list[1].sp})
+        end
+    end
+    if dget(63) == 0 then
+        load_bridge = false
+        stop_bridge = true
+    end
+    for b in all(bridge_list) do
+        if player.y >= b.y - 8 and player.y < b.y then
+            if (player.x > b.x and player.x < b.x + 8) or 
+                    (player.x + player.w > b.x and player.x + player.w < b.x + 8) then
+                player.dy = 0
+                player.y = b.y - 8
+                player.landed = true
+                player.falling = false
+                player.trapdoor = true
+            end--if
+        end
+    end--for
+end
+
+function bridge_draw()
+    for b in all(bridge_list) do
+        spr(b.sp, b.x, b.y)
+    end
+end

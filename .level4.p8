@@ -25,12 +25,12 @@ function _init()
         {x = 392, y = 88, sp = 23, start = 23, down_sp = 24}
     }
     portals = {
-        {x = 132, y = 112, link = 2, sp = 19, g_sp = 22, orig_sp = 19, cooldown = 0, cooldown_start = 32},
-        {x = 408, y = 112, link = 1, sp = 19, g_sp = 22, orig_sp = 19, cooldown = 0, cooldown_start = 32},
-        {x = 392, y = 112, link = 4, sp = 20, g_sp = 22, orig_sp = 20, cooldown = 0, cooldown_start = 32},
-        {x = 336, y = 40, link = 3, sp = 20, g_sp = 22, orig_sp = 20, cooldown = 0, cooldown_start = 32},
-        {x = 120, y = 40, link = 6, sp = 21, g_sp = 22, orig_sp = 21, cooldown = 0, cooldown_start = 32},
-        {x = 456, y = 112, link = 5, sp = 21, g_sp = 22, orig_sp = 21, cooldown = 0, cooldown_start = 32}
+        {x = 132, y = 112, link = 2, sp = 19, g_sp = 22, orig_sp = 19, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
+        {x = 408, y = 112, link = 1, sp = 19, g_sp = 22, orig_sp = 19, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
+        {x = 392, y = 112, link = 4, sp = 20, g_sp = 22, orig_sp = 20, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
+        {x = 336, y = 40, link = 3, sp = 20, g_sp = 22, orig_sp = 20, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
+        {x = 120, y = 40, link = 6, sp = 21, g_sp = 22, orig_sp = 21, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
+        {x = 456, y = 112, link = 5, sp = 21, g_sp = 22, orig_sp = 21, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0}
     }
     if dget(13) then
         dset(13, false)
