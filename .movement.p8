@@ -26,7 +26,7 @@ function special_pickup_init(x, y, spr, min_spr)
     ]]
     --only one special pickup per level
     pickup = {x = x, y = y, spr = spr, picked_up = false, anim = 0, max_spr = spr + 4, min_spr = spr}
-end
+end 
 
 function special_pickup_update()
     --[[

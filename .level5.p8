@@ -37,6 +37,7 @@ function _init()
 end
 
 function _update()
+    
     bridge_update(false, {}, {}, 1, btns, 0, 0, 1)
     btn_update(btns, player)
     stairs()

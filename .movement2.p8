@@ -435,22 +435,29 @@ function portal_update(portal_list, box_list)
     local boost_y = 0
     for p in all(portal_list) do
         --if the portal is on cooldown draw the grayed out version sprite of it
-        if (player.y == p.y) or (player.y > p.y and player.y < p.y+8) and p.cooldown == 0 then
+        if ((player.y == p.y) or (player.y > p.y and player.y < p.y+8)) and p.cooldown == 0 then
             p.sp = p.orig_sp
             portal_list[p.link].sp = portal_list[p.link].orig_sp
             --if the player is on the same y level and the portal is off cooldown
             if (player.x > p.x and player.x < p.x + 8) or (player.x + player.w > p.x and player.x + player.w < p.x + 8) then
                     p.cooldown = p.cooldown_start --start the cooldown period
                     portal_list[p.link].cooldown = p.cooldown_start
-                    if p.shoot_x != 0 then
-                        boost_x = 10 * sgn(p.shoot_x)
+                    if portal_list[p.link].shoot_x != 0 then
+                        boost_x = 7 * sgn(portal_list[p.link].shoot_x)
+                        
                     else
-                        boost_y = -5
+                        boost_y = -4.5
+                        
                     end
                     player.x = portal_list[p.link].x
                     player.y = portal_list[p.link].y
-                    player.dx += boost_x
-                    player.dy += boost_y
+                    if boost_x > 0 then
+                        player.max_dx = boost_x
+                    
+                    end
+                    player.dx = boost_x
+                    player.dy = boost_y
+                    player.landed = false
                     while player.x - cam_x > 60 do
                         cam_x += 10
                     end
@@ -468,6 +475,8 @@ function portal_update(portal_list, box_list)
             p.sp = p.g_sp
             portal_list[p.link].sp = portal_list[p.link].g_sp
             p.cooldown -= 1
+        elseif p.cooldown <= 15 then
+            player.max_dx = 2
         end
         if box_list != nil then
             for b in all(box_list) do
