@@ -8,7 +8,7 @@ function _init()
     #include .movement.p8:2
     #include .movement.p8:3
     #include .movement.p8:4
-    #include .movement2.p8:3
+    #include .movement2.p8:4
     cartdata("dc_capstone")
     menuitem(1,"save",function() save() end)
     menuitem(2,"load",function() lload() end)
@@ -41,7 +41,7 @@ function _update()
     if btns[2].sfx > 0 then
         save()
     	r_save(false)
-		dset(12, 6)
+		dset(12, 14)
 		dset(6, player.m_base_dmg)
         dset(7, player.r_base_dmg)
         dset(8, player.m_start_dmg)

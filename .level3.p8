@@ -8,6 +8,7 @@ function _init()
 	#include .enemy.p8
 	#include random.p8
 	#include .movement2.p8:0
+	#include .movement2.p8:1
 	cartdata("dc_capstone")
 	player_init()
 	spring_init()
@@ -26,7 +27,7 @@ function _init()
 		dset(13,false)
 	end
 	if dget(12) != 3 then
-		dset(12,3)
+		dset(12, 3)
 	end
 end
 
@@ -34,7 +35,7 @@ function _update()
 	if butts[5].sp == 20 then
 		save()
     	r_save(false)
-		dset(12, 4)
+		dset(12, 12)
 		dset(6, player.m_base_dmg)
         dset(7, player.r_base_dmg)
         dset(8, player.m_start_dmg)

@@ -654,10 +654,13 @@ function player_update()
         player.dy = 0
         player.dx = 0
         local j = 0
-        local levels = {".level1.p8", ".level2.p8", ".level3.p8",".level4.p8", ".level5.p8", ".level6.p8",".level7.p8", ".level8.p8"}
+        local levels = {".level1.p8", ".level2.p8", ".level3.p8",".level4.p8", ".level5.p8", ".level6.p8",".level7.p8", ".level8.p8", ".boss-room.p8"}
         if btn(🅾️) then
             for i = 1, dget(12) do
                 j += 1
+            end
+            if dget(12) >= 9 then
+                j = 9
             end
             load(levels[j])
         end

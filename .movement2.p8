@@ -3,9 +3,10 @@ version 42
 __lua__
 --[[
 0 is the box and spring functions
-1 is the circle functions
-2 is the portal functions
-3 is the bridge functions
+1 is the spring functinos
+2 is the circle functions
+3 is the portal functions
+4 is the bridge functions
 ]]
 
 function box_init()
@@ -184,7 +185,8 @@ function box_draw(box_list)
         spr(b.sp, b.x, b.y)
     end
 end
-
+-->8
+--spring functions
 function spring_init()
     --[[
     Intializes the spring for .level2.p8
@@ -285,13 +287,14 @@ function circle_init()
         y = 0,
         angle_in_deg = 270,
         x_center = 147,
-        y_center = 80,
-        radius = 30,
+        y_center = 64,
+        radius = 50,
         da = 0,
         a_res = 0.6,
         acc = 0.5,
         grav = .1,
-        values = {}
+        values = {},
+        time_since_hit = 0
     }
 end
 
@@ -396,8 +399,19 @@ function make_circle()
 
     returns NIL
     ]]
+    local in_box_x = player.x > c.x_center - 6 and player.x < c.x + 6
+    local in_box_y = player.y > c.y_center and player.y < c.y
     pos = update_circle_x(c.angle_in_deg)
     dis = dist(c.x_center, pos.x1, c.y_center, pos.y1)
+    if in_box_x and in_box_y and c.time_since_hit != 0 and time() - c.time_since_hit > 5 then
+        player.health -= 3
+        c.time_since_hit = time()
+    elseif in_box_x and in_box_y and c.time_since_hit == 0 then
+        player.health -= 3
+        c.time_since_hit = time()
+    elseif not (in_box_x and in_box_y) then
+        c.time_since_hit = 0
+    end
     change_angle(c.angle_in_deg)
     c.angle_in_deg += c.da
     if c.angle_in_deg > 360 then
@@ -417,6 +431,12 @@ function draw_circle()
 
     returns NIL
     ]]
+    line(c.x_center-6, c.y_center, c.x+6, c.y_center)
+    line(c.x_center-6, c.y_center, c.x_center-6, c.y)
+    line(c.x+6, c.y_center, c.x+6, c.y)
+    line(c.x_center-6, c.y, c.x+6, c.y)
+
+
     line(c.x_center, c.y_center, c.x, c.y, 9)
 end
 
@@ -471,6 +491,11 @@ function portal_update(portal_list, box_list)
                         cam_y -= 10
                     end
             end
+        elseif p.cooldown == 30 and p.sfx == 0 then 
+            sfx(62, 3)
+            p.sfx = time()
+        elseif p.cooldown >= 0 and p.cooldown < 30 and p.sfx != 0 then
+            p.sfx = 0
         elseif p.cooldown > 0 then
             p.sp = p.g_sp
             portal_list[p.link].sp = portal_list[p.link].g_sp

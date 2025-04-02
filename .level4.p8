@@ -7,7 +7,7 @@ function _init()
     #include .movement.p8:0
     #include .movement.p8:4
     #include .movement2.p8:0
-    #include .movement2.p8:2
+    #include .movement2.p8:3
     cartdata("dc_capstone")
     menuitem(1,"save",function() save() end)
     menuitem(2,"load",function() lload() end)
@@ -21,16 +21,13 @@ function _init()
     buttons = {{x = 496, y = 24, sp = 6, p = false, sfx = 0}}
     player_init()
     r_save(false)
-    springs = {
-        {x = 392, y = 88, sp = 23, start = 23, down_sp = 24}
-    }
     portals = {
-        {x = 132, y = 112, link = 2, sp = 19, g_sp = 22, orig_sp = 19, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
-        {x = 408, y = 112, link = 1, sp = 19, g_sp = 22, orig_sp = 19, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
-        {x = 392, y = 112, link = 4, sp = 20, g_sp = 22, orig_sp = 20, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
-        {x = 336, y = 40, link = 3, sp = 20, g_sp = 22, orig_sp = 20, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
-        {x = 120, y = 40, link = 6, sp = 21, g_sp = 22, orig_sp = 21, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
-        {x = 456, y = 112, link = 5, sp = 21, g_sp = 22, orig_sp = 21, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0}
+        {x = 132, y = 112, link = 2, sp = 19, g_sp = 22, orig_sp = 19, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
+        {x = 408, y = 112, link = 1, sp = 19, g_sp = 22, orig_sp = 19, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
+        {x = 392, y = 112, link = 4, sp = 20, g_sp = 22, orig_sp = 20, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
+        {x = 336, y = 40, link = 3, sp = 20, g_sp = 22, orig_sp = 20, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
+        {x = 120, y = 40, link = 6, sp = 21, g_sp = 22, orig_sp = 21, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
+        {x = 456, y = 112, link = 5, sp = 21, g_sp = 22, orig_sp = 21, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0}
     }
     if dget(13) then
         dset(13, false)
@@ -48,7 +45,7 @@ function _update()
     if buttons[1].sfx != 0 then
         save()
     	r_save(false)
-		dset(12, 5)
+		dset(12, 13)
 		dset(6, player.m_base_dmg)
         dset(7, player.r_base_dmg)
         dset(8, player.m_start_dmg)
@@ -56,7 +53,6 @@ function _update()
 		load(".boss-room.p8")
     end
     portal_update(portals, boxes)
-    spring_update(1, springs, boxes)
     manage_health()
     player_animate()
     cam_update(0, 384, 0)
@@ -82,7 +78,6 @@ function _draw()
     portal_draw(portals)
     btn_draw(buttons)
     box_draw(boxes)
-    spring_draw(springs)
     draw_health()
 end
 
@@ -298,7 +293,7 @@ __sfx__
 001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+001000002e1262f126311263d13439125341562f134301563213435145381253a1753a1463800639006390063900639006390063800636006340062f0062f0060000000000000000000000000000000000000000
 00100000282502a2502b2502c2502c2502c2502b25029250262501f2501b250132502520027200282000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __music__
 00 00024344

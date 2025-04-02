@@ -44,7 +44,7 @@ function _update()
     if lvl_buttons[1].sfx != 0 then
         save()
         r_save(false, false)
-        dset(12, 2)
+        dset(12, 11)
         dset(13, true)
 		dset(6, player.m_base_dmg)
         dset(7, player.r_base_dmg)

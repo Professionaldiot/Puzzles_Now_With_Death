@@ -24,6 +24,7 @@ function _init()
 end
 
 function _update()
+    --17
     player_update()
     manage_health()
     player_animate()

@@ -10,7 +10,8 @@ function _init()
     --ladder functions ^
     #include .movement.p8:4
     --button functions ^
-    #include .movement2.p8:2
+    #include .movement2.p8:3
+    --portal functions ^
     cartdata("dc_capstone")
     menuitem(1,"save",function() save() end)
     menuitem(2,"load",function() lload() end)
@@ -18,69 +19,67 @@ function _init()
     menuitem(4,"debug file on/off",function() debug_any() end)
     menuitem(5,"reset save data",function() sr_save() end)
     portals = {
-        {x = 15*8, y = 64, link = 2, sp = 22, g_sp = 28, orig_sp = 22, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
-        {x = 24*8, y =28*8 , link = 1, sp = 38, g_sp = 44, orig_sp = 38, cooldown = 0, cooldown_start = 32, flp_x = true, flp_y = false, shoot_x = -1},
+        {x = 120, y = 64, link = 2, sp = 22, g_sp = 28, orig_sp = 22, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
+        {x = 192, y = 224, link = 1, sp = 38, g_sp = 44, orig_sp = 38, cooldown = 0, cooldown_start = 32, flp_x = true, flp_y = false, shoot_x = -1, sfx = 0},
 
-        {x = 13*8, y = 29*8, link = 4, sp = 23, g_sp = 28, orig_sp = 23, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
-        {x = 28*8, y = 160, link = 3, sp = 23, g_sp = 28, orig_sp = 23, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
+        {x = 104, y = 232, link = 4, sp = 23, g_sp = 28, orig_sp = 23, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
+        {x = 224, y = 160, link = 3, sp = 23, g_sp = 28, orig_sp = 23, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
         
-        {x = 32*8, y = 17*8, link = 6, sp = 26, g_sp = 28, orig_sp = 26, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
-        {x = 40*8, y = 29*8, link = 5, sp = 26, g_sp = 28, orig_sp = 26, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
+        {x = 256, y = 136, link = 6, sp = 26, g_sp = 28, orig_sp = 26, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
+        {x = 320, y = 232, link = 5, sp = 26, g_sp = 28, orig_sp = 26, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
         
-        {x = 50*8, y = 29*8, link = 8, sp = 25, g_sp = 28, orig_sp = 25, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
-        {x = 54*8, y = 29*8, link = 7, sp = 25, g_sp = 28, orig_sp = 25, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
+        {x = 400, y = 232, link = 8, sp = 25, g_sp = 28, orig_sp = 25, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
+        {x = 432, y = 232, link = 7, sp = 25, g_sp = 28, orig_sp = 25, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
         
-        {x = 58*8, y = 29*8, link = 10, sp = 24, g_sp = 28, orig_sp = 24, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
-        {x = 38*8, y = 17*8, link = 9, sp = 40, g_sp = 44, orig_sp = 40, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 1},
+        {x = 464, y = 232, link = 10, sp = 24, g_sp = 28, orig_sp = 24, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
+        {x = 304, y = 136, link = 9, sp = 40, g_sp = 44, orig_sp = 40, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 1, sfx = 0},
         
-        {x = 57*8, y = 26*8, link = 12, sp = 23, g_sp = 28, orig_sp = 23, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
-        {x = 37*8, y = 29*8, link = 11, sp = 23, g_sp = 28, orig_sp = 23, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
+        {x = 456, y = 208, link = 12, sp = 23, g_sp = 28, orig_sp = 23, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
+        {x = 296, y = 232, link = 11, sp = 23, g_sp = 28, orig_sp = 23, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
 
-        {x = 32*8, y = 27*8, link = 14, sp = 43, g_sp = 44, orig_sp = 43, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 1},
-        {x = 35*8, y = 23*8, link = 13, sp = 27, g_sp = 28, orig_sp = 27, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
+        {x = 256, y = 216, link = 14, sp = 43, g_sp = 44, orig_sp = 43, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 1, sfx = 0},
+        {x = 280, y = 184, link = 13, sp = 27, g_sp = 28, orig_sp = 27, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
         
-        {x = 22*8, y = 22*8, link = 16, sp = 24, g_sp = 28, orig_sp = 24, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
-        {x = 4*8, y = 22*8, link = 15, sp = 24, g_sp = 28, orig_sp = 24, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
+        {x = 22*8, y = 22*8, link = 16, sp = 24, g_sp = 28, orig_sp = 24, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
+        {x = 4*8, y = 22*8, link = 15, sp = 24, g_sp = 28, orig_sp = 24, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
         
-        {x = 9*8, y = 19*8, link = 18, sp = 25, g_sp = 28, orig_sp = 25, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
-        {x = 3*8, y = 7*8, link = 17, sp = 25, g_sp = 28, orig_sp = 25, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
-        {x = 25*8, y= 8*8, link = 18, sp = 25, g_sp = 28, orig_sp = 25, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
+        {x = 9*8, y = 19*8, link = 18, sp = 25, g_sp = 28, orig_sp = 25, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
+        {x = 3*8, y = 7*8, link = 17, sp = 25, g_sp = 28, orig_sp = 25, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
+        {x = 25*8, y= 8*8, link = 18, sp = 25, g_sp = 28, orig_sp = 25, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
         
-        {x = 7*8, y = 7*8, link = 21, sp = 23, g_sp = 28, orig_sp = 23, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
-        {x = 8, y = 8, link = 20, sp = 39, g_sp = 44, orig_sp = 39, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 1},
+        {x = 7*8, y = 7*8, link = 21, sp = 23, g_sp = 28, orig_sp = 23, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
+        {x = 8, y = 8, link = 20, sp = 39, g_sp = 44, orig_sp = 39, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 1, sfx = 0},
         
-        {x = 13*8, y = 3*8, link = 23, sp = 26, g_sp = 28, orig_sp = 26, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
-        {x = 26*8, y = 24*8, link = 22, sp = 26, g_sp = 28, orig_sp = 26, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
+        {x = 104, y = 3*8, link = 23, sp = 26, g_sp = 28, orig_sp = 26, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
+        {x = 208, y = 24*8, link = 22, sp = 26, g_sp = 28, orig_sp = 26, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
         
-        {x = 30*8, y = 29*8, link = 25, sp = 25, g_sp = 28, orig_sp = 25, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
-        {x = 16*8, y = 18*8, link = 22, sp = 25, g_sp = 28, orig_sp = 25, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
+        {x = 30*8, y = 232, link = 25, sp = 25, g_sp = 28, orig_sp = 25, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
+        {x = 16*8, y = 18*8, link = 22, sp = 25, g_sp = 28, orig_sp = 25, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
         
-        {x = 19*8, y = 18*8, link = 27, sp = 24, g_sp = 28, orig_sp = 24, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
-        {x = 24*8, y = 24*8, link = 26, sp = 40, g_sp = 44, orig_sp = 40, cooldown = 0, cooldown_start = 32, flp_x = true, flp_y = false, shoot_x = -1},
-        {x = 19*8, y = 3*8, link = 27, sp = 40, g_sp = 44, orig_sp = 40, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
+        {x = 19*8, y = 18*8, link = 27, sp = 24, g_sp = 28, orig_sp = 24, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
+        {x = 24*8, y = 24*8, link = 26, sp = 40, g_sp = 44, orig_sp = 40, cooldown = 0, cooldown_start = 32, flp_x = true, flp_y = false, shoot_x = -1, sfx = 0},
+        {x = 19*8, y = 24, link = 27, sp = 40, g_sp = 44, orig_sp = 40, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
 
-        {x = 22*8, y = 18*8, link = 30, sp = 23, g_sp = 28, orig_sp = 23, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
-        {x = 33*8, y = 10*8, link = 29, sp = 39, g_sp = 44, orig_sp = 39, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 1},
+        {x = 22*8, y = 18*8, link = 30, sp = 23, g_sp = 28, orig_sp = 23, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
+        {x = 33*8, y = 10*8, link = 29, sp = 39, g_sp = 44, orig_sp = 39, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 1, sfx = 0},
         
-        {x = 37*8, y = 13*8, link = 32, sp = 27, g_sp = 28, orig_sp = 27, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
-        {x = 19*8, y = 10*8, link = 31, sp = 43, g_sp = 44, orig_sp = 43, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 1},
+        {x = 296, y = 104, link = 32, sp = 27, g_sp = 28, orig_sp = 27, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
+        {x = 19*8, y = 10*8, link = 31, sp = 43, g_sp = 44, orig_sp = 43, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 1, sfx = 0},
         
-        {x = 24*8, y = 13*8, link = 34, sp = 25, g_sp = 28, orig_sp = 25, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
-        {x = 33*8, y = 5*8, link = 33, sp = 25, g_sp = 28, orig_sp = 25, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
+        {x = 24*8, y = 104, link = 34, sp = 25, g_sp = 28, orig_sp = 25, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
+        {x = 33*8, y = 5*8, link = 33, sp = 25, g_sp = 28, orig_sp = 25, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
 
-        {x = 42*8, y = 13*8, link = 36, sp = 22, g_sp = 28, orig_sp = 22, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
-        {x = 50*8, y = 13*8, link = 35, sp = 22, g_sp = 28, orig_sp = 22, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
+        {x = 42*8, y = 104, link = 36, sp = 22, g_sp = 28, orig_sp = 22, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
+        {x = 400, y = 104, link = 35, sp = 22, g_sp = 28, orig_sp = 22, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
 
-        {x = 59*8, y = 20*8, link = 38, sp = 27, g_sp = 28, orig_sp = 27, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
-        {x = 38*8, y = 20*8, link = 37, sp = 43, g_sp = 44, orig_sp = 43, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 1},
+        {x = 59*8, y = 20*8, link = 38, sp = 27, g_sp = 28, orig_sp = 27, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
+        {x = 304, y = 20*8, link = 37, sp = 43, g_sp = 44, orig_sp = 43, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 1, sfx = 0},
 
-        {x = 48*8, y = 15*8, link = 40, sp = 38, g_sp = 44, orig_sp = 38, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 1},
-        {x = 45*8, y = 16*8, link = 39, sp = 22, g_sp = 28, orig_sp = 22, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 1},
+        {x = 48*8, y = 15*8, link = 40, sp = 38, g_sp = 44, orig_sp = 38, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 1, sfx = 0},
+        {x = 45*8, y = 16*8, link = 39, sp = 22, g_sp = 28, orig_sp = 22, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 1, sfx = 0},
 
-        {x = 47*8, y = 26*8, link = 1, sp = 22, g_sp = 28, orig_sp = 22, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
-        {x = 46*8, y = 29*8, link = 3, sp = 23, g_sp = 28, orig_sp = 23, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0},
-        
-        {x = 54*8, y = 18*8, link = 4, sp = 25, g_sp = 28, orig_sp = 25, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0}
+        {x = 47*8, y = 208, link = 1, sp = 22, g_sp = 28, orig_sp = 22, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
+        {x = 432, y = 144, link = 27, sp = 27, g_sp = 28, orig_sp = 27, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
 
        
     }
@@ -90,11 +89,11 @@ function _init()
         {atk_mult = 2.1, sp = 94, ranged = false},
         {atk_mult = 2.4, sp = 95, ranged = false}
     }
-    weapon_pickup_init({40*8, 32*8}, {20*8, 23*8}, pw, 2, 3)
+    weapon_pickup_init({320, 256}, {20*8, 184}, pw, 2, 3)
     weapon_pickups[1].sp = 95
     weapon_pickups[1].atk_mult = 2.4
     btns = {
-        {x = 58*8, y = 5*8, sp = 6, p = false, sfx = 0}
+        {x = 464, y = 5*8, sp = 6, p = false, sfx = 0}
     }
     botinit()
     player_init()
@@ -112,7 +111,7 @@ function _update()
     if btns[1].sfx > 0 then
         save()
     	r_save(false)
-		dset(12, 7)
+		dset(12, 15)
 		dset(6, player.m_base_dmg)
         dset(7, player.r_base_dmg)
         dset(8, player.m_start_dmg)
@@ -145,7 +144,7 @@ function _draw()
     draw_weapons()
     btn_draw(btns)    
     spr(player.sp, player.x, player.y, 1, 1, player.flp)
-    spr(atk_spr.spr, atk_spr.x, atk_spr.y, 1, 1, atk_spr.flp)
+    spr(atk_spr.spr-14, atk_spr.x, atk_spr.y, 1, 1)
     if proj.dx != 0 then
         spr(24, proj.x, proj.y, 1, 1, proj.flp)
     end
@@ -157,9 +156,9 @@ __gfx__
 0000000000444000bbbbbbbbbbbbbbbb0000222222220000000000000000000090000000500d0600000000000000000000000000000000000000000000000000
 00000000004ff0003bbbb333333bbbbb000022222222000000000000000000000955000a050d0600000000000000000000000000000000000000000000000000
 0070070000fff0003333333333333bbb000000000000000008eeeee00000000005906aa0050d0060000000000000000000000000000000000000000000000000
-000770000333330099933399999a33bb0000000000000000088888e0000000000509a6000500d060000000000000000000000000000000000000000000000000
-000770000f333f00a4493aaa6459a33322220000000022220888888000000000006900500050d060000000000000000000000000000000000000000000000000
-007007000f111f0046446454444454332222000000002222022228800288eee00aa690500050d060000000000000000000000000000000000000000000000000
+000770000333330099933399999a33bb0000000000000000088888e0000000000509a6000500d060990000500000000000000000000000000000000000000000
+000770000f333f00a4493aaa6459a33322220000000022220888888000000000006900500050d0600aa666650000000000000000000000000000000000000000
+007007000f111f0046446454444454332222000000002222022228800288eee00aa690500050d060990000500000000000000000000000000000000000000000
 0000000000501000444544444545544300000000000000005dd666665dd666660a005599005d0600000000000000000000000000000000000000000000000000
 00000000000050004544446446454463000000000000000055555dd655555dd6a000000905dd0600000000000000000000000000000000000000000000000000
 0000000000444000bbbbbbbb00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000444000
@@ -303,7 +302,7 @@ __map__
 02020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0
 __sfx__
-001080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+001000003900639006390063800636006340062f0062f006000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
@@ -365,8 +364,8 @@ __sfx__
 001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00100000257502a2002b2002c2002c2002c2002b20029200262001f2001b200132002520027200282000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+001000002e1262f126311263d13439125341562f134301563213435145381253a1753a1463800639006390063900639006390063800636006340062f0062f0060000000000000000000000000000000000000000
+002000001c5502a2002b2002c2002c2002c2002b20029200262001f2001b200132002520027200282000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __music__
 00 00024344
 
