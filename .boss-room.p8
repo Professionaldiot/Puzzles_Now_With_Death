@@ -20,8 +20,10 @@ function _init()
       dset(13,false)
       lload()
     end
-    player.r_base_dmg = dget(6)
-    player.m_base_dmg = dget(7)
+    player.m_base_dmg = dget(6)
+    player.r_base_dmg = dget(7)
+    player.m_start_dmg = dget(8)
+    player.r_start_dmg = dget(9)
 end
 
 function _update()

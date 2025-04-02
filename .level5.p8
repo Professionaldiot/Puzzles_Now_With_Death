@@ -20,7 +20,8 @@ function _init()
     load_bridge = false
     stop_bridge = false
     btns = {
-        {x = 472, y = 56, sp = 20, p = false, sfx = 0}
+        {x = 472, y = 56, sp = 20, p = false, sfx = 0},
+        {x = 62*8, y = 13*8, sp = 20, p = false, sfx = 0}
     }
     bridge_list = {
         {x = 488 , y = 112, x_end = 424, sp = 6}
@@ -37,7 +38,16 @@ function _init()
 end
 
 function _update()
-    
+    if btns[2].sfx > 0 then
+        save()
+    	r_save(false)
+		dset(12, 6)
+		dset(6, player.m_base_dmg)
+        dset(7, player.r_base_dmg)
+        dset(8, player.m_start_dmg)
+        dset(9, player.r_start_dmg)
+		load(".boss-room.p8")
+    end
     bridge_update(false, {}, {}, 1, btns, 0, 0, 1)
     btn_update(btns, player)
     stairs()
@@ -45,7 +55,7 @@ function _update()
     player_update()
     manage_health()
     player_animate()
-    cam_update(0, 384, 512)
+    cam_update(0, 384, 128)
 end
 
 function _draw()
@@ -57,7 +67,7 @@ function _draw()
 	if cam_x >= 239 and map_x >= 100 then
 		map_x -= 36
 	end
-	map(map_x, mid(0, 0 + (player.y - 112)/10, 512), cam_x, cam_y)
+	map(map_x, mid(0, 0 + (player.y - 112)/10, 16), cam_x, cam_y)
     bridge_draw()
     map(0,0)
     btn_draw(btns)

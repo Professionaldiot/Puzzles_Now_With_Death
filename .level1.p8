@@ -26,6 +26,8 @@ function _init()
     if dget(13,true) then
         dset(13,false)
         lload()
+    else
+        rsave()
     end
     lvl_buttons = {{x = 496, y = 144, sp = 6, p = false, sfx = 0}}
     special_pickup_init(328, 32, 51, 51)
@@ -44,8 +46,10 @@ function _update()
         r_save(false, false)
         dset(12, 2)
         dset(13, true)
-        dset(6, player.r_base_dmg)
-        dset(7, player.m_base_dmg)
+		dset(6, player.m_base_dmg)
+        dset(7, player.r_base_dmg)
+        dset(8, player.m_start_dmg)
+        dset(9, player.r_start_dmg)
         load(".boss-room.p8")
     end
     special_pickup_update()

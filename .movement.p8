@@ -91,7 +91,7 @@ function weapon_pickup_init(x_table, y_table, possible_weapons_table, best_value
     end
     local time_table = {}
     j = 0
-    while j < c_total do
+    while j < c_total + 1 do
         --simulate time, since we are doing this at the beginning of the game
         add(time_table, (100*best_value_time)+(j*best_value_mult))
         j+=1
@@ -102,11 +102,15 @@ function weapon_pickup_init(x_table, y_table, possible_weapons_table, best_value
         --create weapons
         weapon =  random(x_table[i], y_table[i], time_table[i], #pwt)%c_total
         if weapon == 0 then
-            weapon = random(x_table[i], y_table[i], time_table[i], #pwt)%c_total
+            weapon = c_total
+        else
+            weapon =  random(x_table[i], y_table[i], time_table[i], #pwt*10)
         end
-        if weapon == 0 then
-            weapon += 1
+        if weapon >= c_total then
+            weapon = c_total - 1
         end
+    
+        --weapons need atk_mult, sp, ranged
         add(weapon_pickups, {x = x_table[i], y = y_table[i], atk_mult = pwt[weapon].atk_mult, 
                             sp = pwt[weapon].sp, ranged = pwt[weapon].ranged, picked_up = false})
         i+=1
@@ -125,6 +129,7 @@ function update_weapons()
                 if w.ranged then
                     if player.r_base_dmg < w.atk_mult and not pickup.picked_up then
                         player.r_base_dmg = w.atk_mult
+                        player.r_start_dmg  = player.r_base_dmg
                     elseif pickup.picked_up then
                         --hopefully this doesn't happen as much, but it can happen
                         --levels will be designed around the fact that the special 
@@ -133,15 +138,18 @@ function update_weapons()
                         if player.r_base_dmg >= max_ranged_dmg then
                             player.r_base_dmg = max_ranged_dmg
                         end
+                        player.r_start_dmg  = player.r_base_dmg
                     end
                 else
                     if player.m_base_dmg < w.atk_mult and not pickup.picked_up then
                         player.m_base_dmg = w.atk_mult
+                        player.m_start_dmg  = player.m_base_dmg
                     elseif pickup.picked_up then
                         player.m_base_dmg *= w.atk_mult
                         if player.m_base_dmg >= max_melee_dmg then
                             player.m_base_dmg = max_melee_dmg
                         end
+                        player.m_start_dmg  = player.m_base_dmg
                     end
                 end--if player ranged
             end--if player on weapon
@@ -406,6 +414,8 @@ function player_init()
         spring = false,
         health = 99,
         max_health = 99,
+        m_start_dmg = 1,
+        r_start_dmg = 1,
         m_base_dmg = 1,
         r_base_dmg = 2,
         start = 0,
@@ -540,19 +550,19 @@ function player_update()
             if not player.charging and atk_spr.charge == 0 then
                 player.charging = true
                 atk_spr.charge = time()
-                projectile_init()
             end
         end
         if (not btn(🅾️)) and (player.attacking) then
             player.attacking = false
             player.hitting = false
             player.charging = false
-            player.base_dmg = 1
+            player.m_base_dmg = 1 * player.m_start_dmg
             atk_spr.charge = 0
         end
         if (not btn(🅾️)) and (player.ranged or player.shooting) then
             player.charging = false
             player.base_dmg = 1
+            player.r_base_dmg = 1 * player.r_start_dmg
             atk_spr.charge = 0
         end
         if atk_spr.charge != 0 and player.charging then
@@ -697,7 +707,11 @@ function player_animate()
 
     returns NIL
     ]]
-    if player.climbing or player.climbing_down then
+    if player.attacking and player.melee then
+        player.sp = 47
+    elseif player.charging and player.ranged then
+        player.sp = 31
+    elseif player.climbing or player.climbing_down then
         if time() - player.anim > .3 then
             player.anim = time()
             if player.sp == 49 then
@@ -721,10 +735,6 @@ function player_animate()
         end
     elseif player.sliding then
         player.sp = 48
-    elseif player.attacking and player.melee then
-        player.sp = 47
-    elseif player.charging and player.ranged then
-        player.sp = 31
     elseif atk_spr.charge == 0 or (not player.attacking and not player.hitting and not player.shooting and not player.charging) then
         --player idle
         if time() - player.anim > .3 then
@@ -889,6 +899,8 @@ function save()
     dset(5, player.dead)
     dset(6, player.m_base_dmg)
     dset(7, player.r_base_dmg)
+    dset(8, player.m_start_dmg)
+    dset(9, player.r_start_dmg)
     dset(13, true)
     --save the player pos
     --now do the bot
@@ -927,7 +939,9 @@ function r_save(r_health, r_base_dmg)
     end
     if r_base_dmg then
         dset(6, 1)
-        dset(7, 1)
+        dset(7, 2)
+        dset(8, 1)
+        dset(9, 2)
     end
     --dset(12, 1)--level player is on
     dset(14, 0)--bot.x
@@ -966,6 +980,8 @@ function lload()
         end
         player.m_base_dmg = dget(6)
         player.r_base_dmg = dget(7)
+        player.m_start_dmg = dget(8)
+        player.r_start_dmg = dget(9)
         --do the bot now
         bot.x = dget(14)
         bot.goalx = dget(15)

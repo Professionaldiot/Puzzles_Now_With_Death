@@ -23,7 +23,7 @@ function botinit()
 	
 	bot = {}
 		bot.dead = false
-		bot.health = 10
+		bot.health = 100
 		bot.x=32
 		bot.y=100
 		bot.dy=0
@@ -46,10 +46,10 @@ end
 function player_hit_bot(px, py)
 	local bw_d = bot.w*2
 	local bw_h = bot.w/2
-	local bot_right = px > bot.x + bw_h and px < bot.x + bw_d --player on the right side of the bot
+	local bot_right = px + 8 > bot.x and px + 8 < bot.x + 8 --player on the right side of the bot
 	local bot_left = px > bot.x - bot.w and px < bot.x + bw_h --player on the left side of the bot
 	if bot_right then
-		if player.flp and player.hitting then
+		if not player.flp  and player.hitting then
 			if player.meele then
 				bot.health -= player.m_base_dmg
 			else
@@ -137,7 +137,7 @@ function bot_hit_player(px, py)
 	local onplayer = playerleft or playerright--see if bot is on player, made into one statement
 	if bot.y == py then
 		if left or right or onplayer then
-			player.health -= 1
+			player.health -= 10
 		end
 	end
 end
