@@ -13,10 +13,11 @@ function _init()
     menuitem(5,"reset save data",function() r_save() end)
     botinit()
     player_init()
-    r_save(false)
     if dget(13) then
         dset(13, false)
         lload()
+    else
+        r_save()
     end
     if dget(12) != 8 then
 		dset(12,8)

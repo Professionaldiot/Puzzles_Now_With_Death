@@ -15,12 +15,12 @@ function _init()
     menuitem(4,"debug file on/off",function() debug_any() end)
     menuitem(5,"reset save data",function() r_save() end)
     botinit()
+    p  = {}
     boxes = {
         {x = 104, y = 112, dx = 0, dy = 0, w = 8, h = 8, sp = 38, g = 0.3, f = 0.8, acc = 0.5, mx_dy = 6, mx_dx = 3, boost = 4, start = 0},
     }
     buttons = {{x = 496, y = 24, sp = 6, p = false, sfx = 0}}
     player_init()
-    r_save(false)
     portals = {
         {x = 132, y = 112, link = 2, sp = 19, g_sp = 22, orig_sp = 19, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
         {x = 408, y = 112, link = 1, sp = 19, g_sp = 22, orig_sp = 19, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
@@ -32,6 +32,8 @@ function _init()
     if dget(13) then
         dset(13, false)
         lload()
+    else
+        r_save()
     end
     if dget(12) != 4 then
 		dset(12,4)

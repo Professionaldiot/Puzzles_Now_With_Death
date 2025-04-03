@@ -15,7 +15,7 @@ function _init()
 	btn_init()
 	botinit()
 	box_init()
-	r_save(false)
+	p = {}
 	menuitem(1,"save",function() save() end)
 	menuitem(2,"load",function() lload() end)
 	menuitem(3,"main menu",function() load("main-menu.p8") end)
@@ -23,8 +23,9 @@ function _init()
 	menuitem(5,"health = 1",function() player.health = 1 end)
 	if dget(13,true) then
 		lload()
-		player.health = dget(4)
 		dset(13,false)
+	else
+        r_save()
 	end
 	if dget(12) != 3 then
 		dset(12, 3)

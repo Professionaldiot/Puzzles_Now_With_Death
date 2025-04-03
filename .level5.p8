@@ -16,6 +16,7 @@ function _init()
     menuitem(4,"debug file on/off",function() debug_any() end)
     menuitem(5,"reset save data",function() r_save() end)
     botinit()
+    p = {}
     dset(63, -1)
     load_bridge = false
     stop_bridge = false
@@ -27,10 +28,11 @@ function _init()
         {x = 488 , y = 112, x_end = 424, sp = 6}
     }
     player_init()
-    r_save(false)
     if dget(13) then
         dset(13, false)
         lload()
+    else
+        r_save()
     end
     if dget(12) != 5 then
 		dset(12,5)

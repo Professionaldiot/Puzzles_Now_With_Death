@@ -905,6 +905,12 @@ function save()
     dset(8, player.m_start_dmg)
     dset(9, player.r_start_dmg)
     dset(13, true)
+    if dget(12) == 7 then
+        dset(22, p.x)
+        dset(23, p.y)
+        dset(24, p.next_vertex)
+        dset(25, p.prev_vertex)
+    end
     --save the player pos
     --now do the bot
     dset(14, bot.x)
@@ -958,6 +964,11 @@ function r_save(r_health, r_base_dmg)
 
     dset(12, 1)--level on
     dset(13, false)--level load
+
+    dset(22, 0)--platform.x
+    dset(23, 0)--platform.y
+    dset(24, 1)--platform.next_vertex
+    dset(25, 1)--platform.prev_vertex
 end
 
 function lload()
@@ -994,6 +1005,12 @@ function lload()
         bot.aim = dget(19)
         bot.action = dget(20)
         bot.flp = dget(21)
+        if dget(12) == 7 then
+            p.x = dget(22)
+            p.y = dget(23)
+            p.next_vertex = dget(24)
+            p.prev_vertex= dget(25)
+        end
         return true
     end
 end

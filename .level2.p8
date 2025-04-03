@@ -37,8 +37,8 @@ function _init()
   door_init(112, 112)
   botinit()
   player_init()
-  r_save(false)
   td_init()
+  p = {}
   stored_combo = {}
   lvl2_buttons={
     {x = 352,y = 112, sp = 6, act = ".boss-room.p8", p = false, sfx = 0},
@@ -57,6 +57,8 @@ function _init()
   if dget(13,true) then
     dset(13,false)
     lload()
+  else
+    r_save()
   end
   if dget(12) != 2 then
     dset(12, 2)

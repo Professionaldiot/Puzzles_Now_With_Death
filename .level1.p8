@@ -13,6 +13,7 @@ function _init()
     menuitem(5,"reset save data",function() r_save() end)
     botinit()
     player_init()
+    p = {}
     weapon_xs = {128, 240, 128, 472, 304}
     weapon_ys = {32, 32, 96, 48, 128}
     pw = {{atk_mult = 1.25, sp = 75, ranged = false}, 

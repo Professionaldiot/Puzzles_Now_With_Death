@@ -14,6 +14,8 @@ function _init()
     menuitem(5,"reset save data",function() r_save() end)
     botinit()
     player_init()
+    platform_init()
+    p.sp = 23
     vertices = {
         {sp = 23},
         {x = 59, y = 97},
@@ -31,7 +33,7 @@ function _init()
         dset(13, false)
         lload()
     else
-        r_save(false)
+        r_save()
     end
     if dget(12) != 7 then
 		dset(12,7)
