@@ -608,14 +608,15 @@ end
 
 -->8
 --platform functions
-function platform_init()
+function platform_init(vertex_list)
+    local v = vertex_list
     p = {
-        sp = 0,
-        x = 0,
+        sp = v[1].sp,
+        x = v[2].x,
         dx = 0,
-        y = 0,
+        y = v[2].y,
         prev_vertex = 1,
-        next_vertex = 1
+        next_vertex = 2
     }
 end
 
@@ -631,17 +632,6 @@ function platform_update(vertex_list)
     returns NIL
     ]]
     local v = vertex_list
-    if p == nil then
-        --create the platform table
-        platform_init()
-        p.sp = v[1].sp
-        p.x = v[2].x
-        p.y = v[2].y
-    end
-    if p.prev_vertex == p.next_vertex then
-        --hopefully should only happen when its initialized
-        p.next_vertex += 1
-    end
     if p.next_vertex > #v then
         --set the prev_vertex to the next_vertex to stop the logic below from happening, since 
         p.next_vertex -= 1
@@ -664,21 +654,28 @@ function platform_update(vertex_list)
         end
         if p.y >= v[p.prev_vertex].y and p.y < v[p.next_vertex].y then 
             p.y += 1
-            player.y += 1
+            if not player.dead then
+                player.y += 1
+            end
             p.dx = player.dx
         elseif p.y <= v[p.prev_vertex].y and p.y > v[p.next_vertex].y then
             p.y -= 1
             p.dx = player.dx
         end
     end
-    if player.y >= p.y - 8 and player.y < p.y - 4 then
-        if (player.x > p.x - 8 and player.x < p.x + 20) or (player.x + player.w > p.x and player.x + player.w < p.x + 20) then
-            player.dx = p.dx
-            player.dy = 0
-            player.y = p.y - 8
-            player.landed = true
-            player.falling = false
-            player.trapdoor = true
+    if not player.dead then
+        if player.y >= p.y - 8 and player.y < p.y - 4 then
+            if (player.x > p.x - 4 and player.x < p.x + 19) or (player.x + player.w > p.x and player.x + player.w < p.x + 19) then
+                player.max_dx = 1.25
+                player.dx = p.dx
+                player.dy = 0
+                player.y = p.y - 8
+                player.landed = true
+                player.falling = false
+                player.trapdoor = true
+            end
+        else
+            player.max_dx = 2
         end
     end
 end

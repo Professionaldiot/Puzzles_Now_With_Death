@@ -85,16 +85,13 @@ function _init()
        
     }
     pw = {{atk_mult = 1.25, sp = 91, ranged = false}, 
-        {atk_mult = 1.35, sp = 92, ranged = false},
-        {atk_mult = 1.9, sp = 93, ranged = false},
-        {atk_mult = 2.1, sp = 94, ranged = false},
         {atk_mult = 2.4, sp = 95, ranged = false}
     }
     weapon_pickup_init({320, 256}, {160, 184}, pw, 2, 3)
     weapon_pickups[1].sp = 95
     weapon_pickups[1].atk_mult = 2.4
     btns = {
-        {x = 464, y = 5*8, sp = 6, p = false, sfx = 0}
+        {x = 464, y = 40, sp = 6, p = false, sfx = 0}
     }
     botinit()
     player_init()
@@ -113,7 +110,7 @@ end
 function _update()
     if btns[1].sfx > 0 then
         save()
-    	r_save(false)
+    	r_save(false, false)
 		dset(12, 15)
 		dset(6, player.m_base_dmg)
         dset(7, player.r_base_dmg)
@@ -147,10 +144,6 @@ function _draw()
     draw_weapons()
     btn_draw(btns)    
     spr(player.sp, player.x, player.y, 1, 1, player.flp)
-    spr(atk_spr.spr-14, atk_spr.x, atk_spr.y, 1, 1)
-    if proj.dx != 0 then
-        spr(24, proj.x, proj.y, 1, 1, proj.flp)
-    end
     special_pickup_draw()
     draw_health()
 end

@@ -190,7 +190,7 @@ function draw_health()
     end
 	print(health, cam_x + 102 + h_px/2, cam_y+2, 11)
 	print(player.max_health, cam_x + 119 - h_px/2, cam_y+2, 8)
-    if player.dead then
+    if player.dead or player.health == 0 then
         local str = 'you died'
         local str2 = "press 🅾️ to restart level"
         print(str, (64 + cam_x)-(#str*2), 112 + cam_y, 8)
@@ -485,6 +485,10 @@ function player_update()
         player.dead = true
     end
     if not player.dead then
+        if collide_map(player, "down", 2) or collide_map(player, "right", 2) or collide_map(player, "left", 2) then
+            player.health = 0
+            player.dead = true
+        end
         --physics
         player.dy += gravity
         player.dx *= friction
@@ -967,7 +971,7 @@ function r_save(r_health, r_base_dmg)
 
     dset(22, 0)--platform.x
     dset(23, 0)--platform.y
-    dset(24, 1)--platform.next_vertex
+    dset(24, 2)--platform.next_vertex
     dset(25, 1)--platform.prev_vertex
 end
 
@@ -1008,8 +1012,14 @@ function lload()
         if dget(12) == 7 then
             p.x = dget(22)
             p.y = dget(23)
+            if p.x == 0 then
+                p.x = 4
+            end
+            if p.y == 0 then
+                p.y = 97
+            end
             p.next_vertex = dget(24)
-            p.prev_vertex= dget(25)
+            p.prev_vertex = dget(25)
         end
         return true
     end
