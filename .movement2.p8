@@ -7,6 +7,7 @@ __lua__
 2 is the circle functions
 3 is the portal functions
 4 is the bridge functions
+5 is the platform functions
 ]]
 
 function box_init()
@@ -448,9 +449,14 @@ function portal_update(portal_list, box_list)
 
     Variables:
     * portal_list: list[table] --> the list of portals on the level, must have x, y, link, sp, g_sp, orig_sp and cooldown, cooldown_start, flp_x, flp_y, shoot_x
+    * box_list: list[table] --> a list of the boxes on the level to check, if there are none to check, can be left as {}, but it cannot be nil
+        * default: {}
 
     returns NIL
     ]]
+    if box_list == nil then
+        box_list = {}
+    end
     local boost_x = 0
     local boost_y = 0
     for p in all(portal_list) do
@@ -550,6 +556,8 @@ function bridge_update(is_combo, current_combo, correct_combo, max_length, btn_l
     * btn_index_start: int --> the start of the index where the combo is
     * btn_index_end: int --> the end of the index where the combo is
     * btn_index: int --> the index of the button to check whether it is pressed or not, only used in non-combo button lists
+
+    returns NIL
     ]]
     local max = 0
     if is_combo and not stop_bridge then
@@ -596,4 +604,88 @@ function bridge_draw()
     for b in all(bridge_list) do
         spr(b.sp, b.x, b.y)
     end
+end
+
+-->8
+--platform functions
+function platform_init()
+    p = {
+        sp = 0,
+        x = 0,
+        dx = 0,
+        y = 0,
+        prev_vertex = 1,
+        next_vertex = 1
+    }
+end
+
+function platform_update(vertex_list)
+    --[[
+    Updates the platform bsaed on the series of vertexes given
+
+    Variables:
+    * vertex_list: list[table] --> a list of the coordinates to the vertices of where the platform should go
+        * list of {x = x, y = y} tuple pairs
+        * list[1] is designated for holding the sprite information
+        
+    returns NIL
+    ]]
+    local v = vertex_list
+    if p == nil then
+        --create the platform table
+        platform_init()
+        p.sp = v[1].sp
+        p.x = v[2].x
+        p.y = v[2].y
+    end
+    if p.prev_vertex == p.next_vertex then
+        --hopefully should only happen when its initialized
+        p.next_vertex += 1
+    end
+    if p.next_vertex > #v then
+        --set the prev_vertex to the next_vertex to stop the logic below from happening, since 
+        p.next_vertex -= 1
+        p.prev_vertex = p.next_vertex
+        p.dx = player.dx
+
+    elseif p.x == v[p.next_vertex].x and p.y == v[p.next_vertex].y and p.next_vertex <= #v then
+        --increase the tracked vertex by one
+        p.next_vertex += 1
+        p.prev_vertex += 1
+    end
+    if p.next_vertex <= #v then
+        --do the logic for moving the x direction
+        if p.x >= v[p.prev_vertex].x and p.x < v[p.next_vertex].x then
+            p.x += 1
+            p.dx = 1 * player.dx
+        elseif p.x <= v[p.prev_vertex].x and p.x > v[p.next_vertex].x then
+            p.x -= 1
+            p.dx = 1 * player.dx
+        end
+        if p.y >= v[p.prev_vertex].y and p.y < v[p.next_vertex].y then 
+            p.y += 1
+            player.y += 1
+            p.dx = player.dx
+        elseif p.y <= v[p.prev_vertex].y and p.y > v[p.next_vertex].y then
+            p.y -= 1
+            p.dx = player.dx
+        end
+    end
+    if player.y >= p.y - 8 and player.y < p.y - 4 then
+        if (player.x > p.x - 8 and player.x < p.x + 20) or (player.x + player.w > p.x and player.x + player.w < p.x + 20) then
+            player.dx = p.dx
+            player.dy = 0
+            player.y = p.y - 8
+            player.landed = true
+            player.falling = false
+            player.trapdoor = true
+        end
+    end
+end
+
+function platform_draw()
+    spr(p.sp-1, p.x-8, p.y)
+    spr(p.sp, p.x, p.y)
+    spr(p.sp+1, p.x+8, p.y)
+    spr(p.sp+2, p.x+16, p.y)
 end
