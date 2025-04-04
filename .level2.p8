@@ -29,9 +29,8 @@ function _init()
   cartdata("dc_capstone")
   menuitem(1,"save",function() save() end)
   menuitem(2,"load",function() lload() end)
-  menuitem(3,"main menu",function() load("main-menu.p8") end)
-  menuitem(4,"debug file on/off",function() debug_any() end)
-  menuitem(5,"reset save data",function() r_save() end)
+  menuitem(3,"main menu",function() load("main-menu.p8") end)\
+  menuitem(5,"restart level",function() reset_level() end)
   block = {x = -8, y = -8, w = 8, h = 8, sp = 78}
   special_pickup_init(96, 112, 51, 51)
   door_init(112, 112)

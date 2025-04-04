@@ -17,7 +17,7 @@ function _init()
     menuitem(2,"load",function() lload() end)
     menuitem(3,"main menu",function() load("main-menu.p8") end)
     menuitem(4,"debug file on/off",function() debug_any() end)
-    menuitem(5,"reset save data",function() sr_save() end)
+    menuitem(5,"restart level",function() reset_level() end)
     p = {}
     portals = {
         {x = 120, y = 64, link = 2, sp = 22, g_sp = 28, orig_sp = 22, cooldown = 0, cooldown_start = 32, flp_x = false, flp_y = false, shoot_x = 0, sfx = 0},
@@ -132,13 +132,10 @@ end
 function _draw()
     cls()
     map_x = 64 + ((player.x - 8)/40)
-	if map_x >= 100 then
+	if map_x >= 100 or cam_x >= 239 and map_x >= 100 then
 	  map_x -= 36
 	end
-	if cam_x >= 239 and map_x >= 100 then
-		map_x -= 36
-	end
-	map(map_x, mid(0, 0 + (player.y - 112)/10, 16), cam_x, cam_y)
+    map(map_x, mid(0, 0 + (player.y - 112)/10, 16), cam_x, cam_y)
     map(0,0)
     portal_draw(portals)
     draw_weapons()

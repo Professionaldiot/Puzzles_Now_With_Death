@@ -255,8 +255,10 @@ function reset_level()
 
     returns NIL
     ]]
+    local level_on = dget(12)
+    local levels = {".level1.p8", ".level2.p8", ".level3.p8",".level4.p8", ".level5.p8", ".level6.p8",".level7.p8", ".level8.p8"}
     r_save()
-    load(".level2.p8")
+    load(levels[level_on])
 end
 
 function debug_any()

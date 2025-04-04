@@ -10,7 +10,7 @@ todo:
 make the bot take fall damage
 ]]
 function botinit()
-	levels = {".level1.p8", ".level2.p8", ".level3.p8",".level4.p8", ".level5.p8", ".level6.p8",".level7.p8", ".level8.p8", ".boss-room.p8"}
+	levels = {".level1.p8", ".level2.p8", ".level3.p8",".level4.p8", ".level5.p8", ".level6.p8",".level7.p8", ".level8.p8", "main-menu.p8", ".boss-room.p8"}
 	atk_frames={96,96,96,96,96,96,96,96,96,96,96,96,96,96,96,96,96,96,97,97,97,97,97,97,97,97,97,97,97,97,"end"}
 	atk_cnt=0
 
@@ -394,8 +394,11 @@ function update_bot(px, py, t)
 
 	bot.dy += bot.g
 	if bot.dead then
+		--[[
+		this checks if the bot is dead, then loads the next cart if there is one to load
+		]]
 		bot.spr = 62
-		local temp = 0
+		temp = 0
 		for i = 1, dget(12)-8 do
 			temp = i
 		end

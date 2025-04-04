@@ -14,7 +14,7 @@ function _init()
     menuitem(2,"load",function() lload() end)
     menuitem(3,"main menu",function() load("main-menu.p8") end)
     menuitem(4,"debug file on/off",function() debug_any() end)
-    menuitem(5,"reset save data",function() r_save() end)
+    menuitem(5,"restart level",function() reset_level() end)
     botinit()
     p = {}
     dset(63, -1)
