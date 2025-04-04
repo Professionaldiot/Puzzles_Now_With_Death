@@ -60,7 +60,7 @@ function box_update(box_list, btn_list)
                 --if
             end
         elseif b.dy < 0 then
-            if collide_map(b, "up", 0) and collide_map(b,"up", 2) then
+            if collide_map(b, "up", 0) and collide_map(b,"up", 3) then
                 b.dy = b.dy
             elseif collide_map(b, "up", 0) then
                 b.dy = 0
@@ -87,7 +87,7 @@ function box_update(box_list, btn_list)
                 b.dx += b.acc
             end
         end
-        if collide_map(b, "right", 0) and collide_map(b, "right", 2) and b.dx >= 0 then
+        if collide_map(b, "right", 0) and collide_map(b, "right", 3) and b.dx >= 0 then
             b.dx = b.dx * 1.25
         elseif collide_map(b, "right", 0) and b.dx >= 0 then
             b.dx = 0
@@ -95,7 +95,7 @@ function box_update(box_list, btn_list)
                 player.dx = 0
                 player.x = b.x - 8
             end
-        elseif collide_map(b, "left", 0) and collide_map(b, "left", 2) and b.dx <= 0 then
+        elseif collide_map(b, "left", 0) and collide_map(b, "left", 3) and b.dx <= 0 then
             b.dx = b.dx * 1.25
         elseif collide_map(b, "left", 0) and b.dx <= 0 then
             b.dx = 0
@@ -119,8 +119,8 @@ function box_update(box_list, btn_list)
                         b.x + 8 <= h.x + 8 and b.y == h.y) then
                     if b.x+7 >= h.x and b.x + 8 <= h.x + 8 and b.y == h.y then
                         --push it to the left, actually
-                        if collide_map(b,"right",0) and collide_map(b,"right",2)
-                                or collide_map(h,"right",0) and collide_map(h,"right",2) then
+                        if collide_map(b,"right",0) and collide_map(b,"right",3)
+                                or collide_map(h,"right",0) and collide_map(h,"right",3) then
                             b.dx = b.dx
                         end
                         if collide_map(h,"right",0) then
@@ -143,8 +143,8 @@ function box_update(box_list, btn_list)
                         end
                     elseif b.y == h.y then
                         --push it to the right, actually
-                        if collide_map(b,"left",0) and collide_map(b,"left",2)
-                                or collide_map(h,"left", 0) and collide_map(h,"left",2) then
+                        if collide_map(b,"left",0) and collide_map(b,"left",3)
+                                or collide_map(h,"left", 0) and collide_map(h,"left",3) then
                             b.dx = b.dx
                         elseif collide_map(h,"left",0) then
                             b.x += b.dx

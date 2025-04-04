@@ -487,7 +487,7 @@ function player_update()
         player.dead = true
     end
     if not player.dead then
-        if collide_map(player, "down", 2) or collide_map(player, "right", 2) or collide_map(player, "left", 2) then
+        if (collide_map(player, "down", 2) or collide_map(player, "right", 2) or collide_map(player, "left", 2)) then
             player.health = 0
             player.dead = true
         end
@@ -638,7 +638,7 @@ function player_update()
 
         --stop climbing
         if player.climbing or player.climbing_down then
-            if not collide_map(player, "up", 2) or not collide_map(player, "down", 2) then
+            if not collide_map(player, "up", 3) or not collide_map(player, "down", 3) then
                 player.climbing = false
                 player.climbing_down = false
             end
@@ -1233,9 +1233,9 @@ function btn_init()
     ]]
     butts = {
         { x = 216, y = 104, sp = 19, act = "tp", p = false, sfx = 0},
-        { x = 72, y = 104, sp = 19, act = "nil", p = false, sfx = 0},
+        { x = 72, y = 104, sp = 19, act = "nil", p = false, sfx = 0},--2
         { x = 136, y = 104, sp = 19, act = "door", p = false, sfx = 0},
-        { x = 56, y = 48, sp = 19, act = "nil", p = false, sfx = 0},
+        { x = 56, y = 48, sp = 19, act = "nil", p = false, sfx = 0},--4
         { x = 57*8, y = 104, sp = 19, act=".boss-room.p8", p = false, sfx = 0}
     }
 end
