@@ -3,7 +3,7 @@ version 42
 __lua__
 
 
---export -i 64 pnwd.bin .level1.p8 .level2.p8 .level3.p8 .level4.p8 .level5.p8 .level6.p8 .level7.p8 .level8.p8 .boss-room.p8
+--export -i 64 pnwd.bin .level1.p8 .level2.p8 .level3.p8 .level4.p8 .level5.p8 .level6.p8 .level7.p8 .level8.p8 .boss-room.p8 .main-menu.p8
 --[[.movement.p8:0 is the player's code, and code that will be in every level
 0 is player functions
 1 is the trapdoor functions

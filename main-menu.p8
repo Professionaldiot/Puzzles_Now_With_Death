@@ -17,7 +17,7 @@ function _init()
 	canmove_d=true
 	canmove_u=true
 	action="play"
-	version="1.5.0"
+	version="1.6.0"
 	level_select_init()
 end
 
