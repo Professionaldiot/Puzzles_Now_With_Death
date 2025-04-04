@@ -31,13 +31,14 @@ function _init()
   menuitem(2,"load",function() lload() end)
   menuitem(3,"main menu",function() load("main-menu.p8") end)
   menuitem(5,"restart level",function() reset_level() end)
-  pw = {{atk_mult = 1.25, sp = 75, ranged = false}, 
-            {atk_mult = 1.35, sp = 76, ranged = false},
-            {atk_mult = 1.9, sp = 77, ranged = false},
-            {atk_mult = 2.1, sp = 78, ranged = false},
-            {atk_mult = 2.4, sp = 79, ranged = false}
+  pw = {{atk_mult = 1.25, sp = 91, ranged = false}, 
+            {atk_mult = 1.35, sp = 92, ranged = false},
+            {atk_mult = 1.9, sp = 93, ranged = false},
+            {atk_mult = 2.1, sp = 94, ranged = false},
+            {atk_mult = 2.4, sp = 95, ranged = false}
             }
-  weapon_pickup_init({}, {}, pw, 1, 1)
+  weapon_pickup_init({112, 216, 120, 311}, {40, 32, 112, 112}, pw, 2, 3)
+  
   block = {x = -8, y = -8, w = 8, h = 8, sp = 78}
   special_pickup_init(96, 112, 51, 51)
   door_init(112, 112)
@@ -83,6 +84,7 @@ function _update()
     dset(9, player.r_start_dmg)
     load(lvl2_buttons[1].act)
   end
+  update_weapons()
   reset_combo = combo_lock_update(stored_combo, lvl2_buttons, {2, 3, 1}, 3, 200, 40, 8, 8)
   for i = 6, 8 do
     --for the buttons we want to check
@@ -137,6 +139,7 @@ function _draw()
   btn_draw(lvl2_buttons)
   td_draw()
   special_pickup_draw()
+  draw_weapons()  
   door_draw()
   draw_block(block)
   spr(player.sp, player.x, player.y , 1, 1, player.flp)

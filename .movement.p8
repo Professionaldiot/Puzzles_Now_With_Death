@@ -79,16 +79,7 @@ function weapon_pickup_init(x_table, y_table, possible_weapons_table, best_value
     ]]
     --table[i] --> starts at one
     local pwt = possible_weapons_table
-    local c_x = #x_table
-    local c_y = #y_table
-    local c_total = c_x
-    if c_x != c_y then
-        if c_x > c_y then
-            c_total = c_y
-            --if the length of the x_table is shorter then the y_table, then
-            --we would be using c_x anyways, so since its the first assigned value, it doesn't matter
-        end
-    end
+    local c_total = #x_table
     local time_table = {}
     j = 0
     while j < c_total + 1 do
@@ -101,13 +92,10 @@ function weapon_pickup_init(x_table, y_table, possible_weapons_table, best_value
     while i < c_total + 1 do
         --create weapons
         weapon =  random(x_table[i], y_table[i], time_table[i], #pwt)%c_total
-        if weapon == 0 then
-            weapon = c_total
+        if weapon == 0 or weapon >= c_total then
+            weapon = i
         else
-            weapon =  random(x_table[i], y_table[i], time_table[i], #pwt*10)
-        end
-        if weapon >= c_total then
-            weapon = c_total - 1
+            weapon =  random(x_table[i], y_table[i], time_table[i], #pwt)%c_total
         end
     
         --weapons need atk_mult, sp, ranged

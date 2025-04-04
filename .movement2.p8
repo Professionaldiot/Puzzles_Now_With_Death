@@ -519,7 +519,7 @@ function portal_update(portal_list, box_list)
                             p.cooldown = p.cooldown_start --start the cooldown period
                             portal_list[p.link].cooldown = p.cooldown_start
                             b.x = portal_list[p.link].x + b.w + 8
-                            b.y = portal_list[p.link].y
+                            b.y = portal_list[p.link].y - 20
                     end--if
                 end--if
             end--for

@@ -88,8 +88,6 @@ function _init()
         {atk_mult = 2.4, sp = 95, ranged = false}
     }
     weapon_pickup_init({320, 256}, {160, 184}, pw, 2, 3)
-    weapon_pickups[1].sp = 95
-    weapon_pickups[1].atk_mult = 2.4
     btns = {
         {x = 464, y = 40, sp = 6, p = false, sfx = 0}
     }
