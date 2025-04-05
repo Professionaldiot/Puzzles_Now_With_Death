@@ -33,8 +33,6 @@ function _update()
     player_animate()
     make_circle()
     manage_health()
-    player_hit_bot(player.x, player.y)
-    bot_debug()
     if collide_map(bot,"right",0) then
         bot.x-=1
     elseif collide_map(bot,"left",0) then

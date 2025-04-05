@@ -46,11 +46,11 @@ end
 function player_hit_bot(px, py)
 	local bw_d = bot.w*2
 	local bw_h = bot.w/2
-	local bot_right = px + 8 > bot.x - 4 and px + 8 < bot.x + 10 --player on the right side of the bot
+	local bot_right = px + 8 > bot.x - 4 and px + 8 < bot.x + 16 --player on the right side of the bot
 	local bot_left = px > bot.x - bot.w and px < bot.x + bw_h --player on the left side of the bot
 	if bot_right then
-		if not player.flp  and player.hitting then
-			if player.meele then
+		if not player.flp and player.hitting then
+			if player.melee then
 				bot.health -= player.m_base_dmg
 			else
 				bot.health -= player.r_base_dmg
@@ -60,7 +60,7 @@ function player_hit_bot(px, py)
 	end
 	if bot_left then
 		if player.flp and player.hitting then
-			if player.meele then
+			if player.melee then
 				bot.health -= player.m_base_dmg
 			else
 				bot.health -= player.r_base_dmg
@@ -106,19 +106,6 @@ function can_attack_player(px, py)
 		return false
 	end
 	return false
-end
-
-function bot_debug()
-	printh(
-		"bot (x, y) : ("..bot.x..
-		", "..bot.y..")"..
-		"player (x, y) : ("..player.x..
-		", "..player.y..")"..
-		" bot.goalx : "..bot.goalx..
-		" bot.action : "..bot.action..
-		" bot.aim : "..bot.aim
-		, 
-		" bot_movement_log.txt", false, true)
 end
 
 function bot_hit_player(px, py)

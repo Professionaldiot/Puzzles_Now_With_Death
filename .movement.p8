@@ -3,7 +3,7 @@ version 42
 __lua__
 
 
---export -i 64 pnwd.bin .level1.p8 .level2.p8 .level3.p8 .level4.p8 .level5.p8 .level6.p8 .level7.p8 .level8.p8 .boss-room.p8 .main-menu.p8
+--export -i 64 pnwd.bin .level1.p8 .level2.p8 .level3.p8 .level4.p8 .level5.p8 .level6.p8 .level7.p8 .level8.p8 .boss-room.p8 main-menu.p8
 --[[.movement.p8:0 is the player's code, and code that will be in every level
 0 is player functions
 1 is the trapdoor functions
@@ -169,7 +169,10 @@ function draw_health()
     returns NIL
     ]]
     health = player.health.."/"
+    m_base = "melee: "..flr(player.m_base_dmg).."/10"
+    r_base = "ranged: "..flr(player.r_base_dmg).."/5"
   	h_px = abs((#health * 4) - 16)
+
     rectfill(cam_x, cam_y, 128 + cam_x, 8 + cam_y, 5)--draw the main background color for status bar
     rectfill(cam_x, cam_y, 100 + cam_x, 8 + cam_y, 13)--draw the padding for health bar
     rectfill(cam_x + 1, cam_y + 1, 99 + cam_x, 7 + cam_y, 2)--draw the red bar under the health bar
@@ -178,6 +181,7 @@ function draw_health()
     end
 	print(health, cam_x + 102 + h_px/2, cam_y+2, 11)
 	print(player.max_health, cam_x + 119 - h_px/2, cam_y+2, 8)
+    print(r_base.."    "..m_base, cam_x + 16 - #m_base/2, cam_y+10, 8)
     if player.dead or player.health == 0 then
         local str = 'you died'
         local str2 = "press 🅾️ to restart level"
@@ -247,21 +251,6 @@ function reset_level()
     local levels = {".level1.p8", ".level2.p8", ".level3.p8",".level4.p8", ".level5.p8", ".level6.p8",".level7.p8", ".level8.p8"}
     r_save()
     load(levels[level_on])
-end
-
-function debug_any()
-    --[[
-    Reverses the global debug boolean, which controls the debug files printing
-
-    Variables: NIL
-
-    returns NIL
-    ]]
-    if debug then
-        debug = false
-    else
-        debug = true
-    end
 end
 
 function projectile_init()
@@ -461,16 +450,6 @@ function player_update()
 
     returns NIL
     ]]
-    --debug
-    if debug then
-        printh("player.x: "..player.x..
-               " player.y: "..player.y..
-               " player.dx: "..player.dx..
-               " player.dy: "..player.dy..
-               " player.sp: "..player.sp..
-               " atk_spr.spr: "..atk_spr.spr..
-               " atk_spr.charge: "..atk_spr.charge, "player_movement_log.txt", false, true)
-    end
     if player.y > 300 then
         player.dead = true
     end
@@ -546,22 +525,73 @@ function player_update()
                 atk_spr.charge = time()
             end
         end
-        if (not btn(🅾️)) and (player.attacking) then
+        if (not btn(🅾️)) and (player.attacking or player.hitting) then
             player.attacking = false
-            player.hitting = false
+            player.hitting = true
             player.charging = false
             player.m_base_dmg = 1 * player.m_start_dmg
             atk_spr.charge = 0
+            local px = player.x
+            local bw_d = bot.w*2
+            local bw_h = bot.w/2
+            local bot_right = px + 8 > bot.x - 4 and px + 8 < bot.x + 16 --player on the right side of the bot
+            local bot_left = px > bot.x - bot.w and px < bot.x + bw_h --player on the left side of the bot
+            if bot_right then
+                if not player.flp and player.hitting then
+                    if player.melee then
+                        bot.health -= player.m_base_dmg
+                    else
+                        bot.health -= player.r_base_dmg
+                    end
+                    player.hitting = false
+                end
+            end
+            if bot_left then
+                if player.flp and player.hitting then
+                    if player.melee then
+                        bot.health -= player.m_base_dmg
+                    else
+                        bot.health -= player.r_base_dmg
+                    end
+                end
+            end
         end
         if (not btn(🅾️)) and (player.ranged or player.shooting) then
             player.charging = false
             player.base_dmg = 1
             player.r_base_dmg = 1 * player.r_start_dmg
             atk_spr.charge = 0
+            local px = player.x
+            local bw_d = bot.w*2
+            local bw_h = bot.w/2
+            local bot_right = px + 8 > bot.x - 4 and px + 8 < bot.x + 16 --player on the right side of the bot
+            local bot_left = px > bot.x - bot.w and px < bot.x + bw_h --player on the left side of the bot
+            if bot_right then
+                if not player.flp and player.hitting then
+                    if player.melee then
+                        bot.health -= player.m_base_dmg
+                    else
+                        bot.health -= player.r_base_dmg
+                    end
+                    player.hitting = false
+                end
+            end
+            if bot_left then
+                if player.flp and player.hitting then
+                    if player.melee then
+                        bot.health -= player.m_base_dmg
+                    else
+                        bot.health -= player.r_base_dmg
+                    end
+                end
+            end
         end
         if atk_spr.charge != 0 and player.charging then
-            player.base_dmg = mid(1, (time() - atk_spr.charge), 10)
-            
+            if player.melee then
+                player.m_base_dmg = mid(player.m_start_dmg, (time() - atk_spr.charge), 10)
+            else
+                player.r_base_dmg = mid(player.r_start_dmg, (time()-atk_spr.charge), 10)
+            end
         end
         projectile_update()
 
@@ -676,13 +706,13 @@ function player_update()
         else
 
         end
-    elseif player.hitting and not player.attacking then
+    elseif player.hitting then
         if time() - atk_spr.anim > 0.1 then
             player.hitting = false
             atk_spr.anim = time()
             atk_spr.spr = 8
         end
-    elseif not player.hitting and not player.attacking then
+    elseif not player.hitting then
         if time() - atk_spr.anim > 0.1 then
             atk_spr.spr = 10
             atk_spr.anim = time()
@@ -1420,7 +1450,7 @@ function door_update(btn_list, index_list)
         end
     else
         door.open = true
-        door.sp = 95
+        door.sp = 77
     end
 end
 

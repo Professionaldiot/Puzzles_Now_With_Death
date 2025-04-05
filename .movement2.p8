@@ -432,10 +432,10 @@ function draw_circle()
 
     returns NIL
     ]]
-    line(c.x_center-6, c.y_center, c.x+6, c.y_center)
-    line(c.x_center-6, c.y_center, c.x_center-6, c.y)
-    line(c.x+6, c.y_center, c.x+6, c.y)
-    line(c.x_center-6, c.y, c.x+6, c.y)
+    --line(c.x_center-6, c.y_center, c.x+6, c.y_center)
+    --line(c.x_center-6, c.y_center, c.x_center-6, c.y)
+    --line(c.x+6, c.y_center, c.x+6, c.y)
+    --line(c.x_center-6, c.y, c.x+6, c.y)
 
 
     line(c.x_center, c.y_center, c.x, c.y, 9)
