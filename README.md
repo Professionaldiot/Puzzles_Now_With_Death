@@ -191,7 +191,7 @@ Even with all of those I did meet from the proposal, there are only a few that I
 
 As seen in the gif above, level 2 is organized in a way that is simple, but still complicated in a way that isn't easy to finish if you haven't found the solution already. The organization, as described in the [Alpha release briefing](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#alpha-release-briefing), is quite simple, I put all the important functions into two main files, .movement.p8 and .movement2.p8 
 
-![organization of fiels](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/images/organization?raw=true)
+![organization of filews](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/images/organization.png?raw=true)
 
 Also in the Alpha release briefing, was this image:
 
@@ -199,7 +199,7 @@ Also in the Alpha release briefing, was this image:
 
 This image shows one of the most useful data structures in PICO-8's Lua, tables, which, as a reminder, can act as unindexed dictionaries, or indexed lists. When naming variables (the difference between global and local variables is covered in the Alpha release briefing), I chose to name global variables in a way that would describe them well enough if someone were to be looking from the outside, it could still make sense to them as well. Meanwhile, for local variables/function variables I named them in a way that made sense for the function, so if a function needed a list of tables for the buttons for a level, I would describe it as *function btn_update(btn_list)*, this shows clearly that the function needs to take in a list of btns, which in this case, is a list of tables.
 
-![documentation example](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/images/documentation?raw=true)
+![documentation example](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/images/documentation.png?raw=true)
 
 This image shows the way I had been documenting the functions that I created, even functions without variables got this treatement, this was to number one, make it easier for me to remember what each function did at a quick glance, and number two, tell others that view the code what each function does at a glance, this is so if someone were to want to modify, let's say level 2 for example, they could if they knew what they were doing, and the documentation only makes it easier. I created this documentation style for my own programming in Lua, it was so I didn't go insane while making this project. Most of the tools I'm using are either PICO-8 itself, or through the code that I see in Visual Studio Code.
 
