@@ -75,6 +75,10 @@ function weapon_pickup_init(x_table, y_table, possible_weapons_table, best_value
     * y_table: list[int] --> y coordinates to place weapons at, have to be correlated to the x_table
     * possible_weapons_table: list[table] --> a list of possible weapons for the level
         * as long as the x and y stay the same the weapons will be the same between play sessions
+    * best_value_time: int --> the best value to multiply time by for each level
+    * best_value_mult: int --> the best value to multiply the addition to the time for each level
+        * creates further apart time differences if higher 
+    
     returns: NIL
     ]]
     --table[i] --> starts at one

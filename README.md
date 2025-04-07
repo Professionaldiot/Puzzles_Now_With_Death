@@ -150,3 +150,67 @@ I have encoutered many problems developing this code, such as the bot attempting
 
 ## Expansion and customization
 After the game is compiled, the player can't change anything about the game, so custimaztion is quite low, but for expansion, I could always add more levels. Just recently (as of like v1.2.3 or v.1.2.4) I made the functions for the puzzles able to be used on any level instead of level specific, so if someone wanted to, they could redesign my levels if they knew what they were doing.
+
+# Beta release breifing
+
+## Requirements met/not met
+Most of the requirements I set out for myself, I hit, there were only a few left that I wasn't able to do by the time of April 4th, 2025, but to be fair to myself in the past, I did not know that the last three days would be reserved for writing a retrospective, so when I planned all the stuff I wanted to do, I created those tasks with that idea in mind.
+
+### Requirements met
+With that in mind, the requirements I did meet from my proposal are as follows:
+- Design and implement new character designs
+- Redesigning level 1 and 2
+    - On top of this, level 1 became a tutorial level to introduce the player to the mechanics of the level
+- Added the boss room file
+    - Added the bot to that file, and ensured that it was working, also got the bot to fall and jump, but not climb
+- Added in attacking with two different weapons
+    - The catch is that when you pick up a new weapon, you gain the stats of it, instead of it being displayed on screen
+    - Added a weapon pickup system
+- Designed more puzzles mechanics
+    - Portals
+    - Platform
+    - Bridge & parkour
+    - A combo lock system which requires the player to input the correct sequence of buttons in order to unlock a door
+    - A door system, which can be unlocked by either a combo lock, or a singular button
+    - A damaging circle system, which damages the player when inside of it
+- Some sound effects were implemented for specific actions the player takes
+
+### Requirements not met
+Even with all of those I did meet from the proposal, there are only a few that I did not get around to
+- Making it possible for the bot to climb ladders
+    - Not needed in the boss room, since there are no ladders
+- Getting the layouts of levels to save correctly for each individual level
+    - Not needed, and too complicated to implement in the timeframe I had
+- Music and sounds
+    - I didn't get as many music and sound effects as I wanted to into the levels
+    - If I had more time, this is what I would be working on in the final stretch of the project
+
+## Methods
+ 
+![showoff of level2](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/images/level2.gif?raw=true)
+
+As seen in the gif above, level 2 is organized in a way that is simple, but still complicated in a way that isn't easy to finish if you haven't found the solution already. The organization, as described in the [Alpha release briefing](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#alpha-release-briefing), is quite simple, I put all the important functions into two main files, .movement.p8 and .movement2.p8 
+
+![organization of fiels](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/images/organization?raw=true)
+
+Also in the Alpha release briefing, was this image:
+
+![tables example](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/images/tables.png?raw=true)
+
+This image shows one of the most useful data structures in PICO-8's Lua, tables, which, as a reminder, can act as unindexed dictionaries, or indexed lists. When naming variables (the difference between global and local variables is covered in the Alpha release briefing), I chose to name global variables in a way that would describe them well enough if someone were to be looking from the outside, it could still make sense to them as well. Meanwhile, for local variables/function variables I named them in a way that made sense for the function, so if a function needed a list of tables for the buttons for a level, I would describe it as *function btn_update(btn_list)*, this shows clearly that the function needs to take in a list of btns, which in this case, is a list of tables.
+
+![documentation example](https://github.com/professionaldiot/puzzles_now_with_death/blob/main/images/documentation?raw=true)
+
+This image shows the way I had been documenting the functions that I created, even functions without variables got this treatement, this was to number one, make it easier for me to remember what each function did at a quick glance, and number two, tell others that view the code what each function does at a glance, this is so if someone were to want to modify, let's say level 2 for example, they could if they knew what they were doing, and the documentation only makes it easier. I created this documentation style for my own programming in Lua, it was so I didn't go insane while making this project. Most of the tools I'm using are either PICO-8 itself, or through the code that I see in Visual Studio Code.
+
+## Project management
+I did not use any specific tools for project management, but to track progress, I did this in the way of version control, when this project started, before it was on github, it was on v0.5.0, and as of this momement it is currently at v1.6.3, each increase in vx.1-9.x  denotes a change that fundamentally changes how the game was running, or how the game is working, each release of a v0-1.1-9.0 is a release that adds new functions, and I usually released the .bin for these releases too, although I have released for the other versions, anything that is a version of v0-1.1-9.1-9 is working towards the previous type of versioning (v0-1.1-9.0), slowly adding new functions that interact or change how the game functions, but are not fully implemented yet. The big v1.0.0.0 release, was a major release, this was when I finished the bot, and was happy enough with it that I could move on from it. If you are a programmer, you might realize this is semantic versioning, which just comes naturally to me.
+
+## What I learned
+Through this project, I learned that the game dev process is quite harsh for just one person to be doing, and that if done by one person you need quite a bit of time to develop a game that is enjoyable by the playerbase. I still enjoyed this process, and it taught me a lot of valuable insight about the process while letting me explore a new programming langauge.
+
+## Problems and solutions
+The biggest rock in the road, to say, was bugs, and there were so many when making the enemy's 'ai', like the bug causing him (I call the bot a him) to "windmill" around one spot when the player climbed up a ledge. The solution for this was to just make the bot move towards the player while in the air, which stopped this behavior for the most part, but it can still happen when the player is above the bot and there is a ground piece between them. 
+
+## What next?
+If I had more time, I would've added more sounds and music into the levels, and maybe added more unique puzzle ideas. 
