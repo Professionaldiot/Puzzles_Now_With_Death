@@ -297,14 +297,14 @@ function projectile_hit_reg()
             proj.stop = true
         elseif hit_bot then
             proj.stop = true
-            bot.health -= proj.dmg * player.base_dmg
+            bot.health -= proj.dmg * player.r_base_dmg
         end
     elseif proj.dx < 0 then
         if collide_map(proj, "left", 0) then
             proj.stop = true
         elseif hit_bot then
             proj.stop = true
-            bot.health -= proj.dmg * player.base_dmg
+            bot.health -= proj.dmg * player.r_base_dmg
         end
     end
 end
@@ -331,6 +331,7 @@ function projectile_update()
         proj.dx = 0
         proj.flp = 0
         player.shooting = false
+        proj.dmg = player.r_start_dmg
     elseif (not player.charging) and player.shooting and player.ranged then
         --when the player stops holding the charge, store the damage the proj will do on impact
         --then set atk_spr.charge to 0 and player.charging = false
@@ -368,6 +369,7 @@ function projectile_update()
             proj.dmg = 0
             proj.dx = 0
             proj.flp = 0
+            proj.dmg = player.r_start_dmg
             player.shooting = false
         end
     end
@@ -577,7 +579,6 @@ function player_update()
                     else
                         bot.health -= player.r_base_dmg
                     end
-                    player.hitting = false
                 end
             end
             if bot_left then
