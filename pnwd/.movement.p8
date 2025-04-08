@@ -299,14 +299,14 @@ function projectile_hit_reg()
             proj.stop = true
         elseif hit_bot then
             proj.stop = true
-            bot.health -= proj.dmg * player.r_base_dmg
+            bot.health -= proj.dmg
         end
     elseif proj.dx < 0 then
         if collide_map(proj, "left", 0) then
             proj.stop = true
         elseif hit_bot then
             proj.stop = true
-            bot.health -= proj.dmg * player.r_base_dmg
+            bot.health -= proj.dmg
         end
     end
 end
@@ -323,7 +323,7 @@ function projectile_update()
         proj.dmg = 1 * player.r_base_dmg
     end
     if proj.dmg == 0 or player.charging then
-        proj.dmg = player.base_dmg
+        proj.dmg = player.r_base_dmg
         proj.y = player.y
     end
     projectile_hit_reg()
