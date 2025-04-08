@@ -160,7 +160,7 @@ I have encoutered many problems developing this code, such as the bot attempting
 ## Expansion and customization
 After the game is compiled, the player can't change anything about the game, so custimaztion is quite low, but for expansion, I could always add more levels. Just recently (as of like v1.2.3 or v.1.2.4) I made the functions for the puzzles able to be used on any level instead of level specific, so if someone wanted to, they could redesign my levels if they knew what they were doing.
 
-# Beta release breifing
+# Beta release briefing
 
 ## Requirements met/not met
 Most of the requirements I set out for myself, I hit, there were only a few left that I wasn't able to do by the time of April 4th, 2025, but to be fair to myself in the past, I did not know that the last three days would be reserved for writing a retrospective, so when I planned all the stuff I wanted to do, I created those tasks with that idea in mind.
