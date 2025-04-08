@@ -33,6 +33,7 @@
     - [What next?](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#what-next)
 
 # How to run the game:
+- Get the most recent release of the game from the [releases](https://github.com/Professionaldiot/Puzzles_Now_With_Death/releases)
 - To open the file, first figure out your OS in the naming scheme. Then download only that file to your machine from GitHub, and open it on your machine. 
     - For MacOS, download and open game.app, then go to Contents, then MacOS and launch the game file.
     - For linux, download and open linux then run the game file, however you choose to do so.
