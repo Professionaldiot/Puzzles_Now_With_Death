@@ -531,17 +531,23 @@ function player_update()
                 atk_spr.charge = time()
             end
         end
+        if atk_spr.charge != 0 and player.charging then
+            if player.melee then
+                player.m_base_dmg = mid(player.m_start_dmg, (time() - atk_spr.charge), 10)
+            else
+                player.r_base_dmg = mid(player.r_start_dmg, (time()-atk_spr.charge), 10)
+            end
+        end
         if (not btn(🅾️)) and (player.attacking or player.hitting) then
             player.attacking = false
             player.hitting = true
             player.charging = false
-            player.m_base_dmg = 1 * player.m_start_dmg
             atk_spr.charge = 0
             local px = player.x
             local bw_d = bot.w*2
             local bw_h = bot.w/2
             local bot_right = px + 8 > bot.x - 4 and px + 8 < bot.x + 16 --player on the right side of the bot
-            local bot_left = px > bot.x - bot.w and px < bot.x + bw_h --player on the left side of the bot
+            local bot_left = px > bot.x - bw_d and px < bot.x + bw_d --player on the left side of the bot
             if bot_right then
                 if not player.flp and player.hitting then
                     if player.melee then
@@ -564,14 +570,12 @@ function player_update()
         end
         if (not btn(🅾️)) and (player.ranged or player.shooting) then
             player.charging = false
-            player.base_dmg = 1
-            player.r_base_dmg = 1 * player.r_start_dmg
             atk_spr.charge = 0
             local px = player.x
             local bw_d = bot.w*2
             local bw_h = bot.w/2
             local bot_right = px + 8 > bot.x - 4 and px + 8 < bot.x + 16 --player on the right side of the bot
-            local bot_left = px > bot.x - bot.w and px < bot.x + bw_h --player on the left side of the bot
+            local bot_left = px > bot.x - bw_d and px < bot.x + bw_d --player on the left side of the bot
             if bot_right then
                 if not player.flp and player.hitting then
                     if player.melee then
@@ -589,13 +593,6 @@ function player_update()
                         bot.health -= player.r_base_dmg
                     end
                 end
-            end
-        end
-        if atk_spr.charge != 0 and player.charging then
-            if player.melee then
-                player.m_base_dmg = mid(player.m_start_dmg, (time() - atk_spr.charge), 10)
-            else
-                player.r_base_dmg = mid(player.r_start_dmg, (time()-atk_spr.charge), 10)
             end
         end
         projectile_update()

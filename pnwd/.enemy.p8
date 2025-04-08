@@ -25,7 +25,7 @@ function botinit()
 		bot.dead = false
 		bot.health = 100
 		bot.x=32
-		bot.y=100
+		bot.y=104
 		bot.dy=0
 		bot.g=0.3
 		bot.goalx=nil
@@ -41,37 +41,6 @@ function botinit()
 		bot.mid=0
 		bot.q3=0
 		--65,81,64,80,96,97
-end
-
-function player_hit_bot(px, py)
-	local bw_d = bot.w*2
-	local bw_h = bot.w/2
-	local bot_right = px + 8 > bot.x - 4 and px + 8 < bot.x + 16 --player on the right side of the bot
-	local bot_left = px > bot.x - bot.w and px < bot.x + bw_h --player on the left side of the bot
-	if bot_right then
-		if not player.flp and player.hitting then
-			if player.melee then
-				bot.health -= player.m_base_dmg
-			else
-				bot.health -= player.r_base_dmg
-			end
-			player.hitting = false
-		end
-	end
-	if bot_left then
-		if player.flp and player.hitting then
-			if player.melee then
-				bot.health -= player.m_base_dmg
-			else
-				bot.health -= player.r_base_dmg
-			end
-			player.hitting = false
-		end
-	end
-	if bot.health <= 0 then
-		bot.dead = true
-		bot.health = 0
-	end
 end
 
 function can_attack_player(px, py)
@@ -348,6 +317,9 @@ function player_above_bot(px, py)
 end
 
 function update_bot(px, py, t)
+	if bot.health <= 0 then 
+		bot.dead = true
+	end
 	if px - flr(px) <= 0.5 then
 		px = flr(px)
 	else
