@@ -22,6 +22,15 @@
         - [Key algorithms](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#key-algorithms)
     - [Problems](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#problems)
     - [Expansion and customization](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#expansion-and-customization)
+- [Beta release briefing](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#beta-release-briefing)
+    - [Requirements met/not met](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#requirements-metnot-met)
+        - [Requirements met](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#requirements-met)
+        - [Requirements not met](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#requirements-not-met)
+    - [Methods](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#methods)
+    - [Project management](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#project-management-1)
+    - [What I learned](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#what-i-learned)
+    - [Problems and solutions](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#problems-and-solutions)
+    - [What next?](https://github.com/Professionaldiot/Puzzles_Now_With_Death?tab=readme-ov-file#what-next)
 
 # How to run the game:
 - To open the file, first figure out your OS in the naming scheme. Then download only that file to your machine from GitHub, and open it on your machine. 
