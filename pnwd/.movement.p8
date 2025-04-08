@@ -41,6 +41,8 @@ function special_pickup_update()
                 pickup.picked_up = true
                 player.m_base_dmg *= 2.5
                 player.r_base_dmg *= 2.5
+                player.m_start_dmg = player.m_base_dmg
+                player.r_start_dmg = player.r_base_dmg
         end
     end
 end
@@ -274,7 +276,7 @@ function projectile_init()
         x_end = 0,
         dmg = 0,
         dx = 0,
-        flp = 0,
+        flp = false,
         stop = false
     }
 end
@@ -317,6 +319,9 @@ function projectile_update()
 
     returns NIL
     ]]
+    if proj.dmg == nil then
+        proj.dmg = 1 * player.r_base_dmg
+    end
     if proj.dmg == 0 or player.charging then
         proj.dmg = player.base_dmg
         proj.y = player.y
@@ -327,11 +332,11 @@ function projectile_update()
         proj.y = 0
         proj.x_start = 0
         proj.x_end = 0
-        proj.dmg = 0
         proj.dx = 0
         proj.flp = 0
         player.shooting = false
         proj.dmg = player.r_start_dmg
+        proj.stop = false
     elseif (not player.charging) and player.shooting and player.ranged then
         --when the player stops holding the charge, store the damage the proj will do on impact
         --then set atk_spr.charge to 0 and player.charging = false
@@ -535,7 +540,7 @@ function player_update()
             if player.melee then
                 player.m_base_dmg = mid(player.m_start_dmg, (time() - atk_spr.charge), 10)
             else
-                player.r_base_dmg = mid(player.r_start_dmg, (time()-atk_spr.charge), 10)
+                player.r_base_dmg = mid(player.r_start_dmg, (time()-atk_spr.charge), 5)
             end
         end
         if (not btn(🅾️)) and (player.attacking or player.hitting) then
