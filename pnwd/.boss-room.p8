@@ -9,6 +9,7 @@ function _init()
     #include random.p8
     cartdata("dc_capstone")
     player_init()
+    p = {}
     botinit()
     circle_init()
     menuitem(1,"save",function() save() end)
@@ -56,6 +57,8 @@ function _draw()
         spr(24, proj.x, proj.y, 1, 1, proj.flp)
     end
     draw_health()
+    local hp = bot.health..""
+    print(hp, cam_x + 64 - #hp*2, cam_y + 20)
     draw_circle()
 end
 

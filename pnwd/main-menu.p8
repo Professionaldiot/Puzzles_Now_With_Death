@@ -17,7 +17,7 @@ function _init()
 	canmove_d=true
 	canmove_u=true
 	action="play"
-	version="1.7.2"
+	version="1.7.3"
 	level_select_init()
 end
 
@@ -64,6 +64,9 @@ function _update()
 	if action=="play" and btn(🅾️) then
 		if lload() then
 			dset(13,true)
+			if dget(12) >= 9 then
+				load(".boss-room.p8")
+			end
 			load(lvl[dget(12)]["ld"])
 		else
 			load(".level1.p8")
